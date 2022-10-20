@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:padding="5sp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/txtClose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:drawableEndCompat="@drawable/ic_close_white" />
+
+        <RelativeLayout
+            android:id="@+id/layout_subheadingDemo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtClose">
+
+
+            <TextView
+                android:id="@+id/txtSerial1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_1"
+                android:paddingEnd="5sp"
+                tools:ignore="RtlSymmetry"
+                android:textColor="@color/text_color"/>
+
+            <TextView
+                android:id="@+id/txt_sug_subheading_sug1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/to_make_subheading_like_this"
+                android:layout_toEndOf="@id/txtSerial1"
+                android:textColor="@color/text_color"/>
+
+            <TextView
+                android:id="@+id/txt_sug_subheading_demo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15sp"
+                android:layout_below="@id/txt_sug_subheading_sug1"
+                android:layout_toEndOf="@id/txtSerial1"
+                android:textColor="@color/text_color"
+                android:paddingBottom="10sp"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/txt_sug_subheading_sug2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/use_star_sign_like_this"
+                android:layout_toEndOf="@id/txtSerial1"
+                android:textColor="@color/text_color"
+                android:layout_below="@id/txt_sug_subheading_demo"/>
+
+            <TextView
+                android:id="@+id/txt_sug_subheading_sug3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/txtSerial1"
+                android:layout_below="@id/txt_sug_subheading_sug2"
+                android:paddingStart="15sp"
+                android:textColor="@color/text_color"
+                tools:ignore="RtlSymmetry"
+                android:paddingBottom="10sp"/>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_quotationDemo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_subheadingDemo">
+
+            <TextView
+                android:id="@+id/txtSerial2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_2"
+                android:paddingEnd="5sp"
+                tools:ignore="RtlSymmetry"
+                android:textColor="@color/text_color"/>
+
+            <TextView
+                android:id="@+id/txt_sug_quotation_sug1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/to_make_quotation_like_this"
+                android:layout_toEndOf="@id/txtSerial2"
+                android:textColor="@color/text_color"/>
+
+            <TextView
+                android:id="@+id/txt_sug_quotation_demo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15sp"
+                android:layout_below="@id/txt_sug_quotation_sug1"
+                android:layout_toEndOf="@id/txtSerial2"
+                android:textColor="@color/text_color"
+                android:paddingBottom="10sp"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/txt_sug_quotation_sug2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/use_quotation_sign_like_this"
+                android:layout_toEndOf="@id/txtSerial2"
+                android:textColor="@color/text_color"
+                android:layout_below="@id/txt_sug_quotation_demo"/>
+
+            <TextView
+                android:id="@+id/txt_sug_quotation_sug3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/txtSerial2"
+                android:layout_below="@id/txt_sug_quotation_sug2"
+                android:paddingStart="15sp"
+                android:textColor="@color/text_color"
+                tools:ignore="RtlSymmetry" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_bulletDemo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_quotationDemo">
+
+            <TextView
+                android:id="@+id/txtSerial3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_3"
+                android:paddingEnd="5sp"
+                tools:ignore="RtlSymmetry"
+                android:textColor="@color/text_color"/>
+
+            <TextView
+                android:id="@+id/txt_sug_bullet_sug1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/to_use_bullet_point_like_this"
+                android:layout_toEndOf="@id/txtSerial3"
+                android:textColor="@color/text_color"/>
+
+            <TextView
+                android:id="@+id/txt_sug_bullet_demo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15sp"
+                android:layout_below="@id/txt_sug_bullet_sug1"
+                android:layout_toEndOf="@id/txtSerial3"
+                android:textColor="@color/text_color"
+                android:paddingBottom="10sp"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/txt_sug_bullet_sug2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/use_like_this"
+                android:layout_toEndOf="@id/txtSerial3"
+                android:textColor="@color/text_color"
+                android:layout_below="@id/txt_sug_bullet_demo"/>
+
+
+            <TextView
+                android:id="@+id/txt_sug_bullet_sug3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/txtSerial3"
+                android:layout_below="@id/txt_sug_bullet_sug2"
+                android:paddingStart="15sp"
+                android:textColor="@color/text_color"
+                tools:ignore="RtlSymmetry" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_hyperLinkDemo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_bulletDemo">
+
+            <TextView
+                android:id="@+id/txtSerial4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_4"
+                android:paddingEnd="5sp"
+                tools:ignore="RtlSymmetry"
+                android:textColor="@color/text_color"/>
+
+            <TextView
+                android:id="@+id/txt_sug_hyperLink_sug1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/to_use_hyper_link_like_bellow"
+                android:layout_toEndOf="@id/txtSerial4"
+                android:textColor="@color/text_color"/>
+
+            <TextView
+                android:id="@+id/txt_sug_hyperLink_demo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15sp"
+                android:layout_below="@id/txt_sug_hyperLink_sug1"
+                android:layout_toEndOf="@id/txtSerial4"
+                android:textColor="@color/text_color"
+                android:paddingBottom="10sp"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/txt_sug_hyperLink_sug2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/use_like_bellow"
+                android:layout_toEndOf="@id/txtSerial4"
+                android:textColor="@color/text_color"
+                android:layout_below="@id/txt_sug_hyperLink_demo"/>
+
+
+            <TextView
+                android:id="@+id/txt_sug_hyperLink_sug3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/txtSerial4"
+                android:layout_below="@id/txt_sug_hyperLink_sug2"
+                android:paddingStart="15sp"
+                android:textColor="@color/text_color"
+                tools:ignore="RtlSymmetry" />
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</ScrollView>

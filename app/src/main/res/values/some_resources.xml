@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string-array
+        name="privacy_items">
+
+        <item>privacy</item>
+        <item>public</item>
+        <item>only me</item>
+
+    </string-array>
+
+</resources>

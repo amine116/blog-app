@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatActivity"
+    android:background="@color/background_color"
+    android:padding="5sp">
+
+    <RelativeLayout
+        android:id="@+id/layout_chat_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/layout__profilePic"
+            android:layout_width="36sp"
+            android:layout_height="36sp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/round_shape_white"
+            android:padding="1sp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@drawable/round_shape_black">
+
+                <ImageView
+                    android:id="@+id/img_profilePic"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="@string/imgText_people"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/gap1"
+            android:layout_width="10sp"
+            android:layout_height="36sp"
+            android:layout_toEndOf="@id/layout__profilePic"/>
+
+        <TextView
+            android:id="@+id/txtChatHead"
+            android:layout_width="wrap_content"
+            android:layout_height="36sp"
+            android:text="@string/chats"
+            android:textColor="@color/text_color"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_toEndOf="@id/gap1"
+            tools:ignore="RtlSymmetry" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_for_fragments"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_chat_head"
+        android:visibility="gone">
+
+
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_chatList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/layout_chat_head">
+
+        <ProgressBar
+            android:id="@+id/progress_chatList"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

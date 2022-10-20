@@ -1,0 +1,109 @@
+<resources>
+
+    <!-- constant values: 1-10, 11-20, 21-30, 31-40, 41-50-->
+
+    <string name="app_name">Blog</string>
+    <string name="imgText_people">people</string>
+    <string name="imgText_menu">Menu</string>
+    <string name="share_the_article">Spread</string>
+    <string name="opinion">Opinion</string>
+    <string name="tags">Tags: </string>
+    <string name="added_tags">Added tags: </string>
+    <string name="utilities">Utilities</string>
+    <string name="write_a_article">Write a article</string>
+    <string name="head_line">Head Line</string>
+    <string name="write_your_article_here">Write your article here</string>
+    <string name="email">Email:</string>
+    <string name="create_account">Create Account</string>
+    <string name="write_here">Aa</string>
+    <string name="your_name">Your Name:</string>
+    <string name="basic_info">Basic Info</string>
+    <string name="university_college_school">Latest Educational Institution</string>
+    <string name="hobbies">Hobbies</string>
+    <string name="_1">1.</string>
+    <string name="_2">2.</string>
+    <string name="_3">3.</string>
+    <string name="_4">4.</string>
+    <string name="expertise">Expertise</string>
+    <string name="x">X</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="next">Next</string>
+    <string name="create">Create</string>
+    <string name="write_an_article">Write an article</string>
+    <string name="add">Add</string>
+    <string name="search_for_tags">Search Tags</string>
+    <string name="post">Post</string>
+    <string name="ok">OK</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_as_guest">Sign In as guest</string>
+    <string name="or">Or-</string>
+    <string name="others">Others</string>
+    <string name="follow">Follow</string>
+    <string name="message">Message</string>
+    <string name="articles">Articles</string>
+    <string name="browse_articles">Browse Tags/Topics</string>
+    <string name="write_a_comment">Write a comment</string>
+    <string name="aa">Aa</string>
+    <string name="chats">Chats</string>
+    <string name="provide_your_email">Provide your Phone</string>
+    <string name="none_can_see_this">it\'s completely secured. No one can see our phone no.</string>
+    <string name="choose_a_username">Choose a Username</string>
+    <string name="username_hint">It is a Unique name. You can put only alphabets,
+        numbers and underscore(_) in a username</string>
+    <string name="choose_a_password">Choose a Password</string>
+    <string name="pass_hint">Password must be 6 character long.</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="provide_your_name">Provide your name</string>
+    <string name="show_more">Show more…</string>
+    <string name="following">Following</string>
+    <string name="search">Search</string>
+    <string name="add_this_tag">Add this tag</string>
+    <string name="text_new">New</string>
+    <string name="article_writing_sug_subheading">
+        *Black hole*\n
+        A black hole is a region of spacetime where gravity is so strong that nothing can escape from it.</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="save">Save</string>
+    <string name="profession">Profession</string>
+    <string name="edit">Edit</string>
+    <string name="done">Done</string>
+    <string name="delete">Delete</string>
+    <string name="private_articles">Private Articles</string>
+    <string name="admin_use">Admin Use</string>
+    <string name="suggested_tags">Suggested Tags</string>
+    <string name="select_privacy">Select Privacy</string>
+    <string name="reply">Reply</string>
+    <string name="report">Report</string>
+    <string name="hint_of_how_choose_portion_of_rules_violation">Which portion of the article violates our rules?
+        Use \'~\' at the beginning and at the end of your desired
+        portion that violates the rules.\n For example: ~your chosen portion of article~\n
+        (Optional)
+    </string>
+
+    <string name="hint_of_how_choose_portion">Use \'~\' at the beginning and at the end of your desired
+        portion of the article.\n For example: ~your chosen portion of article~\n
+        (Optional)
+    </string>
+
+    <string name="cancel">Cancel</string>
+    <string name="extract">Extract your portion</string>
+    <string name="report_to_blog">Report to Blog</string>
+    <string name="nudity">Sexuality</string>
+    <string name="hate_speech">Hate Speech</string>
+    <string name="false_information">False information</string>
+    <string name="offensive">Offensive</string>
+    <string name="select_one_category">Select one category (Mandatory)</string>
+    <string name="your_explanation">Your explanation</string>
+    <string name="to_make_subheading_like_this">To make subheading like this-</string>
+    <string name="use_star_sign_like_this">Use \'*\' sign like this-</string>
+    <string name="to_make_quotation_like_this">To make quotation like this-</string>
+    <string name="use_quotation_sign_like_this">Use \'"\' sign like this-</string>
+    <string name="preview">Preview</string>
+    <string name="to_use_bullet_point_like_this">To Use Bullet Point like this-</string>
+    <string name="use_like_this"><![CDATA[Use <> for each point or sub-point like this-]]></string>
+    <string name="to_use_hyper_link_like_bellow">To use hyper link like bellow-</string>
+    <string name="use_like_bellow">Use ~[][]~ like bellow-</string>
+    <string name="edit_history">Edit History</string>
+</resources>

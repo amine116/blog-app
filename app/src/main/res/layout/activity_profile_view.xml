@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileView"
+    android:background="@color/background_color"
+    android:padding="10sp">
+
+    <RelativeLayout
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/layout_ProfileHead"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/round_shape_white"
+            android:padding="1sp">
+
+            <RelativeLayout
+                android:id="@+id/layout_profilePic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@drawable/round_shape_black">
+
+                <ImageView
+                    android:id="@+id/img_profilePic"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="@string/imgText_people"/>
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txtProfileHeadName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/text_color"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_below="@id/layout_ProfileHead"
+            android:layout_centerInParent="true"/>
+
+        <View
+            android:id="@+id/gap8"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/txtProfileHeadName"/>
+
+        <LinearLayout
+            android:id="@+id/layout_interact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gap8"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+
+            <RelativeLayout
+                android:id="@+id/layout_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/text_color"
+                android:padding="1sp">
+
+                <TextView
+                    android:id="@+id/txtFollowButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5sp"
+                    android:textColor="@color/text_color"
+                    android:background="@color/background_color"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="15sp"
+                android:layout_height="match_parent"/>
+
+            <RelativeLayout
+                android:id="@+id/layout_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/text_color"
+                android:padding="1sp">
+
+                <TextView
+                    android:id="@+id/txtMessageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/message"
+                    android:textColor="@color/text_color"
+                    android:background="@color/background_color"
+                    android:padding="5sp"/>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/layout_interact"/>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/gap1"
+        android:layout_width="match_parent"
+        android:layout_height=".5sp"
+        android:background="@color/text_color"
+        android:layout_below="@id/actionBar"/>
+
+    <ProgressBar
+        android:id="@+id/progress_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:id="@+id/profile_info_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gap1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/layout_userInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txtBasicInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/basic_info"
+                    android:textColor="@color/head_line_color"
+                    app:drawableEndCompat="@drawable/ic_arrow_drop_up" />
+                <RelativeLayout
+                    android:id="@+id/layout_basicInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10sp"
+                    android:paddingTop="10sp"
+                    tools:ignore="RtlSymmetry"
+                    android:layout_below="@id/txtBasicInfo">
+
+                    <ProgressBar
+                        android:id="@+id/progress_basicInfo"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"/>
+
+                    <RelativeLayout
+                        android:id="@+id/layout_basicInfoChild"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/txtProfileName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_color"/>
+
+                        <View
+                            android:id="@+id/gap2"
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"
+                            android:layout_below="@id/txtProfileName"/>
+
+                        <TextView
+                            android:id="@+id/txtUserName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_color"
+                            android:layout_below="@+id/gap2"/>
+
+
+                        <View
+                            android:id="@+id/gap3"
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"
+                            android:layout_below="@id/txtUserName"/>
+
+                        <TextView
+                            android:id="@+id/txtUniversity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_color"
+                            android:layout_below="@+id/gap3"/>
+
+                        <TextView
+                            android:id="@+id/txtProfession"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_color"
+                            android:paddingTop="10sp"
+                            android:layout_below="@+id/txtUniversity"/>
+
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/gap4"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_below="@id/layout_basicInfo"/>
+
+                <TextView
+                    android:id="@+id/txtHobbies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hobbies"
+                    android:textColor="@color/head_line_color"
+                    app:drawableEndCompat="@drawable/ic_arrow_drop_up"
+                    android:layout_below="@id/gap4"/>
+
+                <RelativeLayout
+                    android:id="@+id/layout_hobbies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10sp"
+                    android:paddingTop="10sp"
+                    tools:ignore="RtlSymmetry"
+                    android:layout_below="@id/txtHobbies">
+
+                    <ProgressBar
+                        android:id="@+id/progress_hobbies"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/txtHobbyList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_color"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/gap5"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_below="@id/layout_hobbies"/>
+
+                <TextView
+                    android:id="@+id/txtExpertise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/expertise"
+                    android:textColor="@color/head_line_color"
+                    app:drawableEndCompat="@drawable/ic_arrow_drop_up"
+                    android:layout_below="@id/gap5"/>
+                <RelativeLayout
+                    android:id="@+id/layout_expertise"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10sp"
+                    android:paddingTop="10sp"
+                    tools:ignore="RtlSymmetry"
+                    android:layout_below="@id/txtExpertise">
+
+                    <ProgressBar
+                        android:id="@+id/progress_expertise"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/txtExpertiseList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_color"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/gap6"
+                android:layout_width="match_parent"
+                android:layout_height=".5sp"
+                android:background="@color/text_color"
+                android:layout_below="@id/layout_userInfo"/>
+            <View
+                android:id="@+id/gap7"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_below="@+id/gap6"/>
+
+            <TextView
+                android:id="@+id/txtArticles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/articles"
+                android:textSize="20sp"
+                android:layout_below="@id/gap7"
+                android:gravity="start"
+                android:textColor="@color/head_line_color"/>
+
+
+            <ProgressBar
+                android:id="@+id/progress_article"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                android:layout_below="@id/txtArticles"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/layout_articles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/txtArticles"
+                android:paddingTop="15sp">
+
+
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/txtArticleOnlyMe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/private_articles"
+                android:textColor="@color/head_line_color"
+                android:textSize="20sp"
+                android:layout_below="@id/layout_articles"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/progress_article_only_me"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                android:layout_below="@id/txtArticleOnlyMe"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/layout_article_only_me"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/txtArticleOnlyMe"
+                android:visibility="gone">
+
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/head_line_color"
+            android:text="@string/hint_of_how_choose_portion"/>
+
+
+        <LinearLayout
+            android:id="@+id/layout_chooseText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/head_line_color"
+            android:padding=".5sp"
+            android:orientation="vertical">
+
+
+
+
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/txtOk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/extract"
+            android:textColor="@color/text_color"
+            android:gravity="center"
+            android:layout_gravity="end"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</ScrollView>

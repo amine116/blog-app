@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@color/background_color"
+    android:padding="20sp">
+
+
+    <RelativeLayout
+        android:id="@+id/layout_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imgWarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_warning" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/gap2"
+        android:layout_width="match_parent"
+        android:layout_height="20sp"
+        android:layout_below="@id/layout_image"/>
+
+    <TextView
+        android:id="@+id/txtSimpleDialogText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@color/text_color"
+        android:layout_below="@id/gap2"/>
+
+    <View
+        android:id="@+id/gap1"
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:background="@color/text_color"
+        android:layout_below="@id/txtSimpleDialogText"/>
+
+    <TextView
+        android:id="@+id/txtOkButton"
+        android:layout_width="30sp"
+        android:layout_height="30sp"
+        android:text="@string/ok"
+        android:gravity="center"
+        android:textColor="@color/text_color"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/gap1"/>
+
+</RelativeLayout>

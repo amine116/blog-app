@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:paddingStart="10sp"
+    tools:ignore="RtlSymmetry">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/layout_reportingSCriteria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtChooseReportingCriteria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:text="@string/select_one_category"/>
+
+            <CheckBox
+                android:id="@+id/checkSexuality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtChooseReportingCriteria"
+                android:text="@string/nudity"
+                android:textColor="@color/text_color"/>
+
+            <CheckBox
+                android:id="@+id/checkHateSpeech"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/checkSexuality"
+                android:text="@string/hate_speech"
+                android:textColor="@color/text_color"/>
+
+            <CheckBox
+                android:id="@+id/checkFalseInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/checkHateSpeech"
+                android:text="@string/false_information"
+                android:textColor="@color/text_color"/>
+            <CheckBox
+                android:id="@+id/checkOffensive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/checkFalseInfo"
+                android:text="@string/offensive"
+                android:textColor="@color/text_color"/>
+
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/gap1"
+            android:layout_width="match_parent"
+            android:layout_height=".5sp"
+            android:background="@color/head_line_color"
+            android:layout_below="@id/layout_reportingSCriteria"/>
+
+        <TextView
+            android:id="@+id/hintForChoosing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/head_line_color"
+            android:layout_below="@id/gap1"
+            android:text="@string/hint_of_how_choose_portion_of_rules_violation"/>
+
+        <LinearLayout
+            android:id="@+id/layout_chooseText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hintForChoosing"
+            android:orientation="vertical"
+            android:padding=".5sp"
+            android:background="@color/head_line_color">
+
+
+
+            <!--Has to add the custom edit text-->
+
+
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/gap2"
+            android:layout_width="match_parent"
+            android:layout_height=".5sp"
+            android:layout_below="@id/layout_chooseText"
+            android:background="@color/head_line_color"/>
+
+        <RelativeLayout
+            android:id="@+id/layout_explanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gap2">
+
+            <EditText
+                android:id="@+id/edtExplanation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/your_explanation"
+                android:textColor="@color/text_color"
+                android:textColorHint="@color/text_color"
+                android:textSize="15sp"
+                android:inputType="textMultiLine"
+                android:autofillHints="" />
+
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btnReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/report"
+            android:textAllCaps="false"
+            android:layout_below="@+id/layout_explanation"/>
+
+    </RelativeLayout>
+
+</ScrollView>

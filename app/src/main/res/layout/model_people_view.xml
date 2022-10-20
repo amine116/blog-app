@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:padding="10sp">
+
+    <RelativeLayout
+        android:id="@+id/layout_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/layout__profilePic"
+            android:layout_width="36sp"
+            android:layout_height="36sp"
+            android:background="@drawable/round_shape_white"
+            android:padding="1sp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@drawable/round_shape_black">
+
+                <ImageView
+                    android:id="@+id/img_profilePic"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="@string/imgText_people"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txtProfileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/text_color"
+            android:paddingStart="5sp"
+            android:layout_toEndOf="@id/layout__profilePic"
+            tools:ignore="RtlSymmetry"/>
+
+        <TextView
+            android:id="@+id/txtArticleCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="@color/green"
+            android:layout_toEndOf="@id/layout__profilePic"
+            android:layout_below="@id/txtProfileName"
+            android:paddingStart="5sp"
+            android:paddingTop="5sp"
+            tools:ignore="RtlSymmetry" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/gap1"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/layout_1"/>
+
+    <TextView
+        android:id="@+id/txtFavourites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color"
+        android:layout_below="@id/gap1"/>
+
+    <View
+        android:id="@+id/gap2"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/txtFavourites"
+        android:background="@color/partition_color"/>
+
+</RelativeLayout>

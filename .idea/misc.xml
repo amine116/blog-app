@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable-v24/round_shape_blue.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/bullet_point_round_shape.xml" value="0.1555" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_eye.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_mode_comment.xml" value="0.1305" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_my_profile.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_visible.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/rectangular_shape_blue.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/rectangular_shape_friends_message_color.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/rectangular_shape_my_message_color.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/rectangular_shape_partition_color.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape.xml" value="0.1365" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape_black.xml" value="0.1295" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape_blue.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape_chat_blue.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape_green.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape_white.xml" value="0.1555" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_approve_tags.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_article_discussion.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_chat.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_profile_view.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_tag_wise_article.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/article_writing_sug_dialog.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/chat_box_frag.xml" value="0.20416666666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/chat_box_model.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/chat_list_frag.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/chat_list_model.xml" value="0.19010416666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/create_account_fragment.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/create_account_fragment_2.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/edit_history_dialog.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/edit_profile_frag.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/following_frag.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/gap.xml" value="0.19010416666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/log_in_fragment.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/log_in_fragment2.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_approve_tag_item.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_approve_tag_sub_item.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_article_view.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_chat_box.xml" value="0.20416666666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_chat_list.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_chat_message.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_comment_section.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_drop_down_menu_item_for_tag_list.xml" value="0.20416666666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_people_view.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_post_view.xml" value="0.22" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_profile_article_view.xml" value="0.2974025974025974" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_tag_list.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/people_view2.xml" value="0.19010416666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/people_view_frag.xml" value="0.19010416666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/reporting_dialog.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/sign_in_fragment.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/sign_in_fragment2.xml" value="0.33" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/simple_dialog_text.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/splitting_article_text.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/write_article_add_tag_frag.xml" value="0.22" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/write_article_drop_down_menu_item_for_tag_list.xml" value="0.20416666666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/write_article_frag.xml" value="0.22" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/write_article_fragment.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/menu/menu_options_article.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/menu/simple_pop_up_message.xml" value="0.20416666666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/xml/privacy_list.xml" value="0.203125" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

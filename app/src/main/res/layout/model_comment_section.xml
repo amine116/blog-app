@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:background="@color/background_color"
+    android:padding="10sp">
+
+
+    <RelativeLayout
+        android:id="@+id/layout_profilePic"
+        android:layout_width="36sp"
+        android:layout_height="36sp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/round_shape_white"
+        android:padding="1sp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/round_shape_black">
+
+            <ImageView
+                android:id="@+id/imgMyProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_person"
+                android:contentDescription="@string/imgText_people"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/gap1"
+        android:layout_width="10dp"
+        android:layout_height="36sp"
+        android:layout_toEndOf="@id/layout_profilePic"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_name_and_opinionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/gap1"
+        android:background="@drawable/rectangular_shape_partition_color"
+        android:paddingStart="10sp"
+        android:paddingEnd="10sp">
+
+        <TextView
+            android:id="@+id/txtProfileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:textColor="@color/text_color"
+            android:textSize="20sp" />
+
+        <View
+            android:id="@+id/gap4"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_below="@id/txtProfileName" />
+
+        <RelativeLayout
+            android:id="@+id/layout_chosen_portion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gap4"
+            android:paddingStart="10sp"
+            tools:ignore="RtlSymmetry"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txtReplyingTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/txtReplyingTo"
+                android:gravity="top">
+
+                <TextView
+                    android:layout_width="2sp"
+                    android:layout_height="match_parent"
+                    android:background="@color/text_color"/>
+
+                <TextView
+                    android:id="@+id/txtChosenPortion"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start"
+                    android:textColor="@color/text_color"/>
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txtOpinion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_chosen_portion"
+            android:gravity="start"
+            android:textSize="17sp"
+            android:textColor="@color/text_color" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_interaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_name_and_opinionText"
+        android:layout_toEndOf="@id/gap1">
+
+        <TextView
+            android:id="@+id/txtReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reply"
+            android:textColor="@color/text_color"/>
+
+        <TextView
+            android:id="@+id/txtReport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/report"
+            android:textColor="@color/text_color"
+            android:paddingStart="15sp"
+            android:layout_toEndOf="@id/txtReply"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/txtOpinionTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:layout_toEndOf="@id/txtReport"
+            android:paddingStart="10dp"
+            android:textSize="12sp"
+            android:gravity="center"
+            tools:ignore="RtlSymmetry" />
+
+        <LinearLayout
+            android:id="@+id/layout_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtReply"
+            android:paddingStart="15sp"
+            tools:ignore="RtlSymmetry"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding=".5sp"
+                android:background="@color/head_line_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:background="@color/background_color">
+
+                    <EditText
+                        android:id="@+id/edtReply"
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="70"
+                        android:autofillHints=""
+                        android:textColor="@color/text_color"
+                        android:inputType="textMultiLine"
+                        android:hint="@string/write_here"
+                        android:textColorHint="@color/text_color"
+                        android:gravity="center"/>
+
+                    <TextView
+                        android:id="@+id/txtPostButton"
+                        android:layout_width="0sp"
+                        android:layout_weight="30"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textColor="@color/text_color"
+                        android:text="@string/post"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

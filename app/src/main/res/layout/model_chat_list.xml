@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:padding="10sp"
+    android:gravity="center">
+
+    <View
+        android:id="@+id/gap3"
+        android:layout_width="match_parent"
+        android:layout_height="15sp"/>
+
+    <RelativeLayout
+        android:id="@+id/layout__profilePic"
+        android:layout_width="36sp"
+        android:layout_height="36sp"
+        android:background="@drawable/round_shape_white"
+        android:padding="1sp"
+        android:layout_below="@id/gap3">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/round_shape_black">
+
+            <ImageView
+                android:id="@+id/img_profilePic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_person"
+                android:contentDescription="@string/imgText_people"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/gap1"
+        android:layout_width="10dp"
+        android:layout_height="36sp"
+        android:layout_toEndOf="@id/layout__profilePic"
+        android:layout_below="@id/gap3"/>
+
+    <TextView
+        android:id="@+id/txtProfileName"
+        android:layout_width="wrap_content"
+        android:layout_height="36sp"
+        android:textColor="@color/text_color"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:layout_toEndOf="@id/gap1"
+        android:layout_below="@id/gap3"/>
+
+    <View
+        android:id="@+id/gap2"
+        android:layout_width="5sp"
+        android:layout_height="36sp"
+        android:layout_toEndOf="@id/txtProfileName"
+        android:layout_below="@id/gap3"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_isOnline"
+        android:layout_width="wrap_content"
+        android:layout_height="36sp"
+        android:gravity="center"
+        android:layout_toEndOf="@id/gap2"
+        android:layout_below="@id/gap3">
+
+        <TextView
+            android:id="@+id/imgIsOnline"
+            android:layout_width="8sp"
+            android:layout_height="8dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txtNewMessageHint"
+        android:layout_width="wrap_content"
+        android:layout_height="36sp"
+        android:paddingStart="10sp"
+        tools:ignore="RtlSymmetry"
+        android:gravity="center"
+        android:layout_toEndOf="@id/layout_isOnline"
+        android:text="@string/text_new"
+        android:textColor="@color/head_line_color"
+        android:visibility="gone"
+        android:layout_below="@id/gap3"/>
+
+</RelativeLayout>

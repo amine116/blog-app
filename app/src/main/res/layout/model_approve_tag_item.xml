@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:padding="10sp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/layout_tagName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/txtTagName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"/>
+
+            <EditText
+                android:id="@+id/edtTagName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:autofillHints=""
+                tools:ignore="LabelFor"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"
+                android:visibility="gone"/>
+
+
+            <TextView
+                android:id="@+id/txtAddTagButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_this_tag"
+                android:textColor="@color/green"
+                android:layout_alignParentEnd="true"
+                tools:ignore="RelativeOverlap" />
+
+            <View
+                android:id="@+id/gap1"
+                android:layout_width="10sp"
+                android:layout_height="15sp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/txtAddTagButton"/>
+
+            <TextView
+                android:id="@+id/txtEditTagButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit"
+                android:textColor="@color/green"
+                android:paddingEnd="10sp"
+                android:layout_below="@id/gap1"
+                android:layout_alignParentEnd="true"
+                tools:ignore="RelativeOverlap,RtlSymmetry" />
+
+            <View
+                android:id="@+id/gap2"
+                android:layout_width="10sp"
+                android:layout_height="15sp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/txtEditTagButton"/>
+
+            <TextView
+                android:id="@+id/txtDeleteTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete"
+                android:textColor="@color/green"
+                android:paddingEnd="10sp"
+                android:layout_below="@id/gap2"
+                android:layout_alignParentEnd="true"
+                tools:ignore="RelativeOverlap,RtlSymmetry" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_sugg_tagItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/layout_tagName">
+
+
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/partition_color"
+            android:layout_below="@+id/layout_sugg_tagItems"/>
+
+    </RelativeLayout>
+
+</ScrollView>

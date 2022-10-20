@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "281096442325",
+    "project_id": "blog-app-644e1",
+    "storage_bucket": "blog-app-644e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281096442325:android:0df77c6258c73209b6ed5c",
+        "android_client_info": {
+          "package_name": "com.amine.blog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281096442325-s0qeego1brs9vidaq33daqru8obg4d7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgYFW60wETwErc8JZzwIi_FwJY_-FtLuc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281096442325-s0qeego1brs9vidaq33daqru8obg4d7b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

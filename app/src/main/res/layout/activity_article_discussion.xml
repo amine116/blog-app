@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ArticleDiscussion"
+    android:background="@color/background_color"
+    android:padding="10sp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+
+        <ProgressBar
+            android:id="@+id/progress_articleDiscussion"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
+
+        <FrameLayout
+            android:id="@+id/frame_for_fragments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+
+
+
+        </FrameLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/layout_article_discussion"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/imgArticleMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_menu_more"
+                android:background="@color/background_color"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/txtProfileName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_below="@id/imgArticleMenu"/>
+
+            <RelativeLayout
+                android:id="@+id/layout_article"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtProfileName">
+
+                <TextView
+                    android:id="@+id/txtHeadline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/head_line_color"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+
+                <View
+                    android:id="@+id/gap1"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_below="@id/txtHeadline"/>
+
+
+                <TextView
+                    android:id="@+id/txtUserName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="20sp"
+                    android:textColor="@color/head_line_color"
+                    android:layout_below="@id/gap1"
+                    tools:ignore="RtlSymmetry" />
+
+                <View
+                    android:id="@+id/gap4"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_below="@id/txtUserName"/>
+
+
+                <TextView
+                    android:id="@+id/txtArticle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:gravity="start"
+                    android:textSize="17sp"
+                    android:longClickable="true"
+                    android:layout_below="@id/gap4"/>
+
+
+            </RelativeLayout>
+
+            <View
+                android:id="@id/gap2"
+                android:layout_width="match_parent"
+                android:layout_height=".5dp"
+                android:background="@color/text_color"
+                android:layout_below="@id/layout_article"/>
+
+            <View
+                android:id="@+id/gap3"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_below="@id/gap2"/>
+
+            <RelativeLayout
+                android:id="@+id/layout_chosen_portion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gap3"
+                android:paddingStart="10sp"
+                tools:ignore="RtlSymmetry"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtCancelChoosing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@string/cancel"
+                    android:textColor="@color/text_color"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/txtCancelChoosing">
+
+
+                    <View
+                        android:layout_width="2sp"
+                        android:layout_height="match_parent"
+                        android:background="@color/text_color"/>
+
+                    <TextView
+                        android:id="@+id/txtChosenPortion"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start"
+                        android:textColor="@color/text_color"/>
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_opinion_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_chosen_portion">
+
+
+                <LinearLayout
+                    android:id="@+id/layout_doComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <RelativeLayout
+                        android:id="@+id/layout_commentBox"
+                        android:layout_width="0sp"
+                        android:layout_height="60sp"
+                        android:layout_weight="70"
+                        android:background="@drawable/rectangular_shape_partition_color"
+                        android:padding="1sp">
+
+                        <EditText
+                            android:id="@+id/edtOpinion"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textMultiLine"
+                            android:hint="@string/write_a_comment"
+                            android:autofillHints=""
+                            android:textColorHint="@color/text_color"
+                            android:gravity="center"
+                            android:textSize="15sp"
+                            android:textColor="@color/text_color"/>
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="60sp"/>
+
+                    <Button
+                        android:id="@+id/btnPostTheComment"
+                        android:layout_width="0sp"
+                        android:layout_height="60sp"
+                        android:layout_weight="30"
+                        android:text="@string/post"
+                        android:textAllCaps="false"
+                        android:background="@drawable/rectangular_shape_partition_color"/>
+
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/gap5"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_below="@id/layout_doComment"/>
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_opinions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/layout_opinion_box">
+
+
+
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</ScrollView>

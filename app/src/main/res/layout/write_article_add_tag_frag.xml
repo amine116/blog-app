@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:orientation="vertical"
+    android:padding="10sp">
+
+    <Button
+        android:id="@+id/btnPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/post"
+        android:textAllCaps="false"/>
+
+    <TextView
+        android:id="@+id/txtTagSug"
+        android:layout_width="match_parent"
+        android:layout_height="15sp"
+        android:text="@string/added_tags"
+        android:textColor="@color/orange"/>
+
+    <LinearLayout
+        android:id="@+id/layout_tag"
+        android:layout_width="match_parent"
+        android:layout_height="35sp"
+        android:background="@color/head_line_color"
+        android:padding=".5sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/layout_tag1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/head_line_color"
+                android:padding=".5sp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtTag1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:inputType="textMultiLine"
+                    tools:ignore="RelativeOverlap,TextViewEdits"
+                    android:background="@color/background_color"
+                    android:textColor="@color/text_color"/>
+
+                <ImageView
+                    android:id="@+id/imgTag1Cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close_red"
+                    android:contentDescription="@string/app_name"
+                    android:background="@color/background_color"
+                    tools:ignore="RelativeOverlap"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_tag2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/head_line_color"
+                android:padding=".5sp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtTag2"
+                    android:layout_width="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:layout_height="match_parent"
+                    tools:ignore="RelativeOverlap,TextViewEdits"
+                    android:background="@color/background_color"
+                    android:textColor="@color/text_color"/>
+
+                <ImageView
+                    android:id="@+id/imgTag2Cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close_red"
+                    android:contentDescription="@string/app_name"
+                    android:background="@color/background_color"
+                    tools:ignore="RelativeOverlap"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_tag3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/head_line_color"
+                android:padding=".5sp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtTag3"
+                    android:layout_width="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:layout_height="match_parent"
+                    tools:ignore="RelativeOverlap,TextViewEdits"
+                    android:background="@color/background_color"
+                    android:textColor="@color/text_color"/>
+                <ImageView
+                    android:id="@+id/imgTag3Cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close_red"
+                    android:contentDescription="@string/app_name"
+                    android:background="@color/background_color"
+                    tools:ignore="RelativeOverlap"/>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/layout_searchTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/head_line_color"
+        tools:ignore="RtlSymmetry"
+        android:padding="1sp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/background_color">
+
+
+            <EditText
+                android:id="@+id/edtSearchTags"
+                android:layout_width="0sp"
+                android:layout_height="match_parent"
+                android:layout_weight="80"
+                android:inputType="text"
+                android:autofillHints=""
+                android:hint="@string/search_for_tags"
+                android:textColorHint="@color/hint_color"
+                android:textSize="15sp"
+                android:gravity="start"
+                app:drawableStartCompat="@drawable/ic_search" />
+
+
+            <TextView
+                android:id="@+id/txtSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/search"
+                android:padding="20sp"
+                android:gravity="center"
+                android:textColor="@color/text_color" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+
+            android:id="@+id/layout_dropDownListItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</LinearLayout>

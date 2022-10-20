@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:padding="10sp"
+    android:gravity="center"
+    android:id="@+id/layout_parent">
+
+    <TextView
+        android:id="@+id/txtMessageDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:textColor="@color/text_color"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/gap1"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/txtMessageDate"/>
+
+    <TextView
+        android:id="@+id/txtSenderName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@id/gap1"
+        android:textColor="@color/text_color"/>
+
+    <View
+        android:id="@+id/gap2"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/txtSenderName"/>
+
+    <TextView
+        android:id="@+id/txtMessageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color"
+        android:layout_below="@id/gap2"
+        android:padding="5sp"
+        android:gravity="center"
+        android:background=
+            "@drawable/rectangular_shape_friends_message_color"/>
+
+    <View
+        android:id="@+id/gap3"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/txtMessageText"/>
+
+
+</RelativeLayout>

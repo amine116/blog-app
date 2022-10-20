@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="3sp"
+    android:paddingEnd="3sp"
+    android:paddingBottom="3sp"
+    android:background="@color/partition_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        android:gravity="center">
+
+        <RelativeLayout
+            android:id="@+id/layout_model_article"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp">
+
+            <ImageView
+                android:id="@+id/imgBulletPoint1"
+                android:layout_width="10sp"
+                android:layout_height="20dp"
+                android:paddingTop="10sp"
+                android:src="@drawable/bullet_point_round_shape"
+                android:contentDescription="@string/app_name"/>
+
+            <View
+                android:id="@+id/gap9"
+                android:layout_width="10sp"
+                android:layout_height="36sp"
+                android:layout_toEndOf="@id/imgBulletPoint1"/>
+
+            <TextView
+                android:id="@+id/txt_model_article_headLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/heal_line_color"
+                android:gravity="start"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_toEndOf="@id/gap9"/>
+
+            <TextView
+                android:id="@+id/txt_model_article_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:paddingTop="10sp"
+                android:textStyle="bold"
+                android:layout_below="@id/txt_model_article_headLine"
+                tools:ignore="SmallSp"/>
+
+            <View
+                android:id="@+id/view_gap_betweenImgAndTags"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@id/txt_model_article_time"/>
+
+            <TextView
+                android:id="@+id/txt_model_article_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                android:visibility="gone"
+                android:text="@string/tags"
+                android:layout_below="@id/view_gap_betweenImgAndTags"/>
+
+            <TextView
+                android:id="@+id/txt_model_article_tag1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tag_color"
+                android:visibility="gone"
+                android:layout_below="@id/view_gap_betweenImgAndTags"
+                android:layout_toEndOf="@id/txt_model_article_tag" />
+
+            <TextView
+                android:id="@+id/txt_model_article_tag2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tag_color"
+                android:visibility="gone"
+                android:layout_below="@id/view_gap_betweenImgAndTags"
+                android:layout_toEndOf="@id/txt_model_article_tag1"/>
+
+            <TextView
+                android:id="@+id/txt_model_article_tag3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tag_color"
+                android:visibility="gone"
+                android:layout_below="@id/view_gap_betweenImgAndTags"
+                android:layout_toEndOf="@id/txt_model_article_tag2"/>
+
+            <TextView
+                android:id="@+id/txt_model_article_tag4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tag_color"
+                android:visibility="gone"
+                android:layout_below="@id/view_gap_betweenImgAndTags"
+                android:layout_toEndOf="@id/txt_model_article_tag3"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txt_model_article_name"
+            android:layout_width="match_parent"
+            android:layout_height="20sp"
+            android:gravity="end"
+            android:textStyle="bold"
+            android:layout_below="@id/layout_model_article"/>
+
+        <View
+            android:id="@+id/view_gap_between_headLineAndText"
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:layout_below="@id/txt_model_article_name"/>
+
+        <RelativeLayout
+            android:id="@+id/layout_model_article_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view_gap_between_headLineAndText"
+            android:padding="5sp">
+
+            <TextView
+                android:id="@+id/txt_model_article_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:gravity="start"/>
+
+            <TextView
+                android:id="@+id/txtShowMore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/green"
+                android:gravity="center"
+                android:text="@string/show_more"
+                android:paddingTop="20sp"
+                android:layout_below="@id/txt_model_article_text"/>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/gap_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/layout_model_article_text">
+
+
+        </View>
+
+        <RelativeLayout
+            android:id="@+id/layout_model_article_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="10sp"
+            android:paddingStart="10sp"
+            android:gravity="center"
+            android:layout_below="@id/gap_vertical">
+
+            <TextView
+                android:id="@+id/txt_model_article_makeFavouriteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color"
+                app:drawableLeftCompat="@drawable/ic_favorite_border" />
+
+            <TextView
+                android:id="@+id/txt_model_article_opinionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/opinion"
+                android:textColor="@color/text_color"
+                app:drawableStartCompat="@drawable/ic_mode_comment" />
+
+            <TextView
+                android:id="@+id/txt_model_article_shareButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:gravity="end"
+                android:text="@string/share_the_article"
+                android:textColor="@color/text_color"
+                app:drawableStartCompat="@drawable/ic_share"
+                tools:ignore="RelativeOverlap" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

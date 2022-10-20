@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10sp"
+    android:background="@color/background_color"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/progress_chatBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:id="@+id/scroll_messages"
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_weight="70">
+
+        <LinearLayout
+            android:id="@+id/layout_messages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/layout_sendMessageBox"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <RelativeLayout
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="80"
+            android:padding="2sp"
+            android:background="@drawable/rectangular_shape_partition_color">
+
+            <EditText
+                android:id="@+id/edtMessage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background_color"
+                android:inputType="textMultiLine"
+                android:hint="@string/aa"
+                android:gravity="center"
+                android:textColor="@color/text_color"
+                android:textColorHint="@color/text_color"
+                android:autofillHints="" />
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/layout_sendMessageButton"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:background="@color/background_color">
+
+            <ImageButton
+                android:id="@+id/btnSendMessage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_send"
+                android:background="@color/background_color"
+                android:contentDescription="@string/app_name"/>
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
