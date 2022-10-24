@@ -627,13 +627,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void makeAdminView(){
-        if(userBasicInfo.getUserName().equals(DataModel.
-                getUserNameFromEmail(DataModel.STR_116_TUMI_MORE_JIBONER_VABONA_HRIDOYER_SHUKHER_DOLA))){
-            findViewById(R.id.layout_admin).setVisibility(View.VISIBLE);
-        }
-        else{
-            findViewById(R.id.layout_admin).setVisibility(View.GONE);
-        }
+
+        Retrieve.readAdminEmail((task, data) -> {
+            if(task == UserAccount.SUCCESS && data != null && data.equals(Retrieve.getSignedInUserEmail())){
+                findViewById(R.id.layout_admin).setVisibility(View.VISIBLE);
+            }
+            else{
+                findViewById(R.id.layout_admin).setVisibility(View.GONE);
+            }
+        });
     }
 
     private void getMyNewMessageStatus(){

@@ -53,12 +53,12 @@ public class DataModel {
 
     public static final String STR_CLICKED = "clicked", STR_AUTHOR = "Author", STR_PUBLIC = "public",
             STR_ONLY_ME = "only me", STR_DISMISS = "dismiss", STR_CREATE_TAG = "create tag",
-            STR_116_TUMI_MORE_JIBONER_VABONA_HRIDOYER_SHUKHER_DOLA = FireConstants.ADMIN_EMAIL,
             // TODO should delete this admin email. find other way to do this.
             STR_ARTICLE = FireConstants.STR_ARTICLE, STR_OPINION = FireConstants.STR_OPINIONS;
 
     public static final char SUB_HEAD_LINE_SIGN = '*', QUOTATION_SIGN = '"', HYPER_LINK_SIGN = '~',
-            CHOSEN_TEXT_SELECTION_SIGN = '~', BULLET_POINT_LEFT_SIGN = '<', BULLET_POINT_RIGHT_SIGN = '>';
+            LEFT_BRACKET = '[', RIGHT_BRACKET = ']', HIGHLIGHT_SIGN = '#',
+            CHOSEN_TEXT_SELECTION_SIGN = '/', BULLET_POINT_LEFT_SIGN = '<', BULLET_POINT_RIGHT_SIGN = '>';
 
     private String searchWord;
 
@@ -196,7 +196,8 @@ public class DataModel {
     public static void getSpannableArticle(String articleText, Context context, boolean isCut, int colorSubtitle,
                                            int colorQuotation, int bulletPointColor, CallbackForSpannable callback){
         ArrayList<Integer> subHeadLineIndex = new ArrayList<>(),
-                quotationIndex = new ArrayList<>();
+                quotationIndex = new ArrayList<>(),
+                highLightIndex = new ArrayList<>();
 
         getHyperLinkExtracted(articleText, (invalidIndex, newArticleText, hyperLinks) -> {
 
@@ -209,6 +210,10 @@ public class DataModel {
                     }
                     else if(sb.charAt(i) == QUOTATION_SIGN){
                         quotationIndex.add(i);
+                    }
+                    else if(sb.charAt(i) == HIGHLIGHT_SIGN){
+                        highLightIndex.add(i);
+                        sb.setCharAt(i, ' ');
                     }
                 }
                 SpannableString content = new SpannableString(sb.toString());
@@ -312,11 +317,11 @@ public class DataModel {
         for(int i = 0; i + 2 < sb.length(); ){
             boolean isValid = false;
 
-            if(sb.charAt(i) == '~' && sb.charAt(i + 1) == '['){
+            if(sb.charAt(i) == HYPER_LINK_SIGN && sb.charAt(i + 1) == LEFT_BRACKET){
                 textInit = i + 2;
                 int j;
                 for (j = textInit; j < sb.length(); j++){
-                    if(sb.charAt(j) == ']'){
+                    if(sb.charAt(j) == RIGHT_BRACKET){
                         textEnd = j - 1;
 
                         sb.delete(i, i + 2);
@@ -329,10 +334,10 @@ public class DataModel {
 
                 int temp = j;
                 j++;
-                if(sb.charAt(j) == '[' && j + 1 < sb.length() && sb.charAt(j + 1) != ' '  && textEnd > -1){
+                if(sb.charAt(j) == LEFT_BRACKET && j + 1 < sb.length() && sb.charAt(j + 1) != ' '  && textEnd > -1){
                     srcInit = j + 1;
                     for(j = srcInit; j + 1 < sb.length(); j++){
-                        if(sb.charAt(j) == ']' && sb.charAt(j + 1) == '~'){
+                        if(sb.charAt(j) == RIGHT_BRACKET && sb.charAt(j + 1) == HYPER_LINK_SIGN){
                             srcEnd = j - 1;
 
                             String src = sb.substring(srcInit, srcEnd + 1);
@@ -468,6 +473,9 @@ public class DataModel {
             }
             else if(articleText.charAt(i) == BULLET_POINT_RIGHT_SIGN){
                 numOfRightBulletSign++;
+                if(numOfLeftBulletSign < numOfRightBulletSign){
+                    return false;
+                }
             }
         }
 

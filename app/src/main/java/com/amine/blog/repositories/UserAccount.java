@@ -130,9 +130,11 @@ public class UserAccount {
                     }
                     else{
                         //DataModel.deb("account not created- Unknown reason");
+                        /*
                         if(task.getException() != null){
                             DataModel.deb(task.getException().toString());
                         }
+                         */
                         cbfsi.callback(UNKNOWN_REASON);
                     }
                 });

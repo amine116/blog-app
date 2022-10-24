@@ -167,7 +167,7 @@ public class Retrieve {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    DataModel.deb(error.getMessage());
+                    //DataModel.deb(error.getMessage());
                 }
             });
         }
@@ -200,10 +200,10 @@ public class Retrieve {
         });
     }
 
-    public String getMyUID(){
-        FirebaseUser user = fAuth.getCurrentUser();
+    public static String getSignedInUserEmail(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null){
-            return user.getUid();
+            return user.getEmail();
         }
         else{
             return null;
@@ -906,25 +906,24 @@ public class Retrieve {
 
         ArrayList<EditHistory> editHistories = new ArrayList<>();
 
-        if(privacy.equals(DataModel.STR_PUBLIC)){
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        for(DataSnapshot editId : snapshot.getChildren()){
-                            EditHistory editHistory = editId.getValue(EditHistory.class);
-                            editHistories.add(editHistory);
-                        }
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for(DataSnapshot editId : snapshot.getChildren()){
+                        EditHistory editHistory = editId.getValue(EditHistory.class);
+                        editHistories.add(editHistory);
                     }
-                    onRead.onReadEdit(editHistories);
                 }
+                onRead.onReadEdit(editHistories);
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    onRead.onReadEdit(editHistories);
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                onRead.onReadEdit(editHistories);
+            }
+        });
+        /*
         else if(privacy.equals(DataModel.STR_ONLY_ME)){
             refPrivate.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -976,6 +975,35 @@ public class Retrieve {
                 }
             });
         }
+         */
+    }
+
+    public static void readAdminEmail(OnWaitListenerWithStringInfo onWait){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_ADMIN_ONLY).child(FireConstants.STR_ADMIN_EMAIL);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    String email = snapshot.getValue(String.class);
+                    if(email != null){
+                        onWait.onWaitWithInfo(UserAccount.SUCCESS, email);
+                    }
+                    else{
+                        onWait.onWaitWithInfo(UserAccount.FAIL, null);
+                    }
+                }
+                else{
+                    onWait.onWaitWithInfo(UserAccount.FAIL, null);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                onWait.onWaitWithInfo(UserAccount.FAIL, null);
+            }
+        });
     }
 
 }

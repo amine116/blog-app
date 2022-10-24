@@ -17,7 +17,7 @@ import com.amine.blog.viewmodel.DataModel;
 
 import java.util.ArrayList;
 
-public class EditHistoryDialog extends Dialog {
+public class EditHistoryDialog extends Dialog implements View.OnClickListener {
     private ArrayList<EditHistory> editHistories;
     private Context context;
     private int colorSubheading, colorQuot, colorBullet, textColor;
@@ -46,28 +46,51 @@ public class EditHistoryDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.edit_history_dialog);
+        findViewById(R.id.imgClose).setOnClickListener(this);
 
         LinearLayout ll = findViewById(R.id.layout_editInfo);
 
-        for(int i = editHistories.size() - 1; i >= 0; i--){
-            String s = editHistories.get(i).getTime().toString() + "\n" + editHistories.get(i).getPrevText();
+        if(editHistories.size() == 0){
+            String s = "No edit history!";
+            TextView txt = new TextView(context);
+            txt.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            txt.setTextColor(textColor);
+            txt.setText(s);
+        }
+        else{
+            for(int i = editHistories.size() - 1; i >= 0; i--){
+                String s = editHistories.get(i).getTime().toString() + "\n" + editHistories.get(i).getPrevText();
 
-            DataModel.getSpannableArticle(s, context, false, colorSubheading, colorQuot, colorBullet,
-                    content -> {
-                        TextView txt = new TextView(context);
-                        txt.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT));
-                        txt.setTextColor(textColor);
-                        txt.setText(content);
+                int finalI = i;
+                DataModel.getSpannableArticle(s, context, false, colorSubheading, colorQuot, colorBullet,
+                        content -> {
+                            TextView txt = new TextView(context);
+                            txt.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT));
+                            txt.setTextColor(textColor);
+                            txt.setText(content);
 
-                        View v = new View(context);
-                        v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                8));
-                        v.setBackgroundColor(colorQuot);
+                            if (finalI == editHistories.size() - 1){
+                                txt.setBackgroundColor(context.getResources().getColor(R.color.partition_color));
+                            }
 
-                        ll.addView(txt);
-                        ll.addView(v);
-                    });
+                            View v = new View(context);
+                            v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                    8));
+                            v.setBackgroundColor(colorQuot);
+
+                            ll.addView(txt);
+                            ll.addView(v);
+                        });
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.imgClose){
+            dismiss();
         }
     }
 }

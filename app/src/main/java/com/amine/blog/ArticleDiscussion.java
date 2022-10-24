@@ -47,6 +47,7 @@ import com.amine.blog.model.Opinion;
 import com.amine.blog.model.ReplyTo;
 import com.amine.blog.model.ReportToBlog;
 import com.amine.blog.model.ReportingContext;
+import com.amine.blog.repositories.FireConstants;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.repositories.Save;
 import com.amine.blog.viewmodel.DataModel;
@@ -261,6 +262,8 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
         Retrieve.readArticleEditHistory(articleId, ownerUsername, privacy, editHistories1 -> {
 
             editHistories.addAll(editHistories1);
+            editHistories.add(new EditHistory(article.getText(), FireConstants.STR_ARTICLE,
+                    articleId, article.getUsername(), article.getTime()));
         });
     }
 

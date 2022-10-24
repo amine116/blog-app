@@ -19,7 +19,8 @@ public class FireConstants {
             STR_CHAT_STATUSES = "chat statues", STR_ACTIVE = "active", STR_ADMIN = "admin",
             STR_USER_PERSONAL_INFO = "user personal info", STR_PASSWORD = "password",
             STR_PRIVACY = "privacy", STR_SHARED_ARTICLE_ID = "articleID", STR_OWNER_USER_NAME = "ownerUsername",
-            STR_SUGGESTED_TAGS = "suggested tags", ADMIN_EMAIL = "amine@gmail.com",
+            STR_SUGGESTED_TAGS = "suggested tags",
             STR_USER_REPORT = "user reports", STR_FEEDBACK = "feedback", STR_REPORT = "report",
-            STR_ARTICLE_EDIT_HISTORY = "article edit history";
+            STR_ARTICLE_EDIT_HISTORY = "article edit history",
+            STR_ADMIN_ONLY = "admin-only", STR_ADMIN_EMAIL = "admin-email";
 }

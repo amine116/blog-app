@@ -30,8 +30,6 @@ import com.amine.blog.repositories.Save;
 import com.amine.blog.viewmodel.DataModel;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-
 public class EditArticleFrag extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private EditText edtHeadLine, edtArticleText;
@@ -40,7 +38,7 @@ public class EditArticleFrag extends Fragment implements View.OnClickListener, A
     private TextView txtPreviewedArticle;
     private ScrollView scroll_preview;
 
-    private String newPrivacy, prevArticle;
+    private String newPrivacy, prevArticleText;
     private ArrayAdapter<CharSequence> adapter;
     private Article article;
 
@@ -104,7 +102,7 @@ public class EditArticleFrag extends Fragment implements View.OnClickListener, A
 
         edtHeadLine.setText(article.getHeadLine());
         edtArticleText.setText(article.getText());
-        prevArticle = article.getText();
+        prevArticleText = article.getText();
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -179,7 +177,7 @@ public class EditArticleFrag extends Fragment implements View.OnClickListener, A
                     new Save().saveEditedArticleText(article, newPrivacy);
                     Toast.makeText(context, "Information Saved", Toast.LENGTH_SHORT).show();
 
-                    Save.saveEditHistory(article.getID(), article.getUsername(), prevArticle,
+                    Save.saveEditHistory(article.getID(), article.getUsername(), prevArticleText,
                             FireConstants.STR_ARTICLE, article.getPrivacy());
 
                     waitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);

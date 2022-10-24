@@ -447,15 +447,15 @@ public class Save {
 
     public static void saveEditHistory(String articleId, String ownerUsername, String prevText, String type,
                                        String privacy){
-        if(privacy.equals(DataModel.STR_PUBLIC)){
-            MyTime time = new DataModel().getCurrentMyTime();
+        MyTime time = new DataModel().getCurrentMyTime();
 
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
-                    .child(FireConstants.STR_ARTICLE_EDIT_HISTORY).child(FireConstants.STR_ARTICLE)
-                    .child(articleId).push();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child(FireConstants.STR_ARTICLE_EDIT_HISTORY).child(FireConstants.STR_ARTICLE)
+                .child(articleId).push();
 
-            ref.setValue(new EditHistory(prevText, type, articleId, ownerUsername, time));
-        }
+        ref.setValue(new EditHistory(prevText, type, articleId, ownerUsername, time));
+
+        /*
         else if(privacy.equals(DataModel.STR_ONLY_ME)){
             MyTime time = new DataModel().getCurrentMyTime();
 
@@ -466,6 +466,7 @@ public class Save {
 
             ref.setValue(new EditHistory(prevText, type, articleId, ownerUsername, time));
         }
+         */
 
     }
 
