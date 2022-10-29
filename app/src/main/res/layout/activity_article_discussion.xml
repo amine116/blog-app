@@ -170,12 +170,21 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/layout_chosen_portion">
 
+                <TextView
+                    android:id="@+id/txtChoosePortion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reply_to_a_paragraph"
+                    android:gravity="start"
+                    android:padding="5sp"
+                    android:textColor="@color/heal_line_color"/>
 
                 <LinearLayout
                     android:id="@+id/layout_doComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_below="@id/txtChoosePortion">
 
 
                     <RelativeLayout

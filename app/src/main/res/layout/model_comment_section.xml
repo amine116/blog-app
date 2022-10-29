@@ -138,12 +138,24 @@
             tools:ignore="RtlSymmetry" />
 
         <TextView
+            android:id="@+id/txtEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit"
+            android:textColor="@color/text_color"
+            android:paddingStart="15sp"
+            android:visibility="gone"
+            android:layout_toEndOf="@id/txtReport"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
             android:id="@+id/txtOpinionTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_color"
-            android:layout_toEndOf="@id/txtReport"
+            android:layout_toEndOf="@id/txtEdit"
             android:paddingStart="10dp"
+            android:paddingTop="3sp"
             android:textSize="12sp"
             android:gravity="center"
             tools:ignore="RtlSymmetry" />

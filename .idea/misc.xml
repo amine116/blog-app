@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable-v24/round_shape_blue.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/bullet_point.xml" value="0.1435" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/bullet_point_round_shape.xml" value="0.1555" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_eye.xml" value="0.1375" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_mode_comment.xml" value="0.1305" />
@@ -32,6 +33,7 @@
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/chat_list_model.xml" value="0.19010416666666666" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/create_account_fragment.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/create_account_fragment_2.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/edit_comment_dialog.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/edit_history_dialog.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/edit_profile_frag.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/following_frag.xml" value="0.25" />

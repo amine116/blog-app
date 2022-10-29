@@ -76,8 +76,7 @@
     <string name="select_privacy">Select Privacy</string>
     <string name="reply">Reply</string>
     <string name="report">Report</string>
-    <string name="hint_of_how_choose_portion_of_rules_violation">Which portion of the article violates our rules?
-        Use \'~\' at the beginning and at the end of your desired
+    <string name="choose_portion_of_rules_violation">Use \'~\' at the beginning and at the end of your desired
         portion that violates the rules.\n For example: ~your chosen portion of article~\n
         (Optional)
     </string>
@@ -106,4 +105,5 @@
     <string name="to_use_hyper_link_like_bellow">To use hyper link like bellow-</string>
     <string name="use_like_bellow">Use ~[][]~ like bellow-</string>
     <string name="edit_history">Edit History</string>
+    <string name="reply_to_a_paragraph"><u>Reply to a paragraph</u></string>
 </resources>

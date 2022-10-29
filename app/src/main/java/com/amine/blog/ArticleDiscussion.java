@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +14,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -35,9 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amine.blog.dialogs.EditHistoryDialog;
-import com.amine.blog.dialogs.SimpleDialog;
+import com.amine.blog.dialogs.EditOpinionDialog;
 import com.amine.blog.fragments.EditArticleFrag;
-import com.amine.blog.interfaces.OnReadArticleEditHistory;
 import com.amine.blog.interfaces.OnReadSingleOpinion;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.Article;
@@ -146,7 +142,24 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
             menu.show();
         }
         else if(view.getId() == R.id.txtCancelChoosing){
+
             cancelChoosingPortionOfTheArticle();
+        }
+        else if(view.getId() == R.id.txtChoosePortion){
+            ChoosePortionOfText sa = new ChoosePortionOfText(this);
+            sa.setWait((task, data) -> {
+                if(task == DataModel.YES){
+                    RelativeLayout layout_selectedText = findViewById(R.id.layout_chosen_portion);
+                    TextView txtChosenPortion = findViewById(R.id.txtChosenPortion);
+                    findViewById(R.id.txtChoosePortion).setVisibility(View.GONE);
+
+                    layout_selectedText.setVisibility(View.VISIBLE);
+                    txtChosenPortion.setText(data);
+                    txtChosenPortion.setTextColor(darker(getResources().getColor(R.color.text_color)));
+                }
+            });
+            //sa.getWindow().setAttributes(getWindowParams(sa, .8f, 0.8f));
+            sa.show();
         }
     }
 
@@ -160,6 +173,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
         TextView txtChosenPortion = findViewById(R.id.txtChosenPortion);
         txtChosenPortion.setText("");
 
+        findViewById(R.id.txtChoosePortion).setVisibility(View.VISIBLE);
         RelativeLayout layout_selectedText = findViewById(R.id.layout_chosen_portion);
         layout_selectedText.setVisibility(View.GONE);
     }
@@ -311,6 +325,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
         findViewById(R.id.btnPostTheComment).setOnClickListener(this);
         findViewById(R.id.imgArticleMenu).setOnClickListener(this);
         findViewById(R.id.txtCancelChoosing).setOnClickListener(this);
+        findViewById(R.id.txtChoosePortion).setOnClickListener(this);
     }
 
     private void makeDiscussionView(){
@@ -349,7 +364,16 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
                 txtReply = view.findViewById(R.id.txtReply),
                 txtReport = view.findViewById(R.id.txtReport),
                 txtChosenPortion = view.findViewById(R.id.txtChosenPortion),
-                txtReplyingTo = view.findViewById(R.id.txtReplyingTo);
+                txtReplyingTo = view.findViewById(R.id.txtReplyingTo),
+                txtEdit = view.findViewById(R.id.txtEdit);
+
+        if(isOwner(opinion.getName())){
+            txtEdit.setVisibility(View.VISIBLE);
+        }
+        else{
+            txtEdit.setVisibility(View.GONE);
+        }
+
         EditText edtReply = view.findViewById(R.id.edtReply);
         LinearLayout layoutReply = view.findViewById(R.id.layout_reply);
         RelativeLayout layout_chosen_portion = view.findViewById(R.id.layout_chosen_portion);
@@ -360,11 +384,16 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
         rlProfilePic.setOnClickListener(getListenerForOpinionProfile());
         txtReport.setOnClickListener(getListenerForReport(opinion));
         txtReply.setOnClickListener(getListenerForReply(layoutReply));
+        txtEdit.setOnClickListener(getListenerForEdit(txtOpinion, opinion));
         txtPost.setOnClickListener(getListenerForReplyButton(edtReply, txtPost, layoutReply,
                 article.getUsername(), opinion));
 
         txtProfileName.setText(opinion.getName());
-        txtOpinion.setText(opinion.getText());
+        DataModel.getSpannableArticle(opinion.getText(), this, false,
+                getResources().getColor(R.color.sub_head_line),
+                getResources().getColor(R.color.quotation),
+                getResources().getColor(R.color.bullet_point), txtOpinion::setText);
+        txtOpinion.setMovementMethod(LinkMovementMethod.getInstance());
         txtTime.setText(opinion.getTime().toString());
 
         if(opinion.getReplyTo() != null){
@@ -395,6 +424,20 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
         }
 
         return view;
+    }
+
+    private View.OnClickListener getListenerForEdit(TextView txtOpinion, Opinion opinion) {
+
+        return view -> {
+            EditOpinionDialog epd = new EditOpinionDialog(ArticleDiscussion.this);
+            epd.setOpinionText(opinion.getText());
+            epd.setWaitListener((task, data) -> {
+                opinion.setText(data);
+                txtOpinion.setText(opinion.getText());
+                new Save().saveMyOpinion(article.getID(), opinion);
+            });
+            epd.show();
+        };
     }
 
     private int brighter(int color){
@@ -504,7 +547,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
     public boolean onMenuItemClick(MenuItem menuItem) {
 
         if (menuItem.getTitle().equals(MENU_ITEM_SELECT)){
-            SplitArticle sa = new SplitArticle(this);
+            ChoosePortionOfText sa = new ChoosePortionOfText(this);
             sa.setWait((task, data) -> {
                 if(task == DataModel.YES){
                     RelativeLayout layout_selectedText = findViewById(R.id.layout_chosen_portion);
@@ -522,14 +565,14 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
         return false;
     }
 
-    private class SplitArticle extends Dialog implements View.OnClickListener {
+    private class ChoosePortionOfText extends Dialog implements View.OnClickListener {
 
         private OnWaitListenerWithStringInfo wait;
 
         private EditText edtSelect;
         private int start = -1, end = -1;
 
-        public SplitArticle(@NonNull Context context) {
+        public ChoosePortionOfText(@NonNull Context context) {
             super(context);
         }
 
@@ -539,7 +582,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
-            setContentView(R.layout.splitting_article_text);
+            setContentView(R.layout.choose_portion_of_text);
             initialize();
             super.onCreate(savedInstanceState);
         }
@@ -557,6 +600,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
 
             TextView txtOk = findViewById(R.id.txtOk);
             txtOk.setOnClickListener(this);
+            findViewById(R.id.txtClose).setOnClickListener(this);
             edtSelect.setText(article.getText());
         }
 
@@ -569,6 +613,9 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
                     String chosenPortion = article.getText().substring(start, end - 1);
                     wait.onWaitWithInfo(DataModel.YES, chosenPortion);
                 }
+                dismiss();
+            }
+            else if(view.getId() == R.id.txtClose){
                 dismiss();
             }
         }
@@ -622,6 +669,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
             checkOffensive = findViewById(R.id.checkOffensive);
 
             findViewById(R.id.btnReport).setOnClickListener(this);
+            findViewById(R.id.txtClose).setOnClickListener(this);
             checkNudity.setOnClickListener(this);
             checkFalseInfo.setOnClickListener(this);
             checkHateSpeech.setOnClickListener(this);
@@ -713,6 +761,9 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
                 Save.saveReport(reportToBlog);
                 dismiss();
             }
+            else if(view.getId() == R.id.txtClose){
+                dismiss();
+            }
             else if(view.getId() == R.id.checkSexuality){
                 checkOffensive.setChecked(false);
                 checkFalseInfo.setChecked(false);
@@ -748,6 +799,14 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
                     }
                 }
             }
+        }
+    }
+
+    private boolean isOwner(String ownerUsername){
+        String myEmail = Retrieve.getSignedInUserEmail();
+        if(myEmail == null) return false;
+        else{
+            return DataModel.getUserNameFromEmail(myEmail).equals(ownerUsername);
         }
     }
 

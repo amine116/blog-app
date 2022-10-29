@@ -257,7 +257,7 @@ public class DataModel {
 
                     if(bulletPoints.get(i).getFirst() < bulletPoints.get(i).getSecond() + 1){
                         content.setSpan(new DrawableMarginSpan(ContextCompat.getDrawable(context,
-                                        R.drawable.round_shape_green), 15),
+                                        R.drawable.bullet_point), 15),
                                 bulletPoints.get(i).getFirst(), bulletPoints.get(i).getSecond() + 1,
                                 Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
                     }

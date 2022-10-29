@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,10 +13,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/txtClose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:drawableEndCompat="@drawable/ic_close_white" />
+
+        <View
+            android:id="@+id/gap3"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/txtClose"/>
+
         <RelativeLayout
             android:id="@+id/layout_reportingSCriteria"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gap3">
 
             <TextView
                 android:id="@+id/txtChooseReportingCriteria"
@@ -71,7 +85,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/head_line_color"
             android:layout_below="@id/gap1"
-            android:text="@string/hint_of_how_choose_portion_of_rules_violation"/>
+            android:text="@string/choose_portion_of_rules_violation"/>
 
         <LinearLayout
             android:id="@+id/layout_chooseText"
@@ -111,6 +125,8 @@
                 android:textColor="@color/text_color"
                 android:textColorHint="@color/text_color"
                 android:textSize="15sp"
+                android:minHeight="100sp"
+                android:gravity="center"
                 android:inputType="textMultiLine"
                 android:autofillHints="" />
 
