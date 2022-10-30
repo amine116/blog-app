@@ -1,0 +1,101 @@
+# cspell:words amine116
+
+name: Bug Report
+description: Create a report to help us improve.
+title: "[Bug]: "
+labels:
+  - bug
+assignees:
+  - amine116
+body:
+  - type: checkboxes
+    id: issue-tracker
+    attributes:
+      label: Issue Tracker
+      description: >
+        Please search to see if an issue already exists for the bug you
+        encountered.
+      options:
+        - label: I have searched the existing issues.
+          required: true
+  - type: textarea
+    id: bugs-description
+    attributes:
+      label: Bug's Description
+      description: >
+        A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps To Reproduce
+      description: |
+        Describe how one can reproduce the issue.
+        Please use an ordered list.
+      value: |
+        1. ...
+
+        1. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: >
+        A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: relevant-logs
+    attributes:
+      label: Relevant Logs
+      description: |
+        Paste any relevant logs within the code block (```) below.
+        If necessary, change the language specifier to the code block.
+      value: |
+        <details>
+          <summary>Logs</summary>
+        ```java
+
+        ```
+        </details>
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: >
+        If applicable, add screenshots to help explain your problem.
+      placeholder: >
+        Click to Highlight, then Drag and Drop Files Here to Upload
+  - type: textarea
+    id: system-information
+    attributes:
+      label: System Information
+      description: >
+        "Please complete the following information:"
+      value: |
+        - Android Version:
+
+        - App Version:
+
+        - Release Channel:
+          - [ ] Stable
+
+          - [ ] Beta
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: >
+        Add any other context about the problem here.
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        Thanks for taking the time to fill out this form!
