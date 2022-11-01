@@ -1,27 +1,35 @@
 package com.amine.blog.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amine.blog.R;
+import com.amine.blog.adapters.CountryNameAdapter;
 import com.amine.blog.interfaces.CallbackForFr2;
 import com.amine.blog.interfaces.CallbackForSignIn;
+import com.amine.blog.model.CountryCode;
 import com.amine.blog.repositories.UserAccount;
 import com.amine.blog.viewmodel.DataModel;
 
-public class CreateAccFrag1 extends Fragment implements View.OnClickListener, CallbackForSignIn {
+import java.util.ArrayList;
+
+public class CreateAccFrag1 extends Fragment implements View.OnClickListener, CallbackForSignIn,
+        AdapterView.OnItemSelectedListener {
 
     private final CallbackForFr2 cbfr2;
     private EditText edtEmail, edtUsername, edtPassword, edtConfirmPass, edtName, edtUniversity, edtProfession;
@@ -30,11 +38,21 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
     private ScrollView sv;
     private ImageView imgEye;
     private Button btnCreateAcc1;
+    private Spinner countrySpinner;
+
+    private Context context;
+
+    private ArrayList<CountryCode> countryCodes = new ArrayList<>();
+    private String countryDialCode;
 
     private boolean passwordShown = false;
 
     public CreateAccFrag1(CallbackForFr2 cbfr2){
         this.cbfr2 = cbfr2;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     @Nullable
@@ -60,10 +78,30 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
         prBar = view.findViewById(R.id.progress_crAcc1);
         sv = view.findViewById(R.id.scroll_crAcc1);
 
+        countrySpinner = view.findViewById(R.id.spinner_country);
+
+        countryCodes = DataModel.getCountryCodes();
+
         // Listeners
         btnCreateAcc1.setOnClickListener(this);
         imgEye.setOnClickListener(this);
+        countrySpinner.setOnItemSelectedListener(this);
+
+        populateCountrySpinner();
         //edtUsername.setOnKeyListener(this);
+    }
+
+    private void populateCountrySpinner(){
+        CountryNameAdapter adapter = new CountryNameAdapter(countryCodes, context);
+        countrySpinner.setAdapter(adapter);
+
+        String myDeviceIso = DataModel.getMyDeviceCountryIso(context);
+        for(int i = 0; i < countryCodes.size(); i++){
+            if(countryCodes.get(i).getIsoCode().equals(myDeviceIso.toUpperCase())){
+                countrySpinner.setSelection(i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -157,7 +195,7 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
 
             btnCreateAcc1.setEnabled(false);
             inProgress();
-            userAccount = new UserAccount(email, userName, password, name,
+            userAccount = new UserAccount(countryDialCode + email, userName, password, name,
                     university, profession, true, this);
             userAccount.create();
 
@@ -204,4 +242,13 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
         sv.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        countryDialCode = countryCodes.get(i).getDialCode();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

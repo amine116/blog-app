@@ -1006,4 +1006,27 @@ public class Retrieve {
         });
     }
 
+    public static void readPublicPhoneNumber(String username, OnWaitListenerWithStringInfo waitListener){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_USER)
+                .child(username).child(FireConstants.STR_PUBLIC_INFO).child(FireConstants.STR_EMAIL);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    String phone = snapshot.getValue(String.class);
+                    waitListener.onWaitWithInfo(UserAccount.SUCCESS, phone);
+                }
+                else{
+                    waitListener.onWaitWithInfo(UserAccount.FAIL, null);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                waitListener.onWaitWithInfo(UserAccount.FAIL, null);
+            }
+        });
+    }
+
 }

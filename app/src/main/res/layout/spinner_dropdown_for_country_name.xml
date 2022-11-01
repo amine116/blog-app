@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/partition_color"
+    android:gravity="center"
+    android:padding="10sp">
+
+    <TextView
+        android:id="@+id/txtCountryName"
+        android:layout_width="wrap_content"
+        android:layout_height="50sp"
+        android:textColor="@color/text_color"
+        android:gravity="center"
+        android:layout_alignParentStart="true"/>
+
+
+    <TextView
+        android:id="@+id/txtCountryCode"
+        android:layout_width="wrap_content"
+        android:layout_height="50sp"
+        android:textColor="@color/text_color"
+        android:gravity="center"
+        android:layout_toStartOf="@id/imgDropDownIcon"
+        android:paddingEnd="10sp"
+        tools:ignore="RelativeOverlap,RtlSymmetry"/>
+
+
+    <ImageView
+        android:id="@+id/imgDropDownIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="50sp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_arrow_drop_down"
+        android:layout_alignParentEnd="true"/>
+
+
+    <View
+        android:id="@+id/gap2"
+        android:layout_width="match_parent"
+        android:layout_height="20sp"
+        android:layout_below="@id/txtCountryCode"/>
+
+</RelativeLayout>

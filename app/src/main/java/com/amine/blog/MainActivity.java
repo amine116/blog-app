@@ -36,6 +36,7 @@ import com.amine.blog.fragments.CreateAccFrag2;
 import com.amine.blog.fragments.EditProfileFrag;
 import com.amine.blog.fragments.FollowingFrag;
 import com.amine.blog.fragments.PeopleFrag;
+import com.amine.blog.fragments.RecoverAccountFrag;
 import com.amine.blog.fragments.SignInFrag;
 import com.amine.blog.fragments.SignInFrag2;
 import com.amine.blog.fragments.WriteArticleAddTagFrag;
@@ -706,7 +707,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(task == DataModel.MOVE_TO_CREATE_ACCOUNT_FRAGMENT){
             prepareForFragment();
-            addFragmentToTheFrameLayout(new CreateAccFrag1(this));
+            CreateAccFrag1 caf = new CreateAccFrag1(this);
+            caf.setContext(this);
+            addFragmentToTheFrameLayout(caf);
             /*
         Or above line could be written like this:
         FrCreateAcc1 frCreateAcc1 = new FrCreateAcc1(new CallbackForFr2() {
@@ -723,6 +726,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             fr.setWaitListener(this);
             fr.setContext(this);
             addFragmentToTheFrameLayout(fr);
+        }
+        else if(task == DataModel.MOVE_TO_RECOVER_ACCOUNT){
+            prepareForFragment();
+            RecoverAccountFrag raf = new RecoverAccountFrag();
+            raf.setContext(this);
+            addFragmentToTheFrameLayout(raf);
         }
     }
 

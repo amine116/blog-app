@@ -5,6 +5,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.amine.blog.interfaces.OnReadSingleArticle;
+import com.amine.blog.model.AccountRecoverInfo;
 import com.amine.blog.model.Article;
 import com.amine.blog.model.ArticlesUnderTag;
 import com.amine.blog.model.ChatMessage;
@@ -72,26 +73,29 @@ public class Save {
         reference = database.getReference().child(FireConstants.STR_ADMIN)
                 .child(FireConstants.STR_USER_PERSONAL_INFO).child(username);
 
-        savePhoneNumb(username, email);
-        reference.child(FireConstants.STR_USERNAME).setValue(username);
-        reference.child(FireConstants.STR_PASSWORD).setValue(password);
+        AccountRecoverInfo ari = new AccountRecoverInfo(username, password, "", email, "");
 
-        reference = database.getReference().child(FireConstants.STR_USER).child(username)
-                .child(FireConstants.STR_PUBLIC_INFO).child(FireConstants.STR_EMAIL);
-        String s = "***" + email.substring(email.length() - 2);
-        reference.setValue(s);
+        reference.child(FireConstants.STR_ACCOUNT_RECOVER_INFO).setValue(ari);
+
+        savePhoneNumb(username, email);
     }
 
     public void savePhoneNumb(String myUsername, String phoneNumb){
         reference = database.getReference().child(FireConstants.STR_ADMIN)
                 .child(FireConstants.STR_USER_PERSONAL_INFO).child(myUsername);
-        reference.child(FireConstants.STR_EMAIL).setValue(phoneNumb);
+        reference.child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(FireConstants.STR_OLD_PHONE).setValue(phoneNumb);
 
         reference = database.getReference().child(FireConstants.STR_USER).child(myUsername)
                 .child(FireConstants.STR_PUBLIC_INFO).child(FireConstants.STR_EMAIL);
         String s = "***" + phoneNumb.substring(phoneNumb.length() - 2);
         reference.setValue(s);
+    }
 
+    public static void requestAccountRecovery(String myUsername, String newPhone, String newPass){
+        reference = database.getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_USER_PERSONAL_INFO).child(myUsername);
+        reference.child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(FireConstants.STR_NEW_PHONE).setValue(newPhone);
+        reference.child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(FireConstants.STR_NEW_PASSWORD).setValue(newPass);
     }
 
     public void saveArticle(Article article, boolean[] isTagSuggested){

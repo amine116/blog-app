@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+
+        <layer-list>
+
+            <item>
+                <shape>
+
+                    <solid android:color="@color/partition_color"/>
+                    <padding android:right="12dp"
+                        android:left="12dp"/>
+                    <corners android:bottomRightRadius="10sp"
+                        android:topRightRadius="10dp"/>
+
+                </shape>
+
+            </item>
+
+            <item
+                android:drawable="@drawable/ic_arrow_drop_down"/>
+
+
+        </layer-list>
+
+    </item>
+
+</selector>

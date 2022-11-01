@@ -26,6 +26,14 @@ public class UserAccount {
         this.fAuth = FirebaseAuth.getInstance();
     }
 
+    public UserAccount(String userName, String pass, boolean isDummy, CallbackForSignIn cbfsi){
+        this.userName = userName;
+        this.pass = pass;
+        this.isDummy = isDummy;
+        this.cbfsi = cbfsi;
+        fAuth = FirebaseAuth.getInstance();
+    }
+
     public UserAccount(String email, String userName, String pass, String name, String university, String profession,
                        boolean isDummy, CallbackForSignIn cbfsi){
         this.email = email;

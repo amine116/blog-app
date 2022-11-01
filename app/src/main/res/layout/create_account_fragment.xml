@@ -27,6 +27,33 @@
             android:background="@color/partition_color"
             android:padding="2sp">
 
+            <RelativeLayout
+                android:id="@+id/layout_countryCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_color"
+                android:padding="2sp">
+
+                <TextView
+                    android:id="@+id/txtSelectCountry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50sp"
+                    android:textColor="@color/text_color"
+                    android:gravity="center"
+                    android:background="@drawable/rectangular_shape_partition_color"
+                    android:text="@string/country"/>
+
+                <Spinner
+                    android:id="@+id/spinner_country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50sp"
+                    android:gravity="center"
+                    android:background="@drawable/spinner_country_name_background"
+                    android:layout_toEndOf="@id/txtSelectCountry"/>
+
+
+            </RelativeLayout>
+
             <EditText
                 android:id="@+id/edtEmail"
                 android:layout_width="match_parent"
@@ -37,7 +64,8 @@
                 android:autofillHints=""
                 android:textSize="15sp"
                 android:textColor="@color/text_color"
-                android:textColorHint="@color/text_color"/>
+                android:textColorHint="@color/text_color"
+                android:layout_below="@+id/layout_countryCode"/>
 
             <TextView
                 android:id="@+id/txtEmail"
@@ -119,7 +147,8 @@
                 <ImageView
                     android:id="@+id/imgEye"
                     android:layout_width="0sp"
-                    android:layout_height="match_parent"
+                    android:paddingTop="20sp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="20"
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_visibility"/>

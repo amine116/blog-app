@@ -9,6 +9,7 @@
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_eye.xml" value="0.1375" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_mode_comment.xml" value="0.1305" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_my_profile.xml" value="0.1375" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_visibility.xml" value="0.1415" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/ic_visible.xml" value="0.1375" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/rectangular_shape_blue.xml" value="0.1375" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/rectangular_shape_friends_message_color.xml" value="0.1375" />
@@ -20,6 +21,7 @@
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape_chat_blue.xml" value="0.1375" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape_green.xml" value="0.1375" />
         <entry key="..\:/Amine/Blog/app/src/main/res/drawable/round_shape_white.xml" value="0.1555" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/drawable/spinner_country_name_background.xml" value="0.1" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_approve_tags.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_article_discussion.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/activity_chat.xml" value="0.25" />
@@ -54,10 +56,12 @@
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/model_tag_list.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/people_view2.xml" value="0.19010416666666666" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/people_view_frag.xml" value="0.19010416666666666" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/recover_account_frag.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/reporting_dialog.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/sign_in_fragment.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/sign_in_fragment2.xml" value="0.33" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/simple_dialog_text.xml" value="0.25" />
+        <entry key="..\:/Amine/Blog/app/src/main/res/layout/spinner_dropdown_for_country_name.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/splitting_article_text.xml" value="0.25" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/write_article_add_tag_frag.xml" value="0.22" />
         <entry key="..\:/Amine/Blog/app/src/main/res/layout/write_article_drop_down_menu_item_for_tag_list.xml" value="0.20416666666666666" />

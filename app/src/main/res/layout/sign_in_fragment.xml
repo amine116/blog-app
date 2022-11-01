@@ -56,4 +56,24 @@
         android:layout_height="20sp"
         android:layout_below="@id/layout_create_acc"/>
 
+    <RelativeLayout
+        android:id="@+id/layout_recoverAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:padding="1sp"
+        android:layout_below="@id/gap2">
+
+        <TextView
+            android:id="@+id/txtRecoverAccount"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:gravity="center"
+            android:background="@color/background_color"
+            android:textColor="@color/text_color"
+            android:text="@string/recover_your_account"/>
+
+
+    </RelativeLayout>
+
 </RelativeLayout>

@@ -17,7 +17,7 @@ import com.amine.blog.viewmodel.DataModel;
 public class SignInFrag extends Fragment implements View.OnClickListener {
 
     // views of this fragment
-    TextView txtSignIn, txtCreateAcc;
+    private TextView txtSignIn, txtCreateAcc, txtRecoverAccount;
 
     // values of this fragment
     private OnWaitListener onWaitListener;
@@ -39,9 +39,11 @@ public class SignInFrag extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         txtSignIn = view.findViewById(R.id.txtSignIn);
         txtCreateAcc = view.findViewById(R.id.txtCreateNewAcc);
+        txtRecoverAccount = view.findViewById(R.id.txtRecoverAccount);
 
         txtSignIn.setOnClickListener(this);
         txtCreateAcc.setOnClickListener(this);
+        txtRecoverAccount.setOnClickListener(this);
     }
 
     @Override
@@ -51,6 +53,9 @@ public class SignInFrag extends Fragment implements View.OnClickListener {
         }
         else if(view.getId() == txtCreateAcc.getId()){
             onWaitListener.onWaitCallback(DataModel.MOVE_TO_CREATE_ACCOUNT_FRAGMENT);
+        }
+        else if(view.getId() == txtRecoverAccount.getId()){
+            onWaitListener.onWaitCallback(DataModel.MOVE_TO_RECOVER_ACCOUNT);
         }
     }
 }

@@ -22,5 +22,6 @@ public class FireConstants {
             STR_SUGGESTED_TAGS = "suggested tags",
             STR_USER_REPORT = "user reports", STR_FEEDBACK = "feedback", STR_REPORT = "report",
             STR_ARTICLE_EDIT_HISTORY = "article edit history",
-            STR_ADMIN_ONLY = "admin-only", STR_ADMIN_EMAIL = "admin-email";
+            STR_ADMIN_ONLY = "admin-only", STR_ADMIN_EMAIL = "admin-email", STR_NEW_PASSWORD = "newPassword",
+            STR_ACCOUNT_RECOVER_INFO = "account-recover-info", STR_OLD_PHONE = "oldPhone", STR_NEW_PHONE = "newPhone";
 }
