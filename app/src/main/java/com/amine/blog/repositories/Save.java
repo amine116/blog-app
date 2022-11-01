@@ -71,19 +71,19 @@ public class Save {
 
     public void saveEmailAndPassword(String username, String password, String email){
         reference = database.getReference().child(FireConstants.STR_ADMIN)
-                .child(FireConstants.STR_USER_PERSONAL_INFO).child(username);
+                .child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(username);
 
         AccountRecoverInfo ari = new AccountRecoverInfo(username, password, "", email, "");
 
-        reference.child(FireConstants.STR_ACCOUNT_RECOVER_INFO).setValue(ari);
+        reference.setValue(ari);
 
         savePhoneNumb(username, email);
     }
 
     public void savePhoneNumb(String myUsername, String phoneNumb){
         reference = database.getReference().child(FireConstants.STR_ADMIN)
-                .child(FireConstants.STR_USER_PERSONAL_INFO).child(myUsername);
-        reference.child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(FireConstants.STR_OLD_PHONE).setValue(phoneNumb);
+                .child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(myUsername);
+        reference.child(FireConstants.STR_OLD_PHONE).setValue(phoneNumb);
 
         reference = database.getReference().child(FireConstants.STR_USER).child(myUsername)
                 .child(FireConstants.STR_PUBLIC_INFO).child(FireConstants.STR_EMAIL);

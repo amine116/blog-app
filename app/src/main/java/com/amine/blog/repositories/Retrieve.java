@@ -430,29 +430,6 @@ public class Retrieve {
         });
     }
 
-    public static void getUserPhone(String username, OnWaitListenerWithStringInfo stringInfoListener){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
-                .child(FireConstants.STR_USER).child(username).child(FireConstants.STR_PUBLIC_INFO)
-                .child(FireConstants.STR_EMAIL);
-
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    stringInfoListener.onWaitWithInfo(UserAccount.SUCCESS, snapshot.getValue(String.class));
-                }
-                else{
-                    stringInfoListener.onWaitWithInfo(UserAccount.FAIL, null);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     public void isFollowing(String myUsername, String personUsername){
         reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
                 .child(myUsername).child(FireConstants.STR_FOLLOWING).child(personUsername);

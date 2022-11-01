@@ -93,7 +93,7 @@ public class EditProfileFrag extends Fragment implements View.OnClickListener {
         retrieve.setOnStringArrayListener(stringArrayList -> {
             Retrieve retrieve1 = new Retrieve(myUsername);
             retrieve1.setOnStringArrayListener(stringArrayList1 ->
-                    Retrieve.getUserPhone(myUsername, (task, phone) -> {
+                    Retrieve.readPublicPhoneNumber(myUsername, (task, phone) -> {
                 makeViewVisible();
                 setOldData(stringArrayList, stringArrayList1, phone);
             }));
