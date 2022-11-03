@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
 
     // Values got from fragment1
-    private String email, userName, password, name, university, profession;
+    private String email, userName, password, name, university, profession, countryDialCode;
 
     // private values of this fragment
     private Button btnCreate;
@@ -43,13 +43,14 @@ public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
     private ProgressBar pBar;
 
     public CreateAccFrag2(String email, String userName, String password, String name, String university,
-                          String profession) {
+                          String profession, String countryDialCode) {
         this.email = email;
         this.userName = userName;
         this.password = password;
         this.name = name;
         this.university = university;
         this.profession = profession;
+        this.countryDialCode = countryDialCode;
     }
 
     public void setContext(Context context) {
@@ -120,7 +121,7 @@ public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
                 completeProgress();
                 if(res == UserAccount.SUCCESS){
                     new Save().saveUserPublicInfo(userName, userBasicInfo, hobbies, expertise);
-                    new Save().saveEmailAndPassword(userName, password, email);
+                    new Save().saveEmailAndPassword(userName, password, email, countryDialCode);
                     Toast.makeText(context, "Account created", Toast.LENGTH_SHORT).show();
                     onWaitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
                 }

@@ -18,10 +18,12 @@ import android.widget.TextView;
 import com.amine.blog.fragments.ChatBoxFrag;
 import com.amine.blog.interfaces.OnReadChatList;
 import com.amine.blog.interfaces.OnReadListener;
+import com.amine.blog.model.ArticlesUnderTag;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.viewmodel.DataModel;
 import com.google.firebase.database.DataSnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -106,15 +108,23 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void setListenerForNewChatList(){
-        Retrieve.readNewChatList(senderUsername, (snapshot, isAdded) -> {
-            if(pBar.getVisibility() == View.VISIBLE){
-                pBar.setVisibility(View.GONE);
+        Retrieve.readNewChatList(senderUsername, new OnReadChatList() {
+            @Override
+            public void onReadChatList(ArrayList<ArticlesUnderTag> chatList, boolean isAdded) {
+
             }
-            if(snapshot != null){
-                if(snapshot.exists()){
-                    String username = snapshot.getKey();
-                    if(username != null){
-                        setChatList(username, true, isAdded);
+
+            @Override
+            public void onReadChatList(DataSnapshot snapshot, boolean isAdded) {
+                if(pBar.getVisibility() == View.VISIBLE){
+                    pBar.setVisibility(View.GONE);
+                }
+                if(snapshot != null){
+                    if(snapshot.exists()){
+                        String username = snapshot.getKey();
+                        if(username != null){
+                            setChatList(username, true, isAdded);
+                        }
                     }
                 }
             }
@@ -123,18 +133,23 @@ public class ChatActivity extends AppCompatActivity{
 
     private void setListenerForOldChatList(){
 
-        Retrieve.readOldChatList(MainActivity.userBasicInfo.getUserName(), (snapshot, isAdded) -> {
-            if(pBar.getVisibility() == View.VISIBLE){
-                pBar.setVisibility(View.GONE);
+        Retrieve.readOldChatList(MainActivity.userBasicInfo.getUserName(), new OnReadChatList() {
+            @Override
+            public void onReadChatList(ArrayList<ArticlesUnderTag> chatList, boolean isAdded) {
+                if(pBar.getVisibility() == View.VISIBLE){
+                    pBar.setVisibility(View.GONE);
+                }
+
+                for(int i = 0; i < chatList.size(); i++){
+                    // articleId = username
+                    // headLine = last message
+                    setChatList(chatList.get(i).getArticleId(), false, isAdded);
+                }
             }
 
-            if(snapshot != null){
-                if(snapshot.exists()){
-                    String username = snapshot.getKey();
-                    if(username != null){
-                        setChatList(username, false, isAdded);
-                    }
-                }
+            @Override
+            public void onReadChatList(DataSnapshot snapshot, boolean isAdded) {
+
             }
         });
     }

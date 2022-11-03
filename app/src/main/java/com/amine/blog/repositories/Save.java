@@ -5,6 +5,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.amine.blog.interfaces.OnReadSingleArticle;
+import com.amine.blog.interfaces.OnWaitListener;
 import com.amine.blog.model.AccountRecoverInfo;
 import com.amine.blog.model.Article;
 import com.amine.blog.model.ArticlesUnderTag;
@@ -19,6 +20,10 @@ import com.amine.blog.model.UserBasicInfo;
 import com.amine.blog.viewmodel.DataModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,11 +74,12 @@ public class Save {
 
     }
 
-    public void saveEmailAndPassword(String username, String password, String email){
+    public void saveEmailAndPassword(String username, String password, String email, String countryDialCode){
         reference = database.getReference().child(FireConstants.STR_ADMIN)
                 .child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(username);
 
-        AccountRecoverInfo ari = new AccountRecoverInfo(username, password, "", email, "");
+        AccountRecoverInfo ari = new AccountRecoverInfo(username, password,
+                "", email, "", countryDialCode);
 
         reference.setValue(ari);
 
@@ -93,9 +99,10 @@ public class Save {
 
     public static void requestAccountRecovery(String myUsername, String newPhone, String newPass){
         reference = database.getReference().child(FireConstants.STR_ADMIN)
-                .child(FireConstants.STR_USER_PERSONAL_INFO).child(myUsername);
-        reference.child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(FireConstants.STR_NEW_PHONE).setValue(newPhone);
-        reference.child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(FireConstants.STR_NEW_PASSWORD).setValue(newPass);
+                .child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(myUsername);
+
+        reference.child(FireConstants.STR_NEW_PHONE).setValue(newPhone);
+        reference.child(FireConstants.STR_NEW_PASSWORD).setValue(newPass);
     }
 
     public void saveArticle(Article article, boolean[] isTagSuggested){
@@ -312,6 +319,7 @@ public class Save {
 
         reference.setValue(followingUsername);
 
+
         saveFollower(myUsername, followingUsername);
     }
 
@@ -413,11 +421,17 @@ public class Save {
         reference.setValue(chatMessage);
 
         // sending receiver a notification
-        reference = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_CHAT_STATUSES)
+        reference = Retrieve.getRootReference().child(FireConstants.STR_CHAT_STATUSES)
                 .child(FireConstants.STR_NEW_MESSAGE_STATUS).child(receiverUsername)
                 .child(myUsername);
 
-        reference.setValue(chatMessage);
+        reference.setValue(chatMessage.getText());
+
+        // saving receiver to my chat list
+        Retrieve.getRootReference().child(FireConstants.STR_CHAT_STATUSES)
+                .child(FireConstants.STR_CHAT_LIST).child(myUsername).child(receiverUsername)
+                .setValue(chatMessage.getText());
+
     }
 
     public String getMessageId(String receiverUsername, String myUsername){
@@ -475,9 +489,32 @@ public class Save {
     }
 
     public static void saveReportFeedback(ReportToBlog reportToBlog){
+        //  Admin will give feedback who reported earlier.
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_USER_REPORT)
                 .child(FireConstants.STR_FEEDBACK).child(reportToBlog.getReporterUserName())
                 .child(reportToBlog.getReportId());
+    }
+
+    public static void signInWithPhoneAuthCredential(PhoneAuthCredential credential, OnWaitListener waitListener){
+
+        FirebaseAuth fAuth = Retrieve.getFirebaseAuth();
+        fAuth.signInWithCredential(credential)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+
+                        fAuth.signOut();
+                        FirebaseUser user = task.getResult().getUser();
+                        if(user != null ) {
+                            user.delete();
+                        }
+
+                        waitListener.onWaitCallback(UserAccount.SUCCESS);
+                    }
+                    else{
+                        waitListener.onWaitCallback(UserAccount.FAIL);
+                    }
+                });
+
     }
 
 }

@@ -601,8 +601,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void callback(String email, String userName, String password, String name,
-                         String university, String profession) {
-        CreateAccFrag2 cf = new CreateAccFrag2(email, userName, password, name, university, profession);
+                         String university, String profession, String countryDialCode) {
+        CreateAccFrag2 cf = new CreateAccFrag2(email, userName, password, name, university,
+                profession, countryDialCode);
         cf.setContext(this);
         cf.addWaitListener(this);
         addFragmentToTheFrameLayout(cf);
@@ -720,6 +721,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
          */
         }
+        else if(task == DataModel.STR_MOVE_TO_SIGN_IN_PAGE){
+            goToSignInPage();
+        }
         else if(task == DataModel.MOVE_TO_SIGN_IN_PAGE_2){
             prepareForFragment();
             SignInFrag2 fr = new SignInFrag2();
@@ -730,7 +734,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(task == DataModel.MOVE_TO_RECOVER_ACCOUNT){
             prepareForFragment();
             RecoverAccountFrag raf = new RecoverAccountFrag();
+            raf.setActivity(this);
             raf.setContext(this);
+            raf.setWaitListener(this);
             addFragmentToTheFrameLayout(raf);
         }
     }

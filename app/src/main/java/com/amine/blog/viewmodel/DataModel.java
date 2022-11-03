@@ -52,7 +52,7 @@ public class DataModel {
     // Values for this class are going to be up to 10
     public static final int MOVE_TO_MAIN_ACTIVITY_HOME = 1, MOVE_TO_CREATE_ACCOUNT_FRAGMENT = 2,
             MOVE_TO_SIGN_IN_PAGE_2 = 3, YES = 4, NO = 5, MOVE_TO_PROFILE_ACTIVITY = 6,
-            MOVE_TO_ADD_TAG_FRAGMENT = 7, MOVE_TO_RECOVER_ACCOUNT = 8;
+            MOVE_TO_ADD_TAG_FRAGMENT = 7, MOVE_TO_RECOVER_ACCOUNT = 8, STR_MOVE_TO_SIGN_IN_PAGE = 9;
 
     // Values that doesn't related to above condition
     public static final int SUB_HEADING_TEXT_SIZE = 60, QUOTATION_TEXT_SIZE = 50,

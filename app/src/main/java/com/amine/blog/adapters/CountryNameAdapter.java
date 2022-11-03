@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amine.blog.R;
@@ -49,6 +50,9 @@ public class CountryNameAdapter extends BaseAdapter {
 
         TextView txtCountryName = view.findViewById(R.id.txtCountryName),
                 txtCountryCode = view.findViewById(R.id.txtCountryCode);
+
+        ImageView imgDropDownIcon = view.findViewById(R.id.imgDropDownIcon);
+        imgDropDownIcon.setVisibility(View.GONE);
 
         txtCountryName.setText(countryCodes.get(i).getName());
         txtCountryCode.setText(countryCodes.get(i).getDialCode());

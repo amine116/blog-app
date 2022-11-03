@@ -94,7 +94,7 @@
             <TextView
                 android:id="@+id/txtSelectCountry"
                 android:layout_width="wrap_content"
-                android:layout_height="50sp"
+                android:layout_height="70sp"
                 android:textColor="@color/text_color"
                 android:gravity="center"
                 android:background="@drawable/rectangular_shape_partition_color"
@@ -103,7 +103,7 @@
             <Spinner
                 android:id="@+id/spinner_country"
                 android:layout_width="wrap_content"
-                android:layout_height="50sp"
+                android:layout_height="70sp"
                 android:gravity="center"
                 android:background="@drawable/spinner_country_name_background"
                 android:layout_toEndOf="@id/txtSelectCountry"/>
@@ -259,7 +259,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/background_color"
-                android:inputType="phone"
+                android:inputType="text"
                 android:hint="@string/enter_new_password"
                 android:gravity="center"
                 android:textColor="@color/text_color"
@@ -291,13 +291,36 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/txtFinalMessageToUser"
+    <RelativeLayout
+        android:id="@+id/layout_finalMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_color"
         android:layout_below="@id/layout_providePass"
-        android:gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txtFinalMessageToUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:gravity="center"/>
+
+        <View
+            android:id="@+id/gap9"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/txtFinalMessageToUser"/>
+
+        <Button
+            android:id="@+id/txtOk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/head_line_color"
+            android:text="@string/ok"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:layout_below="@id/gap9"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -36,7 +36,7 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
     private UserAccount userAccount;
     private ProgressBar prBar;
     private ScrollView sv;
-    private ImageView imgEye;
+    private ImageView imgEye, imgDropDownIcon;
     private Button btnCreateAcc1;
     private Spinner countrySpinner;
 
@@ -227,7 +227,7 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
         else if(res == UserAccount.SUCCESS && userAccount.isDummy()){
             cbfr2.callback(userAccount.getEmail(), userAccount.getUserName(),
                     userAccount.getPass(), userAccount.getName(),
-                    userAccount.getUniversity(), userAccount.getProfession());
+                    userAccount.getUniversity(), userAccount.getProfession(), countryDialCode);
 
         }
 
@@ -245,6 +245,8 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         countryDialCode = countryCodes.get(i).getDialCode();
+        ImageView imgDropDownIcon = view.findViewById(R.id.imgDropDownIcon);
+        imgDropDownIcon.setVisibility(View.VISIBLE);
     }
 
     @Override

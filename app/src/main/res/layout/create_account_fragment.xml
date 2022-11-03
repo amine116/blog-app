@@ -37,7 +37,7 @@
                 <TextView
                     android:id="@+id/txtSelectCountry"
                     android:layout_width="wrap_content"
-                    android:layout_height="50sp"
+                    android:layout_height="70sp"
                     android:textColor="@color/text_color"
                     android:gravity="center"
                     android:background="@drawable/rectangular_shape_partition_color"
@@ -46,7 +46,7 @@
                 <Spinner
                     android:id="@+id/spinner_country"
                     android:layout_width="wrap_content"
-                    android:layout_height="50sp"
+                    android:layout_height="70sp"
                     android:gravity="center"
                     android:background="@drawable/spinner_country_name_background"
                     android:layout_toEndOf="@id/txtSelectCountry"/>

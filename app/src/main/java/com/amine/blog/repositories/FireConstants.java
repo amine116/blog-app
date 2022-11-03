@@ -23,5 +23,6 @@ public class FireConstants {
             STR_USER_REPORT = "user reports", STR_FEEDBACK = "feedback", STR_REPORT = "report",
             STR_ARTICLE_EDIT_HISTORY = "article edit history",
             STR_ADMIN_ONLY = "admin-only", STR_ADMIN_EMAIL = "admin-email", STR_NEW_PASSWORD = "newPassword",
-            STR_ACCOUNT_RECOVER_INFO = "account-recover-info", STR_OLD_PHONE = "oldPhone", STR_NEW_PHONE = "newPhone";
+            STR_ACCOUNT_RECOVER_INFO = "account-recover-info", STR_OLD_PHONE = "oldPhone", STR_NEW_PHONE = "newPhone",
+            STR_COUNTRY_DIAL_CODE = "countryDialCode", STR_CHAT_LIST = "chat-list";
 }

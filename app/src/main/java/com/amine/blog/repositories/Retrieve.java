@@ -201,13 +201,21 @@ public class Retrieve {
     }
 
     public static String getSignedInUserEmail(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = getFirebaseAuth().getCurrentUser();
         if(user != null){
             return user.getEmail();
         }
         else{
             return null;
         }
+    }
+
+    public static DatabaseReference getRootReference(){
+        return FirebaseDatabase.getInstance().getReference();
+    }
+
+    public static FirebaseAuth getFirebaseAuth(){
+        return FirebaseAuth.getInstance();
     }
 
     public String createUniqueIdForArticle(){
@@ -628,33 +636,57 @@ public class Retrieve {
 
     public static void readOldChatList(String myUsername, OnReadChatList onReadChatList){
         // node = myUsername;
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
-                .child(FireConstants.STR_PERSONAL_CHAT).child(myUsername);
+        DatabaseReference ref = getRootReference().child(FireConstants.STR_CHAT_STATUSES)
+                .child(FireConstants.STR_CHAT_LIST).child(myUsername);
 
-        ref.addChildEventListener(new ChildEventListener() {
+//        ref.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                onReadChatList.onReadChatList(snapshot, true);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+        ArrayList<ArticlesUnderTag> chatList = new ArrayList<>();
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                onReadChatList.onReadChatList(snapshot, true);
-            }
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        String username = item.getKey(),
+                                lastMessage = item.getValue(String.class);
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                        // its not related to article anyhow. just using this Class because it has to string value
+                        // that is useful.
+                        ArticlesUnderTag aut = new ArticlesUnderTag(username, lastMessage);
+                        chatList.add(aut);
+                    }
+                }
+                onReadChatList.onReadChatList(chatList, true);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                onReadChatList.onReadChatList(chatList, true);
             }
         });
     }

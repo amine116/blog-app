@@ -1,14 +1,15 @@
 package com.amine.blog.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -20,36 +21,42 @@ import androidx.fragment.app.Fragment;
 
 import com.amine.blog.R;
 import com.amine.blog.adapters.CountryNameAdapter;
-import com.amine.blog.model.ChatMessage;
+import com.amine.blog.interfaces.OnWaitListener;
 import com.amine.blog.model.CountryCode;
 import com.amine.blog.repositories.Retrieve;
+import com.amine.blog.repositories.Save;
 import com.amine.blog.repositories.UserAccount;
 import com.amine.blog.viewmodel.DataModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class RecoverAccountFrag extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private ProgressBar progressBar;
     private EditText edtUsername, edtPhone, edtOtp, edtPass;
     private TextView txtLastDigitsOfPhoneNumber, txtHeadlineOfSendingOtp, txtOtpPassHeadline ,txtFinalMessageToUser;
-    private RelativeLayout layout_provideUsername, layout_providePhone, layout_otp, layout_providePass;
-    private Button btnNext, btnNext2, btnNext3, btnChange;
+    private RelativeLayout layout_provideUsername, layout_providePhone, layout_otp, layout_providePass, layout_finalMessage;
+    private Button btnNext, btnNext2, btnNext3, btnChange, txtOkayButton;
     private Spinner spinnerCountry;
 
-    private String providedUsername, selectedCountryCode, providedPhone;
+    private String providedUsername, selectedCountryCode, providedPhone, verificationID, verificationCodeFromUser;
 
     private ArrayList<CountryCode> countryCodes = new ArrayList<>();
 
     private Context context;
+    private Activity activity;
+
+    private OnWaitListener waitListener;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.recover_account_frag, container, false);
     }
 
@@ -76,6 +83,9 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         btnNext3 = view.findViewById(R.id.btnNext3);
         btnChange = view.findViewById(R.id.btnChange);
         spinnerCountry = view.findViewById(R.id.spinner_country);
+        layout_finalMessage = view.findViewById(R.id.layout_finalMessage);
+        txtOkayButton = view.findViewById(R.id.txtOk);
+
 
         makeJsonArrayForCountry();
 
@@ -83,6 +93,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         btnNext.setOnClickListener(this);
         btnNext2.setOnClickListener(this);
         btnNext3.setOnClickListener(this);
+        txtOkayButton.setOnClickListener(this);
         spinnerCountry.setOnItemSelectedListener(this);
 
 
@@ -91,6 +102,14 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
+
+    public void setWaitListener(OnWaitListener waitListener) {
+        this.waitListener = waitListener;
     }
 
     @Override
@@ -144,9 +163,114 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
                 edtPhone.setError("Give your phone number, Nobody can access your number.");
                 return;
             }
-            // TODO
-            //   Send user a verification code
+
+            inProgress();
+            providedPhone = selectedCountryCode + providedPhone;
+
+            PhoneAuthOptions options =
+                    PhoneAuthOptions.newBuilder(Retrieve.getFirebaseAuth())
+                            .setPhoneNumber(providedPhone)
+                            .setTimeout(120L, TimeUnit.SECONDS)
+                            .setActivity(activity)
+                            .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                                @Override
+                                public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                                    verificationCodeFromUser = phoneAuthCredential.getSmsCode();
+
+                                    if(verificationCodeFromUser != null && !verificationCodeFromUser.isEmpty()) {
+                                        verifyCode();
+                                    }
+                                    else{
+                                        edtPhone.requestFocus();
+                                        edtPhone.setError("Verification was not complete- ");
+                                        completeProgress();
+                                    }
+
+                                }
+
+                                @Override
+                                public void onVerificationFailed(@NonNull FirebaseException e) {
+                                    edtPhone.requestFocus();
+                                    edtPhone.setError("Verification failed- " + e.getMessage());
+                                    completeProgress();
+                                }
+
+                                @Override
+                                public void onCodeSent(@NonNull String s, @NonNull
+                                        PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                                    super.onCodeSent(s, forceResendingToken);
+
+                                    verificationID = s;
+
+                                    String sug = "We have sent a verification code to " +
+                                            providedPhone + "\nEnter the code below";
+                                    txtHeadlineOfSendingOtp.setText(sug);
+                                    completeProgress();
+                                    showOtpLayout();
+
+                                }
+                            })
+                            .build();
+
+            PhoneAuthProvider.verifyPhoneNumber(options);
+
         }
+
+        else if(view.getId() == btnNext3.getId()){
+            verificationCodeFromUser = edtOtp.getText().toString().trim();
+            if(verificationCodeFromUser.isEmpty()){
+                edtOtp.requestFocus();
+                edtOtp.setError("Enter verification code(OTP)");
+                return;
+            }
+            inProgress();
+            verifyCode();
+        }
+
+        else if(view.getId() == btnChange.getId()){
+            String providedPass = edtPass.getText().toString().trim();
+            if(providedPass.isEmpty()){
+                edtPass.requestFocus();
+                edtPass.setError("Provide a password");
+                return;
+            }
+
+            if(providedPass.length() < 6){
+                edtPass.requestFocus();
+                edtPass.setError("Password must be at least 6 character long");
+                return;
+            }
+
+            Save.requestAccountRecovery(providedUsername, providedPhone, providedPass);
+
+            showFinalMessage();
+            String s = "Password changed request has been sent to server. You password will be changed soon";
+            txtFinalMessageToUser.setText(s);
+        }
+
+        else if(view.getId() == txtOkayButton.getId()){
+            waitListener.onWaitCallback(DataModel.STR_MOVE_TO_SIGN_IN_PAGE);
+        }
+    }
+
+    private void verifyCode() {
+
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationID, verificationCodeFromUser);
+
+        Save.signInWithPhoneAuthCredential(credential, task -> {
+            completeProgress();
+            if(task == UserAccount.SUCCESS){
+                showProvidePassLayout();
+                String s = "Provide new password";
+                txtOtpPassHeadline.setText(s);
+            }
+            else{
+                showOtpLayout();
+                edtOtp.requestFocus();
+                edtOtp.setError("OTP is not correct");
+            }
+        });
+
     }
 
     private void showUsernameLayout(){
@@ -154,7 +278,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         layout_providePhone.setVisibility(View.GONE);
         layout_otp.setVisibility(View.GONE);
         layout_providePass.setVisibility(View.GONE);
-        txtFinalMessageToUser.setVisibility(View.GONE);
+        layout_finalMessage.setVisibility(View.GONE);
     }
 
     private void showProvidePhoneLayout(){
@@ -162,7 +286,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         layout_providePhone.setVisibility(View.VISIBLE);
         layout_otp.setVisibility(View.GONE);
         layout_providePass.setVisibility(View.GONE);
-        txtFinalMessageToUser.setVisibility(View.GONE);
+        layout_finalMessage.setVisibility(View.GONE);
     }
 
     private void showOtpLayout(){
@@ -170,7 +294,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         layout_providePhone.setVisibility(View.GONE);
         layout_otp.setVisibility(View.VISIBLE);
         layout_providePass.setVisibility(View.GONE);
-        txtFinalMessageToUser.setVisibility(View.GONE);
+        layout_finalMessage.setVisibility(View.GONE);
     }
 
     private void showProvidePassLayout(){
@@ -178,7 +302,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         layout_providePhone.setVisibility(View.GONE);
         layout_otp.setVisibility(View.GONE);
         layout_providePass.setVisibility(View.VISIBLE);
-        txtFinalMessageToUser.setVisibility(View.GONE);
+        layout_finalMessage.setVisibility(View.GONE);
     }
 
     private void showFinalMessage(){
@@ -186,7 +310,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         layout_providePhone.setVisibility(View.GONE);
         layout_otp.setVisibility(View.GONE);
         layout_providePass.setVisibility(View.GONE);
-        txtFinalMessageToUser.setVisibility(View.VISIBLE);
+        layout_finalMessage.setVisibility(View.VISIBLE);
     }
 
     private void inProgress(){
@@ -194,7 +318,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         layout_providePhone.setVisibility(View.GONE);
         layout_otp.setVisibility(View.GONE);
         layout_providePass.setVisibility(View.GONE);
-        txtFinalMessageToUser.setVisibility(View.GONE);
+        layout_finalMessage.setVisibility(View.GONE);
 
         progressBar.setVisibility(View.VISIBLE);
     }
@@ -206,7 +330,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         layout_providePhone.setVisibility(View.VISIBLE);
         layout_otp.setVisibility(View.VISIBLE);
         layout_providePass.setVisibility(View.VISIBLE);
-        txtFinalMessageToUser.setVisibility(View.VISIBLE);
+        layout_finalMessage.setVisibility(View.VISIBLE);
     }
 
     private void makeJsonArrayForCountry(){
@@ -236,6 +360,9 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         selectedCountryCode = countryCodes.get(i).getDialCode();
+
+        ImageView imgDropDownIcon = view.findViewById(R.id.imgDropDownIcon);
+        imgDropDownIcon.setVisibility(View.VISIBLE);
     }
 
     @Override
