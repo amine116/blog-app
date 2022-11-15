@@ -2,28 +2,18 @@ package com.amine.blog.viewmodel;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.telephony.TelephonyManager;
-import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.BulletSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.DrawableMarginSpan;
-import android.text.style.LeadingMarginSpan;
-import android.text.style.QuoteSpan;
 import android.text.style.StyleSpan;
-import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -44,23 +34,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 public class DataModel {
 
     // public static values
-    // Values for this class are going to be up to 10
+    // Values for this class are going to be up to 10 and 51-60
     public static final int MOVE_TO_MAIN_ACTIVITY_HOME = 1, MOVE_TO_CREATE_ACCOUNT_FRAGMENT = 2,
             MOVE_TO_SIGN_IN_PAGE_2 = 3, YES = 4, NO = 5, MOVE_TO_PROFILE_ACTIVITY = 6,
-            MOVE_TO_ADD_TAG_FRAGMENT = 7, MOVE_TO_RECOVER_ACCOUNT = 8, STR_MOVE_TO_SIGN_IN_PAGE = 9;
+            MOVE_TO_ADD_TAG_FRAGMENT = 7, MOVE_TO_RECOVER_ACCOUNT = 8, STR_MOVE_TO_SIGN_IN_PAGE = 9,
+            PASSWORD_EMPTY = 10, PASSWORD_SHORT = 51;
 
     // Values that doesn't related to above condition
     public static final int SUB_HEADING_TEXT_SIZE = 60, QUOTATION_TEXT_SIZE = 50,
-            HIGHLIGHT_SIZE = 30;
+            HIGHLIGHT_SIZE = 30, MAXIMUM_DATA_QUERY_FIREBASE = 3, ARTICLE_SIZE_ON_HOME = 200;
 
     public static final String STR_CLICKED = "clicked", STR_AUTHOR = "Author", STR_PUBLIC = "public",
             STR_ONLY_ME = "only me", STR_DISMISS = "dismiss", STR_CREATE_TAG = "create tag",
-            STR_ARTICLE = FireConstants.STR_ARTICLE, STR_OPINION = FireConstants.STR_OPINIONS;
+            STR_ARTICLE = FireConstants.STR_ARTICLE, STR_OPINION = FireConstants.STR_OPINIONS,
+            TIME_ZONE_ID = "Asia/Dhaka";
 
     public static final char SUB_HEAD_LINE_SIGN = '*', QUOTATION_SIGN = '"', HYPER_LINK_SIGN = '~',
             LEFT_BRACKET = '[', RIGHT_BRACKET = ']', HIGHLIGHT_SIGN = '#',
@@ -127,7 +122,21 @@ public class DataModel {
     public MyTime getCurrentMyTime(){
         // Thu Sep 01 23:19:10 GMT+06:00 2022
 
-        String date = new Date().toString(), dayName = date.substring(0, 3), monthName = date.substring(4, 7),
+        String date = new Date().toString();
+
+        return getMyTimeFromDateString(date);
+    }
+
+    public static long calenderTimeInMill(){
+
+        TimeZone timeZone = TimeZone.getTimeZone(TIME_ZONE_ID);
+        Calendar calendar = new GregorianCalendar(timeZone);
+
+        return calendar.getTimeInMillis();
+    }
+
+    private static MyTime getMyTimeFromDateString(String date){
+       String dayName = date.substring(0, 3), monthName = date.substring(4, 7),
                 dayInt = date.substring(8, 10), hourMinSEc = date.substring(11, 19), gmt = date.substring(20, 29),
                 year = date.substring(30, 34);
 

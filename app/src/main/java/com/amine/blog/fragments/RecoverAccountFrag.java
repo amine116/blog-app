@@ -257,7 +257,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
 
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationID, verificationCodeFromUser);
 
-        Save.signInWithPhoneAuthCredential(credential, task -> {
+        UserAccount.signInWithPhoneAuthCredential(credential, task -> {
             completeProgress();
             if(task == UserAccount.SUCCESS){
                 showProvidePassLayout();

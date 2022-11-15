@@ -124,8 +124,8 @@
 
         <ProgressBar
             android:id="@+id/progress_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="25sp"
             android:layout_centerInParent="true"
             android:layout_below="@id/layout_gap1"
             android:visibility="gone"/>
@@ -327,10 +327,56 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/layout_privacy_and_security"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_signOut">
+
+                <TextView
+                    android:id="@+id/txtPrivacyAndSecurity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/privacy_and_security"
+                    android:textSize="20sp"
+                    android:textColor="@color/text_color"
+                    app:drawableEndCompat="@drawable/ic_arrow_drop_down"/>
+
+
+                <RelativeLayout
+                    android:id="@+id/layout_privacyAndSecurity"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:paddingStart="10sp"
+                    android:layout_below="@id/txtPrivacyAndSecurity">
+
+                    <ImageView
+                        android:id="@+id/imgBulletPoint7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/bullet_point_round_shape"
+                        android:contentDescription="@string/app_name"/>
+
+                    <TextView
+                        android:id="@+id/txtChangePassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/change_password"
+                        android:textColor="@color/text_color"
+                        android:gravity="start"
+                        android:paddingStart="5sp"
+                        android:paddingTop="15sp"
+                        android:layout_toEndOf="@id/imgBulletPoint7"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/layout_admin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout_signOut"
+                android:layout_below="@id/layout_privacy_and_security"
                 android:visibility="gone">
 
                 <TextView
@@ -372,7 +418,6 @@
                 </RelativeLayout>
 
             </RelativeLayout>
-
 
         </RelativeLayout>
 

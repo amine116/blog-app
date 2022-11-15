@@ -1,5 +1,7 @@
 package com.amine.blog.model;
 
+import androidx.annotation.NonNull;
+
 import com.amine.blog.viewmodel.DataModel;
 
 import java.util.ArrayList;
@@ -122,5 +124,22 @@ public class Article {
 
     public String getAuthor(){
         return DataModel.STR_AUTHOR + " - " + getNameOfOwner() + " ~ " + getUsername();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Article{" +
+                "headLine='" + headLine + '\'' +
+                ", text='" + text + '\'' +
+                ", ID='" + ID + '\'' +
+                ", nameOfOwner='" + nameOfOwner + '\'' +
+                ", username='" + username + '\'' +
+                ", privacy='" + privacy + '\'' +
+                ", numberOfLikes=" + numberOfLikes +
+                ", time=" + time +
+                ", opinions=" + opinions +
+                ", tags=" + tags +
+                '}';
     }
 }

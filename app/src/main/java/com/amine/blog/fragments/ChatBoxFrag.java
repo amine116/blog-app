@@ -1,7 +1,6 @@
 package com.amine.blog.fragments;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,27 +20,31 @@ import androidx.fragment.app.Fragment;
 
 import com.amine.blog.MainActivity;
 import com.amine.blog.R;
+import com.amine.blog.interfaces.OnReadChatMessages;
+import com.amine.blog.interfaces.OnReadLongValue;
 import com.amine.blog.interfaces.OnReadSingleMessage;
-import com.amine.blog.interfaces.OnWaitListener;
+import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.ChatMessage;
-import com.amine.blog.repositories.CurrentNode;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.repositories.Save;
 import com.amine.blog.viewmodel.DataModel;
+
+import java.util.ArrayList;
 
 public class ChatBoxFrag extends Fragment implements View.OnClickListener, OnReadSingleMessage {
 
     private EditText edtMessage;
     private ImageButton btnSendMessage;
 
-    private LinearLayout layoutMessages;
-    private ProgressBar pBar;
+    private LinearLayout layoutMessages, layout_showMoreMessage;
+    private ProgressBar pBar, prShowMoreMessage;
     private ScrollView sView;
-    private TextView txtChatHead;
+    private TextView txtChatHead, txtShowMoreMessage;
 
     private Context context;
 
     private String receiverUsername, receiverProfileName, myUsername;
+    private long lastMessageTimeInMill = 1;
 
     public ChatBoxFrag(){}
 
@@ -71,12 +74,18 @@ public class ChatBoxFrag extends Fragment implements View.OnClickListener, OnRea
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
+        txtShowMoreMessage = view.findViewById(R.id.txtShowMoreMessage);
         edtMessage = view.findViewById(R.id.edtMessage);
         btnSendMessage = view.findViewById(R.id.btnSendMessage);
-        btnSendMessage.setOnClickListener(this);
+
         layoutMessages = view.findViewById(R.id.layout_messages);
+        layout_showMoreMessage = view.findViewById(R.id.layout_showMoreMessage);
         pBar = view.findViewById(R.id.progress_chatBox);
+        prShowMoreMessage = view.findViewById(R.id.prShowMoreMessage);
         sView = view.findViewById(R.id.scroll_messages);
+
+        txtShowMoreMessage.setOnClickListener(this);
+        btnSendMessage.setOnClickListener(this);
 
         myUsername = MainActivity.userBasicInfo.getUserName();
 
@@ -95,10 +104,34 @@ public class ChatBoxFrag extends Fragment implements View.OnClickListener, OnRea
                 String messageId = new Save().getMessageId(receiverUsername, myUsername);
 
                 ChatMessage chatMessage = new ChatMessage(message, messageId, myUsername, receiverUsername,
-                        new DataModel().getCurrentMyTime());
+                        new DataModel().getCurrentMyTime(), -DataModel.calenderTimeInMill());
                 new Save().saveMyMessage(receiverUsername, myUsername, chatMessage);
             }
             edtMessage.setText("");
+        }
+        else if(view.getId() == txtShowMoreMessage.getId()){
+            txtShowMoreMessage.setVisibility(View.GONE);
+            prShowMoreMessage.setVisibility(View.VISIBLE);
+            readMoreMessage();
+        }
+    }
+
+    private void readMoreMessage(){
+        if(lastMessageTimeInMill != 1){
+            Retrieve.readMessages(myUsername, receiverUsername, lastMessageTimeInMill, false,
+                    (chatMessages, task) -> {
+                if(chatMessages.size() > 0){
+                    lastMessageTimeInMill = chatMessages.get(chatMessages.size() - 1).getTimeInMill();
+                }
+                setMessagesToChatBox(chatMessages, true);
+
+                prShowMoreMessage.setVisibility(View.GONE);
+                txtShowMoreMessage.setVisibility(View.VISIBLE);
+            });
+        }
+        else{
+            prShowMoreMessage.setVisibility(View.GONE);
+            txtShowMoreMessage.setVisibility(View.VISIBLE);
         }
     }
 
@@ -189,10 +222,28 @@ public class ChatBoxFrag extends Fragment implements View.OnClickListener, OnRea
     }
 
     private void setListenerForSingleMessageReceived(){
-        Retrieve retrieve = new Retrieve("false");
-        retrieve.setOnSingleMessageListener(this);
-        retrieve.readSingleMessage(myUsername, receiverUsername);
 
+        Retrieve.readInstantMessageSent(myUsername, receiverUsername, this);
+
+        Retrieve.readLastMessageTimeInMill(myUsername, receiverUsername, value -> {
+            if(value != 1){
+                Retrieve.readMessages(myUsername, receiverUsername, value, true, (chatMessages, task) -> {
+                    if(chatMessages.size() > 0){
+                        lastMessageTimeInMill = chatMessages.get(chatMessages.size() - 1).getTimeInMill();
+                    }
+                    makeChatViewVisible();
+                    setMessagesToChatBox(chatMessages, false);
+                });
+            }
+            else{
+                makeChatViewVisible();
+            }
+        });
+
+
+//        Retrieve retrieve = new Retrieve("false");
+//        retrieve.setOnSingleMessageListener(this);
+//        retrieve.readSingleMessage(myUsername, receiverUsername);
 
         Retrieve.getActivityStatus(receiverUsername, task -> {
             if(task == DataModel.YES){
@@ -206,9 +257,17 @@ public class ChatBoxFrag extends Fragment implements View.OnClickListener, OnRea
         });
     }
 
+    private void setMessagesToChatBox(ArrayList<ChatMessage> chatMessages, boolean isReadingMore){
+        for(int i = 0; i < chatMessages.size(); i++){
+            layoutMessages.addView(getChatMessageView(chatMessages.get(i)), 0);
+        }
+        if (!isReadingMore) {
+            sView.post(() -> sView.fullScroll(ScrollView.FOCUS_DOWN));
+        }
+    }
+
     @Override
     public void onReadMessage(ChatMessage chatMessage) {
-        makeChatViewVisible();
         if(chatMessage != null){
             layoutMessages.addView(getChatMessageView(chatMessage));
             sView.post(() -> sView.fullScroll(ScrollView.FOCUS_DOWN));

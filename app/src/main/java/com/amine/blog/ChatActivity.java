@@ -158,12 +158,9 @@ public class ChatActivity extends AppCompatActivity{
         listedUsernames.put(username, username);
         LinearLayout layoutChatList = findViewById(R.id.layout_chatList);
 
-        View view = layoutChatList.findViewWithTag(username);
-        if(view != null && !isAdded){
-            layoutChatList.removeView(view);
-        }
         if(isAdded){
             if(isNew){
+                layoutChatList.removeView(layoutChatList.findViewWithTag(username));
                 layoutChatList.addView(getChatListView(username, true), 0);
             }
             else{
@@ -202,14 +199,15 @@ public class ChatActivity extends AppCompatActivity{
             }
         });
 
-        view.setOnClickListener(getListenerForChatListView(txtName));
+        view.setOnClickListener(getListenerForChatListView(txtName, txtNew));
         view.setTag(friendsUsername);
 
         return view;
     }
 
-    private View.OnClickListener getListenerForChatListView(TextView txtUsername){
+    private View.OnClickListener getListenerForChatListView(TextView txtUsername, TextView txtNew){
         return view -> {
+            txtNew.setVisibility(View.GONE);
             String username = txtUsername.getText().toString();
             Intent intent = new Intent(ChatActivity.this, ChatActivity.class);
             intent.putExtra("INTENT_TYPE", ChatActivity.CHAT_BOX);

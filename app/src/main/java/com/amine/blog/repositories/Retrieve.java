@@ -9,9 +9,12 @@ import com.amine.blog.MainActivity;
 import com.amine.blog.interfaces.ExistListener;
 import com.amine.blog.interfaces.OnReadAllOpinionsListener;
 import com.amine.blog.interfaces.OnReadArticleEditHistory;
+import com.amine.blog.interfaces.OnReadArticleListener;
 import com.amine.blog.interfaces.OnReadArticleUnderATag;
 import com.amine.blog.interfaces.OnReadChatList;
+import com.amine.blog.interfaces.OnReadChatMessages;
 import com.amine.blog.interfaces.OnReadListener;
+import com.amine.blog.interfaces.OnReadLongValue;
 import com.amine.blog.interfaces.OnReadSingleArticle;
 import com.amine.blog.interfaces.OnReadSingleMessage;
 import com.amine.blog.interfaces.OnReadSingleOpinion;
@@ -39,6 +42,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -214,6 +218,10 @@ public class Retrieve {
         return FirebaseDatabase.getInstance().getReference();
     }
 
+    public static FirebaseAuth getAuth(){
+        return FirebaseAuth.getInstance();
+    }
+
     public static FirebaseAuth getFirebaseAuth(){
         return FirebaseAuth.getInstance();
     }
@@ -253,28 +261,115 @@ public class Retrieve {
         });
     }
 
-    public void getArticleList(){
-        reference = database.getReference().child(FireConstants.STR_ARTICLE);
-        //ArrayList<Article> articles = new ArrayList<>();
+    public static void getRecentArticleList(OnReadArticleListener onReadArticle, String startingArticleId){
 
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        ArrayList<Article> articles = new ArrayList<>();
+
+        Query query = getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
+                .orderByChild("id").startAfter(startingArticleId).limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+
+//        DatabaseReference ref = getRootReference().child(FireConstants.STR_RECENT_ARTICLES);
+//
+//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//                    for(DataSnapshot item : snapshot.getChildren()){
+//                        if(item.getKey() != null){
+//                            Article article = new DataModel().formArticle(snapshot.child(item.getKey()));
+//                            articles.add(article);
+//                        }
+//                    }
+//                    onReadArticle.onReadArticle(articles, UserAccount.SUCCESS);
+//                }
+//                else{
+//                    onReadArticle.onReadArticle(articles, UserAccount.FAIL);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                onReadArticle.onReadArticle(null, UserAccount.FAIL);
+//            }
+//        });
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-                    readListener.onRead(snapshot);
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        if (item.getKey() != null){
+                            Article article = new DataModel().formArticle(snapshot.child(item.getKey()));
+                            articles.add(article);
+                        }
+                    }
+                    onReadArticle.onReadArticle(articles, UserAccount.SUCCESS);
                 }
                 else{
-                    readListener.onRead(null);
+                    onReadArticle.onReadArticle(articles, UserAccount.FAIL);
                 }
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                onReadArticle.onReadArticle(null, UserAccount.FAIL);
 
             }
         });
+    }
+
+    public static void getFirstRecentArticles(OnReadArticleListener onReadArticle){
+        ArrayList<Article> articles = new ArrayList<>();
+
+        Query query = getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
+                        .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        if (item.getKey() != null){
+                            Article article = new DataModel().formArticle(snapshot.child(item.getKey()));
+                            articles.add(article);
+                        }
+                    }
+                    onReadArticle.onReadArticle(articles, UserAccount.SUCCESS);
+                }
+                else{
+                    onReadArticle.onReadArticle(articles, UserAccount.FAIL);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                onReadArticle.onReadArticle(null, UserAccount.FAIL);
+
+            }
+        });
+    }
+
+    public static void getLastArticleId(OnWaitListenerWithStringInfo onWait){
+        getRootReference().child(FireConstants.STR_LAST_ARTICLE_ID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()){
+                            String articleId = snapshot.getValue(String.class);
+                            onWait.onWaitWithInfo(UserAccount.SUCCESS, articleId);
+                        }
+                        else {
+                            onWait.onWaitWithInfo(UserAccount.FAIL, null);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        onWait.onWaitWithInfo(UserAccount.FAIL, null);
+                    }
+                });
     }
 
     public void getSinglePrivateArticleList(String myUsername){
@@ -481,34 +576,6 @@ public class Retrieve {
         });
     }
 
-    public void readAllOpinionsOfTheArticleOnce(){
-        // node = article id;
-        reference = database.getReference().child(FireConstants.STR_ARTICLE).child(node)
-                .child(FireConstants.STR_OPINIONS);
-
-        ArrayList<Opinion> opinions = new ArrayList<>();
-
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    opinions.clear();
-                    for(DataSnapshot item : snapshot.getChildren()){
-                        assert item.getKey() != null;
-                        Opinion opinion = snapshot.child(item.getKey()).getValue(Opinion.class);
-                        opinions.add(opinion);
-                    }
-                }
-                allOpinionsReadListener.onReadAllOpinions(opinions);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     public void readSingleOpinionOfTheArticle(){
         // node = article id;
         reference = database.getReference().child(FireConstants.STR_ARTICLE).child(node)
@@ -575,61 +642,98 @@ public class Retrieve {
         });
     }
 
-    public void readAllMessagesOnce(String myUsername, String friendsUsername){
-        reference = database.getReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
-                .child(friendsUsername);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+    public static void readMessages(String myUsername, String friendsUsername, long startAfter, boolean isFirstRead,
+                                    OnReadChatMessages onReadMessage){
+        Query query;
+        if(isFirstRead){
+            query = getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
+                    .child(friendsUsername).orderByChild(FireConstants.STR_TIME_IN_MILL).startAt((double)startAfter)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
+        else{
+            query = getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
+                    .child(friendsUsername).orderByChild(FireConstants.STR_TIME_IN_MILL).startAfter((double)startAfter)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
+
+        ArrayList<ChatMessage> chatMessages = new ArrayList<>();
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    readListener.onRead(snapshot);
+                if(snapshot.exists()){
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        if(item.getKey() != null){
+                            if(!item.getKey().equals("last-message")){
+                                ChatMessage chatMessage = item.getValue(ChatMessage.class);
+                                chatMessages.add(chatMessage);
+                            }
+                        }
+                    }
+                    onReadMessage.onReadChatMessage(chatMessages, DataModel.YES);
                 }
                 else{
-                    readListener.onRead(null);
+                    onReadMessage.onReadChatMessage(chatMessages, DataModel.NO);
                 }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                onReadMessage.onReadChatMessage(chatMessages, DataModel.NO);
             }
         });
+
+        // TODO
+        //  1. make a node 'timeInMill of last message' in firebase.
+        //  2. read the last message time
+        //  3. start reading querying with the last message time (order by child).
     }
 
-    public void readSingleMessage(String myUsername, String friendsUsername){
-        reference = database.getReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
-                .child(friendsUsername);
+    public static void readLastMessageTimeInMill(String myUsername, String friendsUsername,
+                                                 OnReadLongValue onWait) {
 
-        reference.addChildEventListener(new ChildEventListener() {
+        DatabaseReference ref = getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
+                .child(friendsUsername).child(FireConstants.STR_LAST_MESSAGE_TIME_IN_MILL);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-                    singleMessageListener.onReadMessage(snapshot.getValue(ChatMessage.class));
+                    onWait.onReadLongValue(snapshot.getValue(Long.class));
                 }
                 else{
-                    singleMessageListener.onReadMessage(null);
+                    onWait.onReadLongValue(1);
                 }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                onWait.onReadLongValue(1);
+            }
+        });
 
+    }
+
+    public static void readInstantMessageSent(String myUsername, String friendsUsername,
+                                              OnReadSingleMessage onReadSingleMessage){
+        DatabaseReference reference = Retrieve.getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
+                .child(friendsUsername).child(FireConstants.STR_LAST_MESSAGE);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    onReadSingleMessage.onReadMessage(snapshot.getValue(ChatMessage.class));
+                    reference.removeValue();
+                }
+                else{
+                    onReadSingleMessage.onReadMessage(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                onReadSingleMessage.onReadMessage(null);
             }
         });
     }
@@ -665,8 +769,8 @@ public class Retrieve {
 //
 //            }
 //        });
-        ArrayList<ArticlesUnderTag> chatList = new ArrayList<>();
 
+        ArrayList<ArticlesUnderTag> chatList = new ArrayList<>();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

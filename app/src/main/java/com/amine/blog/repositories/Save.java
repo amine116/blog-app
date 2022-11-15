@@ -1,6 +1,8 @@
 package com.amine.blog.repositories;
 
+import android.content.Context;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -40,6 +42,7 @@ public class Save {
     private static DatabaseReference reference;
 
     public Save(){}
+
 
     public void saveUserPublicInfo(String username, UserBasicInfo userBasicInfo, ArrayList<String>hobbies,
                                           ArrayList<String> expertise){
@@ -86,6 +89,16 @@ public class Save {
         savePhoneNumb(username, email);
     }
 
+    public static void saveNewPass(String myUsername, String newPass) {
+        reference = database.getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(myUsername).child(FireConstants.STR_OLD_PASSWORD);
+        reference.setValue(newPass);
+
+        reference = database.getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(myUsername).child(FireConstants.STR_NEW_PASSWORD);
+        reference.setValue("");
+    }
+
     public void savePhoneNumb(String myUsername, String phoneNumb){
         reference = database.getReference().child(FireConstants.STR_ADMIN)
                 .child(FireConstants.STR_ACCOUNT_RECOVER_INFO).child(myUsername);
@@ -106,32 +119,133 @@ public class Save {
     }
 
     public void saveArticle(Article article, boolean[] isTagSuggested){
-        reference = database.getReference().child(FireConstants.STR_ARTICLE).child(article.getID());
-        //reference.setValue(article);
-        // saving article info
-        reference.child(FireConstants.STR_ARTICLE_HEADLINE).setValue(article.getHeadLine());
-        reference.child(FireConstants.STR_ARTICLE_ID).setValue(article.getID());
-        reference.child(FireConstants.STR_NAME_OF_OWNER).setValue(article.getNameOfOwner());
-        reference.child(FireConstants.STR_NUMBER_OF_LIKES).setValue(article.getNumberOfLikes());
-        reference.child(FireConstants.STR_ARTICLE_TEXT).setValue(article.getText());
-        reference.child(FireConstants.STR_TIME).setValue(article.getTime());
-        reference.child(FireConstants.STR_USERNAME).setValue(article.getUsername());
-        reference.child(FireConstants.STR_PRIVACY).setValue(article.getPrivacy());
 
-        saveTags(article, isTagSuggested);
-        saveOpinions(article);
+        saveArticleInDirectory(Retrieve.getRootReference().child(FireConstants.STR_ARTICLE),
+                article, isTagSuggested);
 
-        setArticleAsRecent(article.getID());
+        setArticleAsRecent(Retrieve.getRootReference().child(FireConstants.STR_RECENT_ARTICLES), article,
+                isTagSuggested);
 
+        // saving last article
+        Retrieve.getRootReference().child(FireConstants.STR_LAST_ARTICLE_ID).setValue(article.getID());
+
+        // saving article id under tags
         for(int i = 0; i < article.getTags().size(); i++){
             if(!isTagSuggested[i]){
                 saveInTags(article.getTags().get(i), article.getID(), article.getHeadLine());
             }
         }
+
+        // saving article under my profile
         SharedArticle shArt = new SharedArticle(article.getUsername(), article.getUsername(), article.getID(),
                 article.getTime());
-
         saveArticleInMyProfile(article.getUsername(), shArt);
+
+        increaseArticleNumber();
+    }
+
+    private void saveArticleInDirectory(DatabaseReference reference, Article article, boolean[] isTagSuggested){
+
+        reference.child(article.getID()).child(FireConstants.STR_ARTICLE_HEADLINE).setValue(article.getHeadLine());
+        reference.child(article.getID()).child(FireConstants.STR_ARTICLE_ID).setValue(article.getID());
+        reference.child(article.getID()).child(FireConstants.STR_NAME_OF_OWNER).setValue(article.getNameOfOwner());
+        reference.child(article.getID()).child(FireConstants.STR_NUMBER_OF_LIKES).setValue(article.getNumberOfLikes());
+        reference.child(article.getID()).child(FireConstants.STR_ARTICLE_TEXT).setValue(article.getText());
+        reference.child(article.getID()).child(FireConstants.STR_TIME).setValue(article.getTime());
+        reference.child(article.getID()).child(FireConstants.STR_USERNAME).setValue(article.getUsername());
+        reference.child(article.getID()).child(FireConstants.STR_PRIVACY).setValue(article.getPrivacy());
+
+        saveTags(reference, article, isTagSuggested);
+        saveOpinions(reference, article);
+    }
+
+    // TODO
+    //  Recent articles - reverse order :(
+    public static void saveRecentArticleInReverseOrder(ArrayList<Article> articles, Context context){
+        DatabaseReference ref = Retrieve.getRootReference().child(FireConstants.STR_RECENT_ARTICLES);
+        //ref.removeValue();
+
+        for(int i = 0; i < articles.size(); i++){
+            Article article = articles.get(i);
+            String revId = article.getID();
+
+            /*
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(!task.isSuccessful()){
+
+                                        if(task.getException() != null){
+                                            Toast.makeText(context, task.getException().toString(),
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                    else{
+                                        Toast.makeText(context, "Success",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+             */
+
+            ref.child(revId).child(FireConstants.STR_ARTICLE_HEADLINE).setValue(article.getHeadLine());
+            ref.child(revId).child(FireConstants.STR_ARTICLE_ID).setValue(article.getID());
+            ref.child(revId).child(FireConstants.STR_NAME_OF_OWNER).setValue(article.getNameOfOwner());
+            ref.child(revId).child(FireConstants.STR_NUMBER_OF_LIKES).setValue(article.getNumberOfLikes());
+            ref.child(revId).child(FireConstants.STR_ARTICLE_TEXT).setValue(article.getText());
+            ref.child(revId).child(FireConstants.STR_TIME).setValue(article.getTime());
+            ref.child(revId).child(FireConstants.STR_USERNAME).setValue(article.getUsername());
+            ref.child(revId).child(FireConstants.STR_PRIVACY).setValue(article.getPrivacy());
+
+            for(int j = 0; j < article.getTags().size(); j++){
+                String tag = article.getTags().get(j);
+                ref.child(revId).child(FireConstants.STR_TAGS).child(tag).setValue(tag);
+            }
+
+            reference = ref.child(revId);
+
+            for(int j = 0; j < article.getOpinions().size(); j++){
+                reference.child(FireConstants.STR_OPINIONS).child(article.getOpinions().get(j).getId())
+                        .setValue(article.getOpinions().get(j));
+            }
+        }
+
+    }
+
+    private void increaseArticleNumber(){
+        reference = Retrieve.getRootReference().child(FireConstants.STR_NUMBER_OF_ARTICLE);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    int numOfArt = snapshot.getValue(Integer.class);
+                    reference.setValue(numOfArt + 1);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void decreaseArticleNumber(){
+        reference = Retrieve.getRootReference().child(FireConstants.STR_NUMBER_OF_ARTICLE);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    int numOfArt = snapshot.getValue(Integer.class);
+                    reference.setValue(numOfArt - 1);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void savePrivateArticle(Article article, boolean[] isTagSuggested){
@@ -203,6 +317,8 @@ public class Save {
             reference = database.getReference().child(FireConstants.STR_USER).child(article.getUsername())
                     .child(FireConstants.STR_ARTICLE).child(article.getID());
             reference.removeValue();
+
+            decreaseArticleNumber();
         }
         else if(article.getPrivacy().equals(DataModel.STR_ONLY_ME) && newPrivacy.equals(DataModel.STR_ONLY_ME)){
 
@@ -226,20 +342,21 @@ public class Save {
 
     }
 
-    private void saveOpinions(Article article){
-        reference = database.getReference().child(FireConstants.STR_ARTICLE).child(article.getID());
+    private void saveOpinions(DatabaseReference reference, Article article){
+        reference = reference.child(article.getID());
+
         for(int i = 0; i < article.getOpinions().size(); i++){
             reference.child(FireConstants.STR_OPINIONS).child(article.getOpinions().get(i).getId())
                     .setValue(article.getOpinions().get(i));
         }
     }
 
-    private void saveTags(Article article, boolean[] isTagSuggested){
-        reference = database.getReference().child(FireConstants.STR_ARTICLE).child(article.getID());
+    private void saveTags(DatabaseReference reference, Article article, boolean[] isTagSuggested){
+
         for(int i = 0; i < article.getTags().size(); i++){
             String tag = article.getTags().get(i);
             if(!isTagSuggested[i]) {
-                reference.child(FireConstants.STR_TAGS).child(tag).setValue(tag);
+                reference.child(article.getID()).child(FireConstants.STR_TAGS).child(tag).setValue(tag);
             }
             else{
                 saveSuggestedTag(tag, article);
@@ -300,8 +417,8 @@ public class Save {
 
     }
 
-    public void setArticleAsRecent(String articleId){
-        database.getReference().child(FireConstants.STR_RECENT_ARTICLES).child(articleId).setValue(articleId);
+    public void setArticleAsRecent(DatabaseReference reference, Article article, boolean[] isTagSuggested){
+        saveArticleInDirectory(reference, article, isTagSuggested);
     }
 
     public void saveInTags(String tagName, String articleId, String headLine){
@@ -411,13 +528,28 @@ public class Save {
         // saving message to my end
         reference = database.getReference().child(FireConstants.STR_PERSONAL_CHAT)
                 .child(myUsername).child(receiverUsername).child(chatMessage.getMessageId());
-
         reference.setValue(chatMessage);
+
+        reference = Retrieve.getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
+                .child(receiverUsername).child(FireConstants.STR_LAST_MESSAGE_TIME_IN_MILL);
+        reference.setValue(chatMessage.getTimeInMill());
+
+        reference = Retrieve.getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
+                .child(receiverUsername).child(FireConstants.STR_LAST_MESSAGE);
+        reference.setValue(chatMessage);
+
 
         // saving message to the receiver end
         reference = database.getReference().child(FireConstants.STR_PERSONAL_CHAT)
                 .child(receiverUsername).child(myUsername).child(chatMessage.getMessageId());
+        reference.setValue(chatMessage);
 
+        reference = Retrieve.getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(receiverUsername)
+                .child(myUsername).child(FireConstants.STR_LAST_MESSAGE_TIME_IN_MILL);
+        reference.setValue(chatMessage.getTimeInMill());
+
+        reference = Retrieve.getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(receiverUsername)
+                .child(myUsername).child(FireConstants.STR_LAST_MESSAGE);
         reference.setValue(chatMessage);
 
         // sending receiver a notification
@@ -428,6 +560,9 @@ public class Save {
         reference.setValue(chatMessage.getText());
 
         // saving receiver to my chat list
+        Retrieve.getRootReference().child(FireConstants.STR_CHAT_STATUSES)
+                .child(FireConstants.STR_CHAT_LIST).child(receiverUsername).child(myUsername)
+                .setValue(chatMessage.getText());
         Retrieve.getRootReference().child(FireConstants.STR_CHAT_STATUSES)
                 .child(FireConstants.STR_CHAT_LIST).child(myUsername).child(receiverUsername)
                 .setValue(chatMessage.getText());
@@ -494,27 +629,4 @@ public class Save {
                 .child(FireConstants.STR_FEEDBACK).child(reportToBlog.getReporterUserName())
                 .child(reportToBlog.getReportId());
     }
-
-    public static void signInWithPhoneAuthCredential(PhoneAuthCredential credential, OnWaitListener waitListener){
-
-        FirebaseAuth fAuth = Retrieve.getFirebaseAuth();
-        fAuth.signInWithCredential(credential)
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-
-                        fAuth.signOut();
-                        FirebaseUser user = task.getResult().getUser();
-                        if(user != null ) {
-                            user.delete();
-                        }
-
-                        waitListener.onWaitCallback(UserAccount.SUCCESS);
-                    }
-                    else{
-                        waitListener.onWaitCallback(UserAccount.FAIL);
-                    }
-                });
-
-    }
-
 }

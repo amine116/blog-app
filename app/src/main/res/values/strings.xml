@@ -1,6 +1,6 @@
 <resources>
 
-    <!-- constant values: 1-10, 11-20, 21-30, 31-40, 41-50-->
+    <!-- constant values: 1-10, 11-20, 21-30, 31-40, 41-50, 51-60-->
 
     <string name="app_name">Blog</string>
     <string name="imgText_people">people</string>
@@ -113,4 +113,8 @@
     <string name="enter_new_password">Enter new password</string>
     <string name="change_password">Change Password</string>
     <string name="country">Country-</string>
+    <string name="privacy_and_security">Privacy and Security</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="change">Change</string>
 </resources>

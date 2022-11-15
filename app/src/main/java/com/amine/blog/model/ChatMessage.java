@@ -3,15 +3,18 @@ package com.amine.blog.model;
 public class ChatMessage {
     private String text, messageId, senderUsername, receiverUsername;
     private MyTime time;
+    private long timeInMill;
 
     public ChatMessage(){}
 
-    public ChatMessage(String text, String messageId, String senderUsername, String receiverUsername, MyTime time) {
+    public ChatMessage(String text, String messageId, String senderUsername, String receiverUsername, MyTime time,
+                       long timeInMill) {
         this.text = text;
         this.messageId = messageId;
         this.senderUsername = senderUsername;
         this.receiverUsername = receiverUsername;
         this.time = time;
+        this.timeInMill = timeInMill;
     }
 
     public String getText() {
@@ -52,5 +55,13 @@ public class ChatMessage {
 
     public void setTime(MyTime time) {
         this.time = time;
+    }
+
+    public long getTimeInMill() {
+        return timeInMill;
+    }
+
+    public void setTimeInMill(long timeInMill) {
+        this.timeInMill = timeInMill;
     }
 }

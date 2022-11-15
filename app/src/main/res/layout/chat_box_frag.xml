@@ -20,13 +20,44 @@
         android:layout_weight="70">
 
         <LinearLayout
-            android:id="@+id/layout_messages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/layout_showMoreMessage"
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:orientation="horizontal">
 
 
+                <TextView
+                    android:id="@+id/txtShowMoreMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:text="@string/show_more"
+                    android:textColor="@color/head_line_color"
+                    android:gravity="center"/>
+
+
+                <ProgressBar
+                    android:id="@+id/prShowMoreMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_messages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
+
+            </LinearLayout>
 
         </LinearLayout>
 

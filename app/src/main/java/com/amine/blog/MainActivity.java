@@ -2,24 +2,20 @@ package com.amine.blog;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.DrawableMarginSpan;
 import android.text.style.UnderlineSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +27,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amine.blog.dialogs.SimpleDialog;
 import com.amine.blog.fragments.CreateAccFrag1;
 import com.amine.blog.fragments.CreateAccFrag2;
 import com.amine.blog.fragments.EditProfileFrag;
@@ -39,16 +36,17 @@ import com.amine.blog.fragments.PeopleFrag;
 import com.amine.blog.fragments.RecoverAccountFrag;
 import com.amine.blog.fragments.SignInFrag;
 import com.amine.blog.fragments.SignInFrag2;
+import com.amine.blog.fragments.UpdatePasswordFrag;
 import com.amine.blog.fragments.WriteArticleAddTagFrag;
 import com.amine.blog.fragments.WriteArticleFrag;
 import com.amine.blog.interfaces.CallbackForFr2;
 import com.amine.blog.interfaces.ExistListener;
+import com.amine.blog.interfaces.OnReadArticleListener;
 import com.amine.blog.interfaces.OnReadListener;
 import com.amine.blog.interfaces.OnReadUserBasicInfoListener;
 import com.amine.blog.interfaces.OnWaitListener;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.Article;
-import com.amine.blog.model.MyPair;
 import com.amine.blog.model.UserBasicInfo;
 import com.amine.blog.repositories.FireConstants;
 import com.amine.blog.repositories.Retrieve;
@@ -62,14 +60,20 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, CallbackForFr2,
         OnReadUserBasicInfoListener, OnReadListener, OnWaitListener, OnWaitListenerWithStringInfo,
-        ExistListener {
+        ExistListener, OnReadArticleListener {
 
     private FragmentManager fm;
     private FragmentTransaction ft;
     public static UserBasicInfo userBasicInfo;
     public static boolean isGuest;
-    private final int runThreadFor = 30;
+    private final int runThreadFor = 30, MAXIMUM_NUMBER_OF_FRAGMENT = 15;
     private boolean isMessageAnimationRunning = false, isActive = true;
+    private String lastReadArticleId;
+
+    private int currentFragment = -1;
+    private final Fragment[] fragments = new Fragment[MAXIMUM_NUMBER_OF_FRAGMENT];
+
+    private ProgressBar moreArticleReadInProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,31 +84,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(actionBar != null) actionBar.hide();
 
         //testingDrawableMargin();
+        getReadingMoreArticleProgress();
         readMyBasicInfo();
 
-    }
-
-    private void testingDrawableMargin(){
-        String s = "Hey dear, how are you? let me tell you some important points-" +
-                "<Never insult anyone.<May be they will be your friend one day.>Of course it is possible. just try" +
-                "for a while, you will see the inevitable reality of human psychology.<>" +
-                "<You might need him one day>><Trust everyone. <Doing an action cross check first.><Don't depend.>>" +
-                "<Never do the wrong things.><Always smile.> Now this is the time to flourish friendship, right?";
-
-        DataModel.getBulletAdded2(s, (articleText, bulletPoints) -> {
-            SpannableString tempSpan = new SpannableString(articleText);
-            for(int i = 0; i < bulletPoints.size(); i++){
-
-                if(bulletPoints.get(i).getFirst() < bulletPoints.get(i).getSecond() + 1){
-                    tempSpan.setSpan(new DrawableMarginSpan(ContextCompat.getDrawable(MainActivity.this,
-                                    R.drawable.round_shape_green), 15),
-                            bulletPoints.get(i).getFirst(), bulletPoints.get(i).getSecond() + 1,
-                            Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-
-
-                }
-            }
-        });
     }
 
     private void readMyBasicInfo(){
@@ -141,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.layout_go_following).setOnClickListener(this);
         findViewById(R.id.layout_editProfile).setOnClickListener(this);
         findViewById(R.id.layout_suggestedTags).setOnClickListener(this);
+        findViewById(R.id.layout_privacyAndSecurity).setOnClickListener(this);
 
     }
 
@@ -161,43 +144,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             dl.openDrawer(GravityCompat.START);
             // Actions and visibility of buttons of drawer layout
         }
-        // Commented where menu items would be hidden by click
-        /*
-        else if(view.getId() == R.id.txtUtilityButton){
-            RelativeLayout rl = findViewById(R.id.layout_utility_writeArticle),
-                    rlCAc = findViewById(R.id.layout_createAcc);
-            TextView tv = findViewById(R.id.txtUtilityButton);
-
-
-            Drawable dUp = AppCompatResources.getDrawable(this, R.drawable.ic_arrow_drop_up),
-                    dDown = AppCompatResources.getDrawable(this, R.drawable.ic_arrow_drop_up);
-
-
-
-            if(rl.getVisibility() == View.GONE) {
-                rl.setVisibility(View.VISIBLE);
-                rlCAc.setVisibility(View.VISIBLE);
-
-                tv.setCompoundDrawablesWithIntrinsicBounds(
-                        0, 0, R.drawable.ic_arrow_drop_up, 0);
-            }
-            else{
-                rl.setVisibility(View.GONE);
-                rlCAc.setVisibility(View.GONE);
-                tv.setCompoundDrawablesWithIntrinsicBounds(
-                        0, 0, R.drawable.ic_arrow_drop_down, 0);
-            }
-
-
-        }
-         */
-
         else if(view.getId() == R.id.imgHome){
             removeAllFragment();
             makeViewsInvisible();
             readMyBasicInfo();
         }
-
         else if(view.getId() == R.id.layout_write_article){
 
             if(!isGuest){
@@ -218,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Guest can't use this option", Toast.LENGTH_LONG).show();
             }
         }
-
         else if(view.getId() == R.id.layout_signOut){
 
             DialogInterface.OnClickListener listener = (dialogInterface, i) -> {
@@ -236,7 +186,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setNegativeButton("No", listener);
             builder.show();
         }
-
         else if(view.getId() == R.id.imgMyProfile){
             if(!isGuest){
                 Intent intent = new Intent(MainActivity.this, ProfileView.class);
@@ -247,12 +196,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Guest can't use this option", Toast.LENGTH_LONG).show();
             }
         }
-
         else if(view.getId() == R.id.layout_browse_article){
             Intent intent = new Intent(MainActivity.this, TagWiseArticleActivity.class);
             startActivity(intent);
         }
-
         else if(view.getId() == R.id.imgChat){
 
             if(!isGuest){
@@ -270,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Guest can't use this option", Toast.LENGTH_LONG).show();
             }
         }
-
         else if(view.getId() == R.id.imgPeople){
             if(!isGuest){
                 prepareForFragment();
@@ -283,7 +229,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Guest can't use this option", Toast.LENGTH_LONG).show();
             }
         }
-
         else if(view.getId() == R.id.layout_go_following){
             if(!isGuest){
                 DrawerLayout dl = findViewById(R.id.drawerLayout);
@@ -299,7 +244,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Guest can't use this option", Toast.LENGTH_LONG).show();
             }
         }
-
         else if(view.getId() == R.id.layout_editProfile){
             if(!isGuest){
                 DrawerLayout dr = findViewById(R.id.drawerLayout);
@@ -315,38 +259,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Guest user can't use this option", Toast.LENGTH_SHORT).show();
             }
         }
-
         else if(view.getId() == R.id.layout_suggestedTags){
             Intent i = new Intent(MainActivity.this, ApproveTagsActivity.class);
             startActivity(i);
+        }
+        else if(view.getId() == R.id.layout_privacyAndSecurity){
+
+            DrawerLayout dr = findViewById(R.id.drawerLayout);
+            dr.close();
+
+            if(isGuest){
+                Toast.makeText(this, "Guest user can't use this option", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                prepareForFragment();
+                UpdatePasswordFrag upf = new UpdatePasswordFrag();
+                upf.setMyUsername(userBasicInfo.getUserName());
+                upf.setContext(this);
+                upf.setOnWaitListener(this);
+                addFragmentToTheFrameLayout(upf);
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
-        if(fm == null) fm = getSupportFragmentManager();
-        ft = fm.beginTransaction();
-        Fragment fragment = fm.findFragmentById(R.id.activity_main_frameLayout);
-        if(fragment != null){
-            ft.remove(fragment);
-            //fm.popBackStack();
-            ft.commit();
+//        if(fm == null) fm = getSupportFragmentManager();
+//        ft = fm.beginTransaction();
+//        Fragment fragment = fm.findFragmentById(R.id.activity_main_frameLayout);
+//        if(fragment != null){
+//            ft.remove(fragment);
+//            //fm.popBackStack();
+//            ft.commit();
+//
+//            // Go to home if the last fragment is removed
+//            /*
+//            ft = getSupportFragmentManager().beginTransaction();
+//            Fragment f = getSupportFragmentManager().findFragmentById(R.id.activity_main_frameLayout);
+//            if(f == null){
+//                makeViewsInvisible();
+//                readArticles();
+//            }
+//             */
+//
+//        }
+//        else{
+//            Save.activeStatus(userBasicInfo.getUserName(), false);
+//            isActive = false;
+//            super.onBackPressed();
+//        }
 
-            // Go to home if the last fragment is removed
-            /*
-            ft = getSupportFragmentManager().beginTransaction();
-            Fragment f = getSupportFragmentManager().findFragmentById(R.id.activity_main_frameLayout);
-            if(f == null){
-                makeViewsInvisible();
-                readArticles();
-            }
-             */
-
-        }
-        else{
+        if(!removeCurrentFragment()){
             Save.activeStatus(userBasicInfo.getUserName(), false);
             isActive = false;
             super.onBackPressed();
+        }
+    }
+
+    private boolean removeCurrentFragment(){
+
+        if(currentFragment < 0){
+            return false;
+        }
+        else{
+            if(fm == null) fm = getSupportFragmentManager();
+            ft = fm.beginTransaction();
+
+            ft.remove(fragments[currentFragment--]);
+            ft.commit();
+            if(currentFragment < 0){
+                readMyBasicInfo();
+            }
+            return true;
         }
     }
 
@@ -360,19 +344,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         LinearLayout ll = findViewById(R.id.layout_info);
-        ll.removeAllViews();
+        //ll.removeAllViews();
+        ll.removeView(moreArticleReadInProgress);
 
         for(int i = 0; i < articles.size(); i++){
 
             View view = getView(articles.get(i), i, articles.size());
-            ll.addView(view, 0);
-
+            ll.addView(view);
 
             View v = new View(this);
             v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 20));
             v.setBackgroundColor(getResources().getColor(R.color.partition_color));
             ll.addView(v);
         }
+
+        View v = getMoreArticleView();
+        ll.addView(v);
+        v.setOnClickListener(view -> {
+            ll.removeView(v);
+            ll.addView(moreArticleReadInProgress);
+            if (lastReadArticleId != null && !lastReadArticleId.isEmpty()){
+                Retrieve.getRecentArticleList(MainActivity.this, lastReadArticleId);
+            }
+            else{
+                ll.removeView(moreArticleReadInProgress);
+            }
+        });
+
+    }
+
+    private void getReadingMoreArticleProgress(){
+        moreArticleReadInProgress = new ProgressBar(this);
+        moreArticleReadInProgress.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 100));
+    }
+
+    private View getMoreArticleView(){
+        TextView v = new TextView(this);
+        v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150));
+        v.setTextColor(getResources().getColor(R.color.partition_color));
+        v.setGravity(Gravity.CENTER);
+        v.setPadding(0, 0, 0, 20);
+        String s = "More articles...";
+        v.setText(s);
+
+        return v;
     }
 
     private View getView(Article article, int i, int size){
@@ -409,18 +425,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         content.setSpan(new UnderlineSpan(), DataModel.STR_AUTHOR.length() + 3, s.length(), 0);
         txtName.setText(content);
 
-        if(article.getText().length() > 200){
+        if(article.getText().length() > DataModel.ARTICLE_SIZE_ON_HOME){
 
-            DataModel.getSpannableArticle(article.getText().substring(0, 200), this,true,
+            DataModel.getSpannableArticle(article.getText().substring(
+                    0, DataModel.ARTICLE_SIZE_ON_HOME), this,true,
                     getResources().getColor(R.color.partition_color),
                     getResources().getColor(R.color.gray),
                     getResources().getColor(R.color.bullet_point),
-                    new DataModel.CallbackForSpannable() {
-                        @Override
-                        public void onCallback(SpannableString content) {
-                            txtText.setText(content);
-                        }
-                    });
+                    txtText::setText);
             txtShowMore.setVisibility(View.VISIBLE);
         }
         else{
@@ -429,12 +441,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     getResources().getColor(R.color.partition_color),
                     getResources().getColor(R.color.gray),
                     getResources().getColor(R.color.bullet_point),
-                    new DataModel.CallbackForSpannable() {
-                        @Override
-                        public void onCallback(SpannableString content) {
-                            txtText.setText(content);
-                        }
-                    });
+                    txtText::setText);
+
+            txtShowMore.setVisibility(View.GONE);
         }
 
         s = article.getTime().toString();
@@ -597,6 +606,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ft = fm.beginTransaction();
         ft.add(R.id.activity_main_frameLayout, fragment);
         ft.commit();
+        fragments[++currentFragment] = fragment;
     }
 
     @Override
@@ -653,10 +663,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void readArticles(){
 
-        Retrieve retrieve = new Retrieve("false");
-        retrieve.setOnReadListener(this);
-        retrieve.getArticleList();
+        Retrieve.getFirstRecentArticles(this);
+    }
 
+    @Override
+    public void onReadArticle(ArrayList<Article> articles, int task) {
+        if (articles.size() > 0){
+            lastReadArticleId = articles.get(articles.size() - 1).getID();
+        }
+        makeViewsVisible();
+        showArticles(articles);
+        //Save.saveRecentArticleInReverseOrder(articles, this);
     }
 
     private void readTags(ArrayList<String> info){
@@ -690,7 +707,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(item.getKey() != null){
                     Article article = new DataModel().formArticle(snapshot.child(item.getKey()));
                     articles.add(article);
-
                 }
             }
         }
