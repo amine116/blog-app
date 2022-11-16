@@ -15,6 +15,8 @@ import com.amine.blog.model.ChatMessage;
 import com.amine.blog.model.EditHistory;
 import com.amine.blog.model.MyTime;
 import com.amine.blog.model.Opinion;
+import com.amine.blog.model.People;
+import com.amine.blog.model.RecentArticle;
 import com.amine.blog.model.ReportToBlog;
 import com.amine.blog.model.SharedArticle;
 import com.amine.blog.model.SuggestedTag;
@@ -121,13 +123,10 @@ public class Save {
     public void saveArticle(Article article, boolean[] isTagSuggested){
 
         saveArticleInDirectory(Retrieve.getRootReference().child(FireConstants.STR_ARTICLE),
-                article, isTagSuggested);
+                article, isTagSuggested, 1);
 
         setArticleAsRecent(Retrieve.getRootReference().child(FireConstants.STR_RECENT_ARTICLES), article,
                 isTagSuggested);
-
-        // saving last article
-        Retrieve.getRootReference().child(FireConstants.STR_LAST_ARTICLE_ID).setValue(article.getID());
 
         // saving article id under tags
         for(int i = 0; i < article.getTags().size(); i++){
@@ -140,11 +139,22 @@ public class Save {
         SharedArticle shArt = new SharedArticle(article.getUsername(), article.getUsername(), article.getID(),
                 article.getTime());
         saveArticleInMyProfile(article.getUsername(), shArt);
-
-        increaseArticleNumber();
     }
 
-    private void saveArticleInDirectory(DatabaseReference reference, Article article, boolean[] isTagSuggested){
+    public void setArticleAsRecent(DatabaseReference reference, Article article, boolean[] isTagSuggested){
+
+        long timeInMill = -DataModel.calenderTimeInMill();
+        // saving last article
+        Retrieve.getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
+                .child(FireConstants.STR_LAST_ARTICLE_TIME_IN_MILL).setValue(timeInMill);
+
+        saveArticleInDirectory(reference, article, isTagSuggested, timeInMill);
+
+
+    }
+
+    private void saveArticleInDirectory(DatabaseReference reference, Article article, boolean[] isTagSuggested,
+                                        long timeInMill){
 
         reference.child(article.getID()).child(FireConstants.STR_ARTICLE_HEADLINE).setValue(article.getHeadLine());
         reference.child(article.getID()).child(FireConstants.STR_ARTICLE_ID).setValue(article.getID());
@@ -154,19 +164,82 @@ public class Save {
         reference.child(article.getID()).child(FireConstants.STR_TIME).setValue(article.getTime());
         reference.child(article.getID()).child(FireConstants.STR_USERNAME).setValue(article.getUsername());
         reference.child(article.getID()).child(FireConstants.STR_PRIVACY).setValue(article.getPrivacy());
+        if(timeInMill != 1){
+            reference.child(article.getID()).child(FireConstants.STR_TIME_IN_MILL).setValue(timeInMill);
+        }
 
         saveTags(reference, article, isTagSuggested);
         saveOpinions(reference, article);
     }
 
+    public void saveEditedArticleText(Article article, String newPrivacy){
+
+        boolean[] isTagSuggested = new boolean[3];
+
+        if (article.getPrivacy().equals(DataModel.STR_ONLY_ME) && newPrivacy.equals(DataModel.STR_PUBLIC)){
+            reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
+                    .child(article.getUsername()).child(FireConstants.STR_ARTICLE).child(article.getID());
+            reference.removeValue();
+            article.setPrivacy(newPrivacy);
+            saveArticle(article, isTagSuggested);
+        }
+        else if(article.getPrivacy().equals(DataModel.STR_PUBLIC) && newPrivacy.equals(DataModel.STR_ONLY_ME)){
+
+            article.setPrivacy(newPrivacy);
+            savePrivateArticle(article, isTagSuggested);
+
+            reference = database.getReference().child(FireConstants.STR_ARTICLE).child(article.getID());
+            reference.removeValue();
+            reference = database.getReference().child(FireConstants.STR_RECENT_ARTICLES)
+                    .child(article.getID());
+            reference.removeValue();
+
+
+            for(int i = 0; i < article.getTags().size(); i++){
+                reference = database.getReference().child(FireConstants.STR_TAGS).child(article.getTags().get(i))
+                        .child(article.getID());
+                reference.removeValue();
+            }
+
+            reference = database.getReference().child(FireConstants.STR_USER).child(article.getUsername())
+                    .child(FireConstants.STR_ARTICLE).child(article.getID());
+            reference.removeValue();
+
+            decreaseArticleNumber(article.getUsername());
+        }
+        else if(article.getPrivacy().equals(DataModel.STR_ONLY_ME) && newPrivacy.equals(DataModel.STR_ONLY_ME)){
+
+            article.setPrivacy(newPrivacy);
+            savePrivateArticle(article, isTagSuggested);
+        }
+        else if(article.getPrivacy().equals(DataModel.STR_PUBLIC) && newPrivacy.equals(DataModel.STR_PUBLIC)){
+
+            reference = FirebaseDatabase.getInstance().getReference()
+                    .child(FireConstants.STR_ARTICLE).child(article.getID());
+            reference.child(FireConstants.STR_ARTICLE_TEXT).setValue(article.getText());
+            reference.child(FireConstants.STR_ARTICLE_HEADLINE).setValue(article.getHeadLine());
+            reference.child(FireConstants.STR_PRIVACY).setValue(newPrivacy);
+
+            for(int i = 0; i < article.getTags().size(); i++){
+                reference = database.getReference().child(FireConstants.STR_TAGS).child(article.getTags().get(i))
+                        .child(article.getID());
+                reference.setValue(article.getHeadLine());
+            }
+        }
+
+    }
+
     // TODO
     //  Recent articles - reverse order :(
-    public static void saveRecentArticleInReverseOrder(ArrayList<Article> articles, Context context){
+    public static void reSaveRecentArticle(ArrayList<Article> articles, Context context){
         DatabaseReference ref = Retrieve.getRootReference().child(FireConstants.STR_RECENT_ARTICLES);
         //ref.removeValue();
 
+        long timeInMill = DataModel.calenderTimeInMill();
+
         for(int i = 0; i < articles.size(); i++){
             Article article = articles.get(i);
+
             String revId = article.getID();
 
             /*
@@ -197,6 +270,7 @@ public class Save {
             ref.child(revId).child(FireConstants.STR_TIME).setValue(article.getTime());
             ref.child(revId).child(FireConstants.STR_USERNAME).setValue(article.getUsername());
             ref.child(revId).child(FireConstants.STR_PRIVACY).setValue(article.getPrivacy());
+            ref.child(revId).child(FireConstants.STR_TIME_IN_MILL).setValue(-(timeInMill++));
 
             for(int j = 0; j < article.getTags().size(); j++){
                 String tag = article.getTags().get(j);
@@ -212,14 +286,54 @@ public class Save {
         }
 
     }
+    public static void reSaveUsers(){
+        Retrieve.getRootReference().child(FireConstants.STR_USER).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot item : snapshot.getChildren()){
+                    String username = item.getKey(),
+                            lovesTo = getHobbies(item.child(FireConstants.STR_PUBLIC_INFO)
+                                    .child(FireConstants.STR_HOBBIES)),
+                            skills = getHobbies(item.child(FireConstants.STR_PUBLIC_INFO)
+                                    .child(FireConstants.STR_EXPERTISE));
+                    String s = "Loves to- " + lovesTo + "\n\n" + "Good at- " + skills;
 
-    private void increaseArticleNumber(){
-        reference = Retrieve.getRootReference().child(FireConstants.STR_NUMBER_OF_ARTICLE);
+                    long articleCount = item.child(FireConstants.STR_ARTICLE).getChildrenCount();
+
+                    People people = new People(username, s, articleCount);
+
+                    Retrieve.getRootReference().child(FireConstants.STR_USER_OVERVIEW)
+                            .child(username).setValue(people);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private static String getHobbies(DataSnapshot snapshot){
+        StringBuilder sb = new StringBuilder();
+        if(snapshot.exists()){
+            for(DataSnapshot item : snapshot.getChildren()){
+                String s = item.getValue(String.class);
+                sb.append(s).append(", ");
+            }
+        }
+        return sb.toString();
+    }
+
+    public static void increaseArticleNumber(String username){
+        reference = Retrieve.getRootReference().child(FireConstants.STR_USER_OVERVIEW)
+                .child(username).child(FireConstants.STR_ARTICLE_COUNT);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    int numOfArt = snapshot.getValue(Integer.class);
+                    long numOfArt = snapshot.getValue(Long.class);
                     reference.setValue(numOfArt + 1);
                 }
             }
@@ -230,8 +344,9 @@ public class Save {
             }
         });
     }
-    private void decreaseArticleNumber(){
-        reference = Retrieve.getRootReference().child(FireConstants.STR_NUMBER_OF_ARTICLE);
+    private void decreaseArticleNumber(String username){
+        reference = Retrieve.getRootReference().child(FireConstants.STR_USER_OVERVIEW)
+                .child(username).child(FireConstants.STR_ARTICLE_COUNT);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -283,63 +398,6 @@ public class Save {
             String opinionId = new Retrieve(article.getID()).createOpinionId();
             reference.child(FireConstants.STR_OPINIONS).child(opinionId).setValue(article.getOpinions().get(i));
         }
-    }
-
-    public void saveEditedArticleText(Article article, String newPrivacy){
-
-        boolean[] isTagSuggested = new boolean[3];
-
-        if (article.getPrivacy().equals(DataModel.STR_ONLY_ME) && newPrivacy.equals(DataModel.STR_PUBLIC)){
-            reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
-                    .child(article.getUsername()).child(FireConstants.STR_ARTICLE).child(article.getID());
-            reference.removeValue();
-            article.setPrivacy(newPrivacy);
-            saveArticle(article, isTagSuggested);
-        }
-        else if(article.getPrivacy().equals(DataModel.STR_PUBLIC) && newPrivacy.equals(DataModel.STR_ONLY_ME)){
-
-            article.setPrivacy(newPrivacy);
-            savePrivateArticle(article, isTagSuggested);
-
-            reference = database.getReference().child(FireConstants.STR_ARTICLE).child(article.getID());
-            reference.removeValue();
-            reference = database.getReference().child(FireConstants.STR_RECENT_ARTICLES)
-                    .child(article.getID());
-            reference.removeValue();
-
-
-            for(int i = 0; i < article.getTags().size(); i++){
-                reference = database.getReference().child(FireConstants.STR_TAGS).child(article.getTags().get(i))
-                        .child(article.getID());
-                reference.removeValue();
-            }
-
-            reference = database.getReference().child(FireConstants.STR_USER).child(article.getUsername())
-                    .child(FireConstants.STR_ARTICLE).child(article.getID());
-            reference.removeValue();
-
-            decreaseArticleNumber();
-        }
-        else if(article.getPrivacy().equals(DataModel.STR_ONLY_ME) && newPrivacy.equals(DataModel.STR_ONLY_ME)){
-
-            article.setPrivacy(newPrivacy);
-            savePrivateArticle(article, isTagSuggested);
-        }
-        else if(article.getPrivacy().equals(DataModel.STR_PUBLIC) && newPrivacy.equals(DataModel.STR_PUBLIC)){
-
-            reference = FirebaseDatabase.getInstance().getReference()
-                    .child(FireConstants.STR_ARTICLE).child(article.getID());
-            reference.child(FireConstants.STR_ARTICLE_TEXT).setValue(article.getText());
-            reference.child(FireConstants.STR_ARTICLE_HEADLINE).setValue(article.getHeadLine());
-            reference.child(FireConstants.STR_PRIVACY).setValue(newPrivacy);
-
-            for(int i = 0; i < article.getTags().size(); i++){
-                reference = database.getReference().child(FireConstants.STR_TAGS).child(article.getTags().get(i))
-                        .child(article.getID());
-                reference.setValue(article.getHeadLine());
-            }
-        }
-
     }
 
     private void saveOpinions(DatabaseReference reference, Article article){
@@ -417,10 +475,6 @@ public class Save {
 
     }
 
-    public void setArticleAsRecent(DatabaseReference reference, Article article, boolean[] isTagSuggested){
-        saveArticleInDirectory(reference, article, isTagSuggested);
-    }
-
     public void saveInTags(String tagName, String articleId, String headLine){
         database.getReference().child(FireConstants.STR_TAGS).child(tagName).child(articleId).setValue(headLine);
     }
@@ -428,6 +482,17 @@ public class Save {
     public void saveArticleInMyProfile(String myUsername, SharedArticle article){
         database.getReference().child(FireConstants.STR_USER).child(myUsername).child(FireConstants.STR_ARTICLE)
                 .child(article.getArticleID()).setValue(article);
+    }
+
+    public static void saveMyOverview(People people, boolean isEditing){
+        if(!isEditing){
+            Retrieve.getRootReference().child(FireConstants.STR_USER_OVERVIEW)
+                    .child(people.getUsername()).setValue(people);
+        }
+        else{
+            Retrieve.getRootReference().child(FireConstants.STR_USER_OVERVIEW)
+                    .child(people.getUsername()).child(FireConstants.STR_LOVES_TO).setValue(people.getLovesTo());
+        }
     }
 
     public void saveFollowing(String myUsername, String followingUsername){

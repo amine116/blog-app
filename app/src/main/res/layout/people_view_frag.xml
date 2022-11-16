@@ -6,10 +6,10 @@
     android:padding="15sp">
 
     <LinearLayout
-        android:id="@+id/layout_people"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
 
         <ProgressBar
             android:id="@+id/progress_people"
@@ -17,6 +17,40 @@
             android:layout_height="25sp"
             android:layout_gravity="center"
             android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/layout_people"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_showMore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtShowMore"
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:text="@string/show_more"
+                android:textColor="@color/head_line_color"
+                android:gravity="center"/>
+
+            <ProgressBar
+                android:id="@+id/progressShowMore"
+                android:layout_width="match_parent"
+                android:layout_height="25sp"
+                android:layout_toEndOf="@id/txtShowMore"
+                android:visibility="gone"/>
+
+
+        </RelativeLayout>
 
 
     </LinearLayout>

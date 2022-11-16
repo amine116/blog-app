@@ -8,32 +8,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amine.blog.R;
+import com.amine.blog.interfaces.OnReadPeople;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.People;
 import com.amine.blog.repositories.FireConstants;
 import com.amine.blog.repositories.Retrieve;
+import com.amine.blog.repositories.UserAccount;
 import com.amine.blog.viewmodel.DataModel;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
-public class PeopleFrag extends Fragment {
+public class PeopleFrag extends Fragment implements View.OnClickListener {
 
-    private TextView txtProfileName, txtArticleCount, txtFavourite;
-    private ProgressBar pBar;
+    private TextView txtProfileName, txtArticleCount, txtFavourite, txtShowMore;
+    private ProgressBar pBar, progressShowMore;
     private LinearLayout layoutPeople;
+    private RelativeLayout layout_showMore;
 
     private DataSnapshot rootSnapshot;
 
     private ArrayList<People> peoples = new ArrayList<>();
     private int from = 1;
+    private String lastReadingUsername = "0a";
 
     private Context context;
 
@@ -65,68 +71,63 @@ public class PeopleFrag extends Fragment {
         txtFavourite = view.findViewById(R.id.txtFavourites);
         pBar = view.findViewById(R.id.progress_people);
         layoutPeople = view.findViewById(R.id.layout_people);
+        txtShowMore = view.findViewById(R.id.txtShowMore);
+        progressShowMore = view.findViewById(R.id.progressShowMore);
+        layout_showMore = view.findViewById(R.id.layout_showMore);
 
-        initializeSnapshot();
+        txtShowMore.setOnClickListener(this);
+
+        getThePeople();
 
     }
 
-    private void initializeSnapshot(){
-        pBar.setVisibility(View.VISIBLE);
-        Retrieve retrieve = new Retrieve("false");
-        retrieve.setOnReadListener(snapshot -> {
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == txtShowMore.getId()){
+            txtShowMore.setVisibility(View.GONE);
+            progressShowMore.setVisibility(View.VISIBLE);
 
-            pBar.setVisibility(View.GONE);
-            rootSnapshot = snapshot;
-            formThePeopleList();
-            setPeoples();
-        });
-        retrieve.getUserSnapShot();
-    }
+            Retrieve.readUserOverView(lastReadingUsername, false, context, (task, people) -> {
 
-    private void formThePeopleList(){
+                progressShowMore.setVisibility(View.GONE);
+                txtShowMore.setVisibility(View.VISIBLE);
 
-        DataSnapshot snapshot = rootSnapshot;
-        if(snapshot != null){
-            peoples.clear();
-            int start = 1;
-            for(DataSnapshot usernameSnapshot : snapshot.getChildren()){
-
-                if(start >= this.from){
-                    String username = usernameSnapshot.getKey(),
-                            lovesTo = getHobbies(usernameSnapshot.child(FireConstants.STR_PUBLIC_INFO)
-                                    .child(FireConstants.STR_HOBBIES)),
-                            skills = getHobbies(usernameSnapshot.child(FireConstants.STR_PUBLIC_INFO)
-                                    .child(FireConstants.STR_EXPERTISE));
-                    String s = "Loves to- " + lovesTo + "\n\n" + "Good at- " + skills;
-
-                    long articleCount = usernameSnapshot.child(FireConstants.STR_ARTICLE).getChildrenCount();
-                    People people = new People(username, s, articleCount);
-                    peoples.add(people);
+                if(task == UserAccount.SUCCESS){
+                    if(people.size() > 0){
+                        lastReadingUsername = people.get(people.size() - 1).getUsername();
+                    }
+                    setPeoples(people);
                 }
-                start++;
-                if(start >= this.from + FireConstants.READING_NODE_LIMIT){
-                    break;
-                }
-
-            }
-            this.from = start;
-
+            });
         }
     }
-    
-    private void setPeoples(){
+
+    private void getThePeople(){
+        inProgress();
+        Retrieve.readUserOverView(lastReadingUsername, true, context, (task, people) -> {
+            completeProgress();
+
+            if(task == UserAccount.SUCCESS){
+                if(people.size() > 0){
+                    lastReadingUsername = people.get(people.size() - 1).getUsername();
+                }
+                setPeoples(people);
+            }
+        });
+    }
+
+    private void setPeoples(ArrayList<People> peoples){
         for(int i = 0; i < peoples.size(); i++){
             layoutPeople.addView(getPeopleView(peoples.get(i)));
         }
-
-        String s = "Show more...";
-        TextView txtShowMore = new TextView(context);
-        txtShowMore.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 50));
-        txtShowMore.setGravity(Gravity.CENTER);
-        txtShowMore.setText(s);
-        txtShowMore.setTextColor(getResources().getColor(R.color.green));
-        txtShowMore.setOnClickListener(getClickListenerForShowMore(txtShowMore));
-        layoutPeople.addView(txtShowMore);
+//        String s = "Show more...";
+//        TextView txtShowMore = new TextView(context);
+//        txtShowMore.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 50));
+//        txtShowMore.setGravity(Gravity.CENTER);
+//        txtShowMore.setText(s);
+//        txtShowMore.setTextColor(getResources().getColor(R.color.green));
+//        txtShowMore.setOnClickListener(getClickListenerForShowMore(txtShowMore));
+//        layoutPeople.addView(txtShowMore);
     }
 
     private View getPeopleView(People people){
@@ -157,22 +158,15 @@ public class PeopleFrag extends Fragment {
         };
     }
 
-    private View.OnClickListener getClickListenerForShowMore(TextView txtShowMore){
-        return view -> {
-            txtShowMore.setVisibility(View.GONE);
-            formThePeopleList();
-            setPeoples();
-        };
+    private void inProgress(){
+        layout_showMore.setVisibility(View.GONE);
+        layoutPeople.setVisibility(View.GONE);
+        pBar.setVisibility(View.VISIBLE);
     }
 
-    private String getHobbies(DataSnapshot snapshot){
-        StringBuilder sb = new StringBuilder();
-        if(snapshot.exists()){
-            for(DataSnapshot item : snapshot.getChildren()){
-                String s = item.getValue(String.class);
-                sb.append(s).append(", ");
-            }
-        }
-        return sb.toString();
+    private void completeProgress(){
+        pBar.setVisibility(View.GONE);
+        layoutPeople.setVisibility(View.VISIBLE);
+        layout_showMore.setVisibility(View.VISIBLE);
     }
 }

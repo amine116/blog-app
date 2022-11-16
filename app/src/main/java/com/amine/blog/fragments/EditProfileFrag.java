@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.amine.blog.MainActivity;
 import com.amine.blog.R;
 import com.amine.blog.interfaces.OnWaitListener;
+import com.amine.blog.model.People;
 import com.amine.blog.model.UserBasicInfo;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.repositories.Save;
@@ -191,6 +192,13 @@ public class EditProfileFrag extends Fragment implements View.OnClickListener {
             if(email.charAt(0) != '*' && email.charAt(1) != '*'){
                 new Save().savePhoneNumb(myUsername, email);
             }
+
+            String s = "Loves to- " + hobby1 + ", " + hobby2 + ", " + hobby3 + "\n\n" + "Good at- " +
+                    expert1 + ", " + expert2 + ", " + expert3;
+
+            People people = new People(myUsername, s, 0);
+            Save.saveMyOverview(people, true);
+
             Toast.makeText(context, "Information saved", Toast.LENGTH_SHORT).show();
             onWaitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
         }

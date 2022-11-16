@@ -276,6 +276,7 @@ public class WriteArticleAddTagFrag extends Fragment implements View.OnClickList
                     opinions, tags);
 
             if(privacy.equals(DataModel.STR_PUBLIC)){
+                Save.increaseArticleNumber(article.getUsername());
                 new Save().saveArticle(article, isTagSuggested);
             }
             else if (privacy.equals(DataModel.STR_ONLY_ME)){

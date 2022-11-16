@@ -26,6 +26,7 @@ import com.amine.blog.model.HyperLink;
 import com.amine.blog.model.MyPair;
 import com.amine.blog.model.MyTime;
 import com.amine.blog.model.Opinion;
+import com.amine.blog.model.RecentArticle;
 import com.amine.blog.repositories.FireConstants;
 import com.google.firebase.database.DataSnapshot;
 
@@ -159,6 +160,29 @@ public class DataModel {
             ArrayList<Opinion> opinions = getOpinions(snapshot.child(FireConstants.STR_OPINIONS));
             ArrayList<String> tags = getTags(snapshot.child(FireConstants.STR_TAGS));
             article = new Article(headLine, text, id, nameOfOwner, username, privacy, numberOfLikes, time, opinions, tags);
+        }
+        return article;
+    }
+
+    public RecentArticle formRecentArticle(DataSnapshot snapshot){
+        RecentArticle article = null;
+        if(snapshot != null){
+            String headLine = snapshot.child(FireConstants.STR_ARTICLE_HEADLINE).getValue(String.class),
+                    text = snapshot.child(FireConstants.STR_ARTICLE_TEXT).getValue(String.class),
+                    id = snapshot.child(FireConstants.STR_ARTICLE_ID).getValue(String.class),
+                    nameOfOwner =
+                            snapshot.child(FireConstants.STR_NAME_OF_OWNER).getValue(String.class),
+                    username = snapshot.child(FireConstants.STR_USERNAME).getValue(String.class),
+                    privacy = snapshot.child(FireConstants.STR_PRIVACY).getValue(String.class);
+
+            long timeInMill = snapshot.child(FireConstants.STR_TIME_IN_MILL).getValue(Long.class);
+            int numberOfLikes =
+                    snapshot.child(FireConstants.STR_NUMBER_OF_LIKES).getValue(Integer.class);
+            MyTime time = snapshot.child(FireConstants.STR_TIME).getValue(MyTime.class);
+            ArrayList<Opinion> opinions = getOpinions(snapshot.child(FireConstants.STR_OPINIONS));
+            ArrayList<String> tags = getTags(snapshot.child(FireConstants.STR_TAGS));
+            article = new RecentArticle(headLine, text, id, nameOfOwner, username, privacy, numberOfLikes,
+                    time, opinions, tags, timeInMill);
         }
         return article;
     }
@@ -306,13 +330,13 @@ public class DataModel {
             return https + url;
         }
         else{
-            if(http.equals(url.substring(0, 7))){
+            if(http.equals(url.substring(0, http.length()))){
                 return url;
             }
             else if(url.length() < https.length()){
                 return https + url;
             }
-            else if(https.equals(url.substring(0, 8))){
+            else if(https.equals(url.substring(0, https.length()))){
                 return url;
             }
             else{

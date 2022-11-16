@@ -27,7 +27,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amine.blog.dialogs.SimpleDialog;
 import com.amine.blog.fragments.CreateAccFrag1;
 import com.amine.blog.fragments.CreateAccFrag2;
 import com.amine.blog.fragments.EditProfileFrag;
@@ -47,6 +46,7 @@ import com.amine.blog.interfaces.OnReadUserBasicInfoListener;
 import com.amine.blog.interfaces.OnWaitListener;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.Article;
+import com.amine.blog.model.RecentArticle;
 import com.amine.blog.model.UserBasicInfo;
 import com.amine.blog.repositories.FireConstants;
 import com.amine.blog.repositories.Retrieve;
@@ -59,7 +59,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, CallbackForFr2,
-        OnReadUserBasicInfoListener, OnReadListener, OnWaitListener, OnWaitListenerWithStringInfo,
+        OnReadUserBasicInfoListener, OnWaitListener, OnWaitListenerWithStringInfo,
         ExistListener, OnReadArticleListener {
 
     private FragmentManager fm;
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static boolean isGuest;
     private final int runThreadFor = 30, MAXIMUM_NUMBER_OF_FRAGMENT = 15;
     private boolean isMessageAnimationRunning = false, isActive = true;
-    private String lastReadArticleId;
+    private long lastReadArticleTimeInMill = 1;
 
     private int currentFragment = -1;
     private final Fragment[] fragments = new Fragment[MAXIMUM_NUMBER_OF_FRAGMENT];
@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void showArticles(ArrayList<Article> articles){
+    private void showArticles(ArrayList<RecentArticle> articles){
 
         ScrollView sv = findViewById(R.id.scroll_info);
         FrameLayout fl = findViewById(R.id.activity_main_frameLayout);
@@ -363,8 +363,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         v.setOnClickListener(view -> {
             ll.removeView(v);
             ll.addView(moreArticleReadInProgress);
-            if (lastReadArticleId != null && !lastReadArticleId.isEmpty()){
-                Retrieve.getRecentArticleList(MainActivity.this, lastReadArticleId);
+            if (lastReadArticleTimeInMill != 1){
+                Retrieve.getRecentArticleList(MainActivity.this, lastReadArticleTimeInMill, false);
             }
             else{
                 ll.removeView(moreArticleReadInProgress);
@@ -663,17 +663,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void readArticles(){
 
-        Retrieve.getFirstRecentArticles(this);
+        Retrieve.getLastArticleTimeInMill((task, data) -> {
+            //Toast.makeText(this, data + "", Toast.LENGTH_SHORT).show();
+            if(task == UserAccount.SUCCESS){
+                long timeInMill = Long.parseLong(data);
+                Retrieve.getRecentArticleList(MainActivity.this, timeInMill, true);
+            }
+
+        });
+
+        //Retrieve.getFirstRecentArticles(this);
     }
 
     @Override
-    public void onReadArticle(ArrayList<Article> articles, int task) {
+    public void onReadArticle(ArrayList<RecentArticle> articles, int task) {
         if (articles.size() > 0){
-            lastReadArticleId = articles.get(articles.size() - 1).getID();
+            lastReadArticleTimeInMill = articles.get(articles.size() - 1).getTimeInMill();
         }
         makeViewsVisible();
         showArticles(articles);
-        //Save.saveRecentArticleInReverseOrder(articles, this);
+
+        //Save.reSaveRecentArticle(articles, this);
     }
 
     private void readTags(ArrayList<String> info){
@@ -695,23 +705,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pBar.setVisibility(View.VISIBLE);
 
         retrieve.getTagList(); // getTagList() method will trigger the 'WriteArticleFrag.java' to be open.
-    }
-
-    @Override
-    public void onRead(DataSnapshot snapshot) {
-
-        ArrayList<Article> articles = new ArrayList<>();
-
-        if(snapshot != null){
-            for(DataSnapshot item : snapshot.getChildren()){
-                if(item.getKey() != null){
-                    Article article = new DataModel().formArticle(snapshot.child(item.getKey()));
-                    articles.add(article);
-                }
-            }
-        }
-        makeViewsVisible();
-        showArticles(articles);
     }
 
     @Override

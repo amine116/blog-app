@@ -25,7 +25,8 @@ public class FireConstants {
             STR_ADMIN_ONLY = "admin-only", STR_ADMIN_EMAIL = "admin-email", STR_NEW_PASSWORD = "newPassword",
             STR_ACCOUNT_RECOVER_INFO = "account-recover-info", STR_OLD_PHONE = "oldPhone", STR_NEW_PHONE = "newPhone",
             STR_COUNTRY_DIAL_CODE = "countryDialCode", STR_CHAT_LIST = "chat-list",
-            STR_LAST_ARTICLE_ID = "last-article-id", STR_NUMBER_OF_ARTICLE = "number-of-articles",
+            STR_LAST_ARTICLE_TIME_IN_MILL = "last-article-timeInMill", STR_NUMBER_OF_ARTICLE = "number-of-articles",
             STR_TIME_IN_MILL = "timeInMill", STR_LAST_MESSAGE_TIME_IN_MILL = "--last--mess-age--ti--me--in--mill",
-            STR_LAST_MESSAGE = "last-message", STR_OLD_PASSWORD = "oldPassword";
+            STR_LAST_MESSAGE = "last-message", STR_OLD_PASSWORD = "oldPassword", STR_USER_OVERVIEW = "user-overview",
+            STR_ARTICLE_COUNT = "articleCount", STR_LOVES_TO = "lovesTo";
 }

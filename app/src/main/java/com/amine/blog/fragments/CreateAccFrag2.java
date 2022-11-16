@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.amine.blog.R;
 import com.amine.blog.dialogs.SimpleDialog;
 import com.amine.blog.interfaces.OnWaitListener;
+import com.amine.blog.model.People;
 import com.amine.blog.model.UserBasicInfo;
 import com.amine.blog.repositories.Save;
 import com.amine.blog.repositories.UserAccount;
@@ -123,6 +124,13 @@ public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
                     new Save().saveUserPublicInfo(userName, userBasicInfo, hobbies, expertise);
                     new Save().saveEmailAndPassword(userName, password, email, countryDialCode);
                     Toast.makeText(context, "Account created", Toast.LENGTH_SHORT).show();
+
+                    String s = "Loves to- " + hobby1 + ", " + hobby2 + ", " + hobby3 + "\n\n" + "Good at- " +
+                            expert1 + ", " + expert2 + ", " + expert3;
+
+                    People people = new People(userName, s, 0);
+                    Save.saveMyOverview(people, false);
+
                     onWaitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
                 }
                 else if(res == UserAccount.USER_COLLIDE){

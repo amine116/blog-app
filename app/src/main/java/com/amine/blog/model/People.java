@@ -5,6 +5,8 @@ public class People {
     private String username, lovesTo;
     private long articleCount;
 
+    public People(){}
+
     public People(String username, String lovesTo, long articleCount) {
         this.username = username;
         this.lovesTo = lovesTo;

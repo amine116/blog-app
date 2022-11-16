@@ -1,6 +1,7 @@
 package com.amine.blog.repositories;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.amine.blog.interfaces.OnReadChatList;
 import com.amine.blog.interfaces.OnReadChatMessages;
 import com.amine.blog.interfaces.OnReadListener;
 import com.amine.blog.interfaces.OnReadLongValue;
+import com.amine.blog.interfaces.OnReadPeople;
 import com.amine.blog.interfaces.OnReadSingleArticle;
 import com.amine.blog.interfaces.OnReadSingleMessage;
 import com.amine.blog.interfaces.OnReadSingleOpinion;
@@ -31,6 +33,8 @@ import com.amine.blog.model.ArticlesUnderTag;
 import com.amine.blog.model.ChatMessage;
 import com.amine.blog.model.EditHistory;
 import com.amine.blog.model.Opinion;
+import com.amine.blog.model.People;
+import com.amine.blog.model.RecentArticle;
 import com.amine.blog.model.SharedArticle;
 import com.amine.blog.model.SuggestedTag;
 import com.amine.blog.model.UserBasicInfo;
@@ -261,12 +265,22 @@ public class Retrieve {
         });
     }
 
-    public static void getRecentArticleList(OnReadArticleListener onReadArticle, String startingArticleId){
+    public static void getRecentArticleList(OnReadArticleListener onReadArticle, long startingArticleTimeInMill,
+                                            boolean isFirstRead){
 
-        ArrayList<Article> articles = new ArrayList<>();
+        ArrayList<RecentArticle> articles = new ArrayList<>();
 
-        Query query = getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
-                .orderByChild("id").startAfter(startingArticleId).limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        Query query;
+        if (isFirstRead){
+            query = getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
+                    .orderByChild(FireConstants.STR_TIME_IN_MILL).startAt(startingArticleTimeInMill)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
+        else{
+            query = getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
+                    .orderByChild(FireConstants.STR_TIME_IN_MILL).startAfter(startingArticleTimeInMill)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
 
 //        DatabaseReference ref = getRootReference().child(FireConstants.STR_RECENT_ARTICLES);
 //
@@ -292,14 +306,13 @@ public class Retrieve {
 //                onReadArticle.onReadArticle(null, UserAccount.FAIL);
 //            }
 //        });
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
                     for(DataSnapshot item : snapshot.getChildren()){
-                        if (item.getKey() != null){
-                            Article article = new DataModel().formArticle(snapshot.child(item.getKey()));
+                        if (item.getKey() != null && !item.getKey().equals(FireConstants.STR_LAST_ARTICLE_TIME_IN_MILL)){
+                            RecentArticle article = new DataModel().formRecentArticle(snapshot.child(item.getKey()));
                             articles.add(article);
                         }
                     }
@@ -320,7 +333,7 @@ public class Retrieve {
     }
 
     public static void getFirstRecentArticles(OnReadArticleListener onReadArticle){
-        ArrayList<Article> articles = new ArrayList<>();
+        ArrayList<RecentArticle> articles = new ArrayList<>();
 
         Query query = getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
                         .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
@@ -330,8 +343,8 @@ public class Retrieve {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
                     for(DataSnapshot item : snapshot.getChildren()){
-                        if (item.getKey() != null){
-                            Article article = new DataModel().formArticle(snapshot.child(item.getKey()));
+                        if (item.getKey() != null && !item.getKey().equals(FireConstants.STR_LAST_ARTICLE_TIME_IN_MILL)){
+                            RecentArticle article = new DataModel().formRecentArticle(snapshot.child(item.getKey()));
                             articles.add(article);
                         }
                     }
@@ -351,14 +364,14 @@ public class Retrieve {
         });
     }
 
-    public static void getLastArticleId(OnWaitListenerWithStringInfo onWait){
-        getRootReference().child(FireConstants.STR_LAST_ARTICLE_ID)
+    public static void getLastArticleTimeInMill(OnWaitListenerWithStringInfo onWait){
+        getRootReference().child(FireConstants.STR_RECENT_ARTICLES).child(FireConstants.STR_LAST_ARTICLE_TIME_IN_MILL)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()){
-                            String articleId = snapshot.getValue(String.class);
-                            onWait.onWaitWithInfo(UserAccount.SUCCESS, articleId);
+                            long timeInMill = snapshot.getValue(Long.class);
+                            onWait.onWaitWithInfo(UserAccount.SUCCESS, timeInMill + "");
                         }
                         else {
                             onWait.onWaitWithInfo(UserAccount.FAIL, null);
@@ -684,10 +697,6 @@ public class Retrieve {
             }
         });
 
-        // TODO
-        //  1. make a node 'timeInMill of last message' in firebase.
-        //  2. read the last message time
-        //  3. start reading querying with the last message time (order by child).
     }
 
     public static void readLastMessageTimeInMill(String myUsername, String friendsUsername,
@@ -907,27 +916,47 @@ public class Retrieve {
         });
     }
 
-    public void getUserSnapShot(){
-        reference = database.getReference().child(FireConstants.STR_USER);
+    public static void readUserOverView(String startAtOrAfter, boolean isFirst, Context context,
+                                        OnReadPeople onReadPeople){
 
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        ArrayList<People> people = new ArrayList<>();
+        Query query;
+
+        if (isFirst){
+            query = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_USERNAME)
+                    .startAt(startAtOrAfter).limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE + 1);
+        }
+        else {
+            query = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_USERNAME)
+                    .startAfter(startAtOrAfter).limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-
-                    readListener.onRead(snapshot);
+                    //Toast.makeText(context, snapshot.toString(), Toast.LENGTH_SHORT).show();
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        if(item.getKey() != null && !item.getKey().equals("0a")){
+                            People p = item.getValue(People.class);
+                            people.add(p);
+                        }
+                    }
+                    onReadPeople.onReadPeople(UserAccount.SUCCESS, people);
                 }
                 else{
-
-                    readListener.onRead(null);
+                    //Toast.makeText(context, "snapshot empty", Toast.LENGTH_SHORT).show();
+                    onReadPeople.onReadPeople(UserAccount.FAIL, people);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                onReadPeople.onReadPeople(UserAccount.FAIL, people);
             }
         });
+
     }
 
     public static void hasMyNewMessages(String username, ExistListener existListener){
