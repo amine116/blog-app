@@ -2,22 +2,25 @@ package com.amine.blog.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.amine.blog.R;
-import com.amine.blog.interfaces.OnReadPeople;
+import com.amine.blog.adapters.StringArrayAdapter;
+import com.amine.blog.interfaces.OnReadSinglePeople;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.People;
 import com.amine.blog.repositories.FireConstants;
@@ -28,18 +31,21 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
-public class PeopleFrag extends Fragment implements View.OnClickListener {
+public class PeopleFrag extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private TextView txtProfileName, txtArticleCount, txtFavourite, txtShowMore;
     private ProgressBar pBar, progressShowMore;
     private LinearLayout layoutPeople;
     private RelativeLayout layout_showMore;
-
-    private DataSnapshot rootSnapshot;
+    private Spinner spinnerSortBy;
+    private ImageView imgSearchPeople;
+    private EditText edtSearchPeople;
 
     private ArrayList<People> peoples = new ArrayList<>();
+    private ArrayList<String> sortByItems = new ArrayList<>();
     private int from = 1;
-    private String lastReadingUsername = "0a";
+    private String lastReadingUsername = "0a", sortBy = "";
+    private long lastReadingArticleCount = 0;
 
     private Context context;
 
@@ -74,10 +80,16 @@ public class PeopleFrag extends Fragment implements View.OnClickListener {
         txtShowMore = view.findViewById(R.id.txtShowMore);
         progressShowMore = view.findViewById(R.id.progressShowMore);
         layout_showMore = view.findViewById(R.id.layout_showMore);
+        spinnerSortBy = view.findViewById(R.id.spinnerSortBy);
+        imgSearchPeople = view.findViewById(R.id.imgSearchPeople);
+        edtSearchPeople = view.findViewById(R.id.edtSearchPeople);
 
+        imgSearchPeople.setOnClickListener(this);
+        spinnerSortBy.setOnItemSelectedListener(this);
         txtShowMore.setOnClickListener(this);
 
-        getThePeople();
+        populateSpinner();
+        getThePeopleByUsername();
 
     }
 
@@ -87,24 +99,73 @@ public class PeopleFrag extends Fragment implements View.OnClickListener {
             txtShowMore.setVisibility(View.GONE);
             progressShowMore.setVisibility(View.VISIBLE);
 
-            Retrieve.readUserOverView(lastReadingUsername, false, context, (task, people) -> {
+            // since spinner is deactivated, we do direct call to
+            Retrieve.readUserOverViewByUsername(lastReadingUsername,
+                    false, context, (task, people) -> {
 
-                progressShowMore.setVisibility(View.GONE);
-                txtShowMore.setVisibility(View.VISIBLE);
+                        progressShowMore.setVisibility(View.GONE);
+                        txtShowMore.setVisibility(View.VISIBLE);
 
-                if(task == UserAccount.SUCCESS){
-                    if(people.size() > 0){
-                        lastReadingUsername = people.get(people.size() - 1).getUsername();
-                    }
-                    setPeoples(people);
-                }
-            });
+                        if(task == UserAccount.SUCCESS){
+                            if(people.size() > 0){
+                                lastReadingUsername = people.get(people.size() - 1).getUsername();
+                            }
+                            setPeoples(people);
+                        }
+                    });
+
+            // when spinner will be activated, two method bellow will be in work.
+            if(sortBy.equals(FireConstants.STR_USERNAME)){
+                // by username
+                Retrieve.readUserOverViewByUsername(lastReadingUsername,
+                        false, context, (task, people) -> {
+
+                            progressShowMore.setVisibility(View.GONE);
+                            txtShowMore.setVisibility(View.VISIBLE);
+
+                            if(task == UserAccount.SUCCESS){
+                                if(people.size() > 0){
+                                    lastReadingUsername = people.get(people.size() - 1).getUsername();
+                                }
+                                setPeoples(people);
+                            }
+                        });
+            }
+
+            else if(sortBy.equals(FireConstants.STR_ARTICLE_COUNT)){
+                // by article count
+                Retrieve.readUserOverViewByArticleCount(lastReadingArticleCount,
+                        false, context, (task, people) -> {
+
+                            progressShowMore.setVisibility(View.GONE);
+                            txtShowMore.setVisibility(View.VISIBLE);
+
+                            if(task == UserAccount.SUCCESS){
+                                if(people.size() > 0){
+                                    lastReadingArticleCount = people.get(people.size() - 1).getArticleCount();
+                                }
+                                setPeoples(people);
+                            }
+                        });
+            }
+
+        }
+        else if(view.getId() == imgSearchPeople.getId()){
+            String username = edtSearchPeople.getText().toString().trim();
+            if(username.isEmpty()){
+                edtSearchPeople.requestFocus();
+                edtSearchPeople.setError("Enter username");
+            }
+            else{
+                layoutPeople.removeAllViews();
+                getSearchedPeople(username);
+            }
         }
     }
 
-    private void getThePeople(){
+    private void getThePeopleByUsername(){
         inProgress();
-        Retrieve.readUserOverView(lastReadingUsername, true, context, (task, people) -> {
+        Retrieve.readUserOverViewByUsername(lastReadingUsername, true, context, (task, people) -> {
             completeProgress();
 
             if(task == UserAccount.SUCCESS){
@@ -116,18 +177,30 @@ public class PeopleFrag extends Fragment implements View.OnClickListener {
         });
     }
 
+    private void getThePeopleByArticleCount(){
+        inProgress();
+        Retrieve.readUserOverViewByArticleCount(lastReadingArticleCount, true, context, (task, people) -> {
+            completeProgress();
+
+            if(task == UserAccount.SUCCESS){
+                lastReadingArticleCount++;
+                setPeoples(people);
+            }
+        });
+    }
+
+    private void getSearchedPeople(String username){
+        Retrieve.readUserOverViewBySearchWord(username, (task, people) -> {
+            if(task == UserAccount.SUCCESS){
+                setPeoples(people);
+            }
+        });
+    }
+
     private void setPeoples(ArrayList<People> peoples){
         for(int i = 0; i < peoples.size(); i++){
             layoutPeople.addView(getPeopleView(peoples.get(i)));
         }
-//        String s = "Show more...";
-//        TextView txtShowMore = new TextView(context);
-//        txtShowMore.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 50));
-//        txtShowMore.setGravity(Gravity.CENTER);
-//        txtShowMore.setText(s);
-//        txtShowMore.setTextColor(getResources().getColor(R.color.green));
-//        txtShowMore.setOnClickListener(getClickListenerForShowMore(txtShowMore));
-//        layoutPeople.addView(txtShowMore);
     }
 
     private View getPeopleView(People people){
@@ -139,7 +212,7 @@ public class PeopleFrag extends Fragment implements View.OnClickListener {
                 txtFavourite = view.findViewById(R.id.txtFavourites);
 
         String s;
-        long articleCount = people.getArticleCount();
+        long articleCount = -people.getArticleCount();
         if(articleCount == 0 || articleCount == 1) s = articleCount + " article";
         else s = articleCount + " articles";
 
@@ -158,6 +231,15 @@ public class PeopleFrag extends Fragment implements View.OnClickListener {
         };
     }
 
+    private void populateSpinner(){
+
+        sortByItems.add("Sort By");
+        sortByItems.add("Username");
+        sortByItems.add("Article Count");
+        StringArrayAdapter adapter = new StringArrayAdapter(sortByItems, context);
+        spinnerSortBy.setAdapter(adapter);
+    }
+
     private void inProgress(){
         layout_showMore.setVisibility(View.GONE);
         layoutPeople.setVisibility(View.GONE);
@@ -168,5 +250,47 @@ public class PeopleFrag extends Fragment implements View.OnClickListener {
         pBar.setVisibility(View.GONE);
         layoutPeople.setVisibility(View.VISIBLE);
         layout_showMore.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String s = (String) adapterView.getItemAtPosition(i);
+        if(s.equals(sortByItems.get(0))){
+            sortBy = sortByItems.get(0);
+        }
+        else if(s.equals(sortByItems.get(1))){
+            sortBy = FireConstants.STR_USERNAME;
+        }
+        else if(s.equals(sortByItems.get(2))){
+            sortBy = FireConstants.STR_ARTICLE_COUNT;
+        }
+
+        ImageView imgDropDownIcon = view.findViewById(R.id.imgDropDownIcon);
+        imgDropDownIcon.setVisibility(View.VISIBLE);
+
+        layoutPeople.removeAllViews();
+        getPeopleOverView();
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+
+    private void getPeopleOverView(){
+
+        DataModel.deb(sortBy);
+
+        if(sortBy.equals(FireConstants.STR_USERNAME)){
+            // by username
+            lastReadingUsername = "0a";
+            getThePeopleByUsername();
+        }
+        else if(sortBy.equals(FireConstants.STR_ARTICLE_COUNT)){
+            // by article count
+            getThePeopleByArticleCount();
+        }
     }
 }

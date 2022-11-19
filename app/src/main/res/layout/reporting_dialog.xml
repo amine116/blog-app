@@ -69,6 +69,14 @@
                 android:text="@string/offensive"
                 android:textColor="@color/text_color"/>
 
+            <CheckBox
+                android:id="@+id/checkArticleToTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/checkOffensive"
+                android:text="@string/article_doesn_t_complies_with_tags"
+                android:textColor="@color/text_color"/>
+
 
         </RelativeLayout>
 

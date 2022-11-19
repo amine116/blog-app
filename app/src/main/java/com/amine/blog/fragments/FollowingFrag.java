@@ -6,6 +6,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +18,11 @@ import androidx.fragment.app.Fragment;
 
 import com.amine.blog.MainActivity;
 import com.amine.blog.R;
+import com.amine.blog.interfaces.OnReadArticleUnderATag;
+import com.amine.blog.interfaces.OnWaitListenerWithStringArrayInfo;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
+import com.amine.blog.model.Article;
+import com.amine.blog.model.ArticlesUnderTag;
 import com.amine.blog.model.People;
 import com.amine.blog.repositories.FireConstants;
 import com.amine.blog.repositories.Retrieve;
@@ -25,18 +31,17 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
-public class FollowingFrag extends Fragment {
+public class FollowingFrag extends Fragment implements View.OnClickListener {
 
-    private TextView txtProfileName, txtArticleCount, txtFavourite;
-    private ProgressBar pBar;
+    private TextView txtShowMore;
+    private ProgressBar pBar, prShowMore;
     private LinearLayout layoutPeople;
-
-    private DataSnapshot rootSnapshot;
+    private Context context;
+    private ImageView imgSearch;
+    private EditText edtSearch;
 
     private ArrayList<People> peoples = new ArrayList<>();
-    private int from = 1;
-
-    private Context context;
+    private String lastReadingUsername;
 
     private OnWaitListenerWithStringInfo waitWithInfoListener;
 
@@ -59,72 +64,42 @@ public class FollowingFrag extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        txtProfileName = view.findViewById(R.id.txtProfileName);
-        txtArticleCount = view.findViewById(R.id.txtArticleCount);
-        txtFavourite = view.findViewById(R.id.txtFavourites);
         pBar = view.findViewById(R.id.progress_people);
         layoutPeople = view.findViewById(R.id.layout_people);
+        txtShowMore = view.findViewById(R.id.txtShowMore);
+        prShowMore = view.findViewById(R.id.progressShowMore);
+        imgSearch = view.findViewById(R.id.imgSearchPeople);
+        edtSearch = view.findViewById(R.id.edtSearchPeople);
+
+        txtShowMore.setOnClickListener(this);
+        imgSearch.setOnClickListener(this);
 
         initializeSnapshot();
     }
 
     private void initializeSnapshot(){
         pBar.setVisibility(View.VISIBLE);
-        Retrieve.getFollowingSnapshot(MainActivity.userBasicInfo.getUserName(), snapshot -> {
-            pBar.setVisibility(View.GONE);
-            rootSnapshot = snapshot;
-            formThePeopleList();
-            setPeoples();
-        });
+        Retrieve.getMyFollowing(MainActivity.userBasicInfo.getUserName(), "No need here", true,
+                following -> {
+                    pBar.setVisibility(View.GONE);
+                    if(following.size() > 0){
+                        lastReadingUsername = following.get(following.size() - 1).getArticleId();
+                    }
+                    if(following.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
+                        lastReadingUsername = "";
+                    }
+                    setPeoples(following);
+                });
     }
 
-    private void formThePeopleList(){
-
-        DataSnapshot snapshot = rootSnapshot;
-        if(snapshot != null){
-            peoples.clear();
-            int start = 1;
-            for(DataSnapshot usernameSnapshot : snapshot.getChildren()){
-
-                if(start >= this.from){
-                    String username = usernameSnapshot.getKey(),
-                            lovesTo = getHobbies(usernameSnapshot.child(FireConstants.STR_PUBLIC_INFO)
-                                    .child(FireConstants.STR_HOBBIES)),
-                            skills = getHobbies(usernameSnapshot.child(FireConstants.STR_PUBLIC_INFO)
-                                    .child(FireConstants.STR_EXPERTISE));
-                    String s = "Loves to- " + lovesTo + "\n\n" + "Good at- " + skills;
-
-                    long articleCount = usernameSnapshot.child(FireConstants.STR_ARTICLE).getChildrenCount();
-                    People people = new People(username, s, articleCount);
-                    peoples.add(people);
-                }
-                start++;
-                if(start >= this.from + FireConstants.READING_NODE_LIMIT){
-                    break;
-                }
-
-            }
-            this.from = start;
-
-        }
-    }
-
-    private void setPeoples(){
-        for(int i = 0; i < peoples.size(); i++){
-            layoutPeople.addView(getPeopleView(peoples.get(i)));
+    private void setPeoples(ArrayList<ArticlesUnderTag> following){
+        for(int i = 0; i < following.size(); i++){
+            layoutPeople.addView(getPeopleView(following.get(i)));
         }
 
-        String s = "Show more...";
-        TextView txtShowMore = new TextView(context);
-        txtShowMore.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 50));
-        txtShowMore.setGravity(Gravity.CENTER);
-        txtShowMore.setText(s);
-        txtShowMore.setTextColor(getResources().getColor(R.color.green));
-        txtShowMore.setOnClickListener(getClickListenerForShowMore(txtShowMore));
-        layoutPeople.addView(txtShowMore);
     }
 
-    private View getPeopleView(People people){
+    private View getPeopleView(ArticlesUnderTag people){
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.model_people_view, null);
 
@@ -140,10 +115,9 @@ public class FollowingFrag extends Fragment {
          */
 
 
-        txtProfileName.setText(people.getUsername());
-        //txtArticleCount.setText(s);
-        txtFavourite.setText(people.getLovesTo());
-        view.setOnClickListener(getClickListenerForView(people.getUsername()));
+        txtProfileName.setText(people.getArticleId());
+        txtFavourite.setText(people.getHeadLine());
+        view.setOnClickListener(getClickListenerForView(people.getArticleId()));
 
         return view;
     }
@@ -154,22 +128,43 @@ public class FollowingFrag extends Fragment {
         };
     }
 
-    private View.OnClickListener getClickListenerForShowMore(TextView txtShowMore){
-        return view -> {
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == txtShowMore.getId()){
             txtShowMore.setVisibility(View.GONE);
-            formThePeopleList();
-            setPeoples();
-        };
-    }
-
-    private String getHobbies(DataSnapshot snapshot){
-        StringBuilder sb = new StringBuilder();
-        if(snapshot.exists()){
-            for(DataSnapshot item : snapshot.getChildren()){
-                String s = item.getValue(String.class);
-                sb.append(s).append(", ");
+            prShowMore.setVisibility(View.VISIBLE);
+            if(lastReadingUsername != null && !lastReadingUsername.isEmpty()){
+                Retrieve.getMyFollowing(MainActivity.userBasicInfo.getUserName(), lastReadingUsername, false,
+                        following -> {
+                            prShowMore.setVisibility(View.GONE);
+                            txtShowMore.setVisibility(View.VISIBLE);
+                            if(following.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
+                                lastReadingUsername = "";
+                            }
+                            setPeoples(following);
+                        });
+            }
+            else{
+                txtShowMore.setVisibility(View.VISIBLE);
+                prShowMore.setVisibility(View.GONE);
             }
         }
-        return sb.toString();
+        else if(view.getId() == imgSearch.getId()){
+            String username = edtSearch.getText().toString().trim();
+            if(username.isEmpty()){
+                edtSearch.requestFocus();
+                edtSearch.setError("Enter username");
+            }
+            else{
+                layoutPeople.removeAllViews();
+                pBar.setVisibility(View.VISIBLE);
+                lastReadingUsername = "";
+                Retrieve.readMyFollowingBySearchWord(MainActivity.userBasicInfo.getUserName(), username, following -> {
+                    pBar.setVisibility(View.GONE);
+                    setPeoples(following);
+                });
+            }
+
+        }
     }
 }

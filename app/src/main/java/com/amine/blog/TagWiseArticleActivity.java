@@ -86,7 +86,7 @@ public class TagWiseArticleActivity extends AppCompatActivity {
                     tags.add(tagName);
                 }
                 start++;
-                if(start >= fromTag + FireConstants.READING_NODE_LIMIT){
+                if(start >= fromTag + DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
                     break;
                 }
 

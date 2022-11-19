@@ -1,5 +1,6 @@
 package com.amine.blog;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -12,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -376,13 +378,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getReadingMoreArticleProgress(){
         moreArticleReadInProgress = new ProgressBar(this);
         moreArticleReadInProgress.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 100));
+                ViewGroup.LayoutParams.MATCH_PARENT, 150));
+        moreArticleReadInProgress.setPadding(0, 0, 0, 50);
     }
 
     private View getMoreArticleView(){
         TextView v = new TextView(this);
         v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150));
-        v.setTextColor(getResources().getColor(R.color.partition_color));
+        v.setTextColor(getResources().getColor(R.color.head_line_color));
         v.setGravity(Gravity.CENTER);
         v.setPadding(0, 0, 0, 20);
         String s = "More articles...";
@@ -832,4 +835,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Save.activeStatus(userBasicInfo.getUserName(), false);
         super.onDestroy();
     }
+
 }

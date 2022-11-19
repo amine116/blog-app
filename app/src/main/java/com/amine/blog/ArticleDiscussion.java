@@ -60,7 +60,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
 
     private final String MENU_ITEM_SELECT = "Select to reply";
     private String username, articleId, privacy;
-    private ArrayList<EditHistory> editHistories = new ArrayList<>();
+    private final ArrayList<EditHistory> editHistories = new ArrayList<>();
 
     private PopupMenu menu;
    // private ScrollView scrollOpinion;
@@ -642,7 +642,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
         private String reportType, opinionId;
         private int start = -1, end = -1;
 
-        private CheckBox checkNudity, checkFalseInfo, checkHateSpeech, checkOffensive;
+        private CheckBox checkNudity, checkFalseInfo, checkHateSpeech, checkOffensive, checkArticleToTag;
         private EditText edtSelect, edtExplanation;
 
         public ReportingDialog(@NonNull Context context, String post) {
@@ -667,6 +667,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
             checkNudity = findViewById(R.id.checkSexuality);
             checkHateSpeech = findViewById(R.id.checkHateSpeech);
             checkOffensive = findViewById(R.id.checkOffensive);
+            checkArticleToTag = findViewById(R.id.checkArticleToTag);
 
             findViewById(R.id.btnReport).setOnClickListener(this);
             findViewById(R.id.txtClose).setOnClickListener(this);
@@ -674,6 +675,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
             checkFalseInfo.setOnClickListener(this);
             checkHateSpeech.setOnClickListener(this);
             checkOffensive.setOnClickListener(this);
+            checkArticleToTag.setOnClickListener(this);
 
             initialize();
         }
@@ -699,7 +701,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
             if(view.getId() == R.id.btnReport){
 
                 if(!checkNudity.isChecked() && !checkFalseInfo.isChecked() && !checkOffensive.isChecked() &&
-                        !checkHateSpeech.isChecked()){
+                        !checkHateSpeech.isChecked() && !checkArticleToTag.isChecked()){
                     Toast.makeText(ArticleDiscussion.this, "Select at least one of the checkbox",
                             Toast.LENGTH_SHORT).show();
                     return;
@@ -748,6 +750,17 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
                         contexts.put(checkOffensive.getText().toString(), "N/A");
                     }
                 }
+                if(checkArticleToTag.isChecked()){
+                    if(start >= 0 && end >= 0 && start < end){
+
+                        String chosenPortion = post.substring(start, end - 1);
+                        contexts.put(checkArticleToTag.getText().toString(), chosenPortion);
+                    }
+                    else{
+                        contexts.put(checkArticleToTag.getText().toString(), "N/A");
+                    }
+                }
+
                 String explanation = edtExplanation.getText().toString().trim();
                 ReportingContext reportingContext = new ReportingContext(contexts);
                 if(reportType.equals(DataModel.STR_ARTICLE)){
@@ -768,21 +781,31 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
                 checkOffensive.setChecked(false);
                 checkFalseInfo.setChecked(false);
                 checkHateSpeech.setChecked(false);
+                checkArticleToTag.setChecked(false);
             }
             else if(view.getId() == R.id.checkHateSpeech){
                 checkOffensive.setChecked(false);
                 checkFalseInfo.setChecked(false);
                 checkNudity.setChecked(false);
+                checkArticleToTag.setChecked(false);
             }
             else if(view.getId() == R.id.checkFalseInfo){
                 checkOffensive.setChecked(false);
                 checkNudity.setChecked(false);
                 checkHateSpeech.setChecked(false);
+                checkArticleToTag.setChecked(false);
             }
             else if(view.getId() == R.id.checkOffensive){
                 checkNudity.setChecked(false);
                 checkFalseInfo.setChecked(false);
                 checkHateSpeech.setChecked(false);
+                checkArticleToTag.setChecked(false);
+            }
+            else if(view.getId() == R.id.checkArticleToTag){
+                checkNudity.setChecked(false);
+                checkFalseInfo.setChecked(false);
+                checkHateSpeech.setChecked(false);
+                checkOffensive.setChecked(false);
             }
         }
 

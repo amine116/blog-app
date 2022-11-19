@@ -182,6 +182,7 @@ public class Save {
             reference.removeValue();
             article.setPrivacy(newPrivacy);
             saveArticle(article, isTagSuggested);
+            increaseArticleNumber(article.getUsername());
         }
         else if(article.getPrivacy().equals(DataModel.STR_PUBLIC) && newPrivacy.equals(DataModel.STR_ONLY_ME)){
 
@@ -334,7 +335,7 @@ public class Save {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     long numOfArt = snapshot.getValue(Long.class);
-                    reference.setValue(numOfArt + 1);
+                    reference.setValue(numOfArt - 1);
                 }
             }
 
@@ -352,7 +353,10 @@ public class Save {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     int numOfArt = snapshot.getValue(Integer.class);
-                    reference.setValue(numOfArt - 1);
+                    if(numOfArt < 0){
+                        reference.setValue(numOfArt + 1);
+                    }
+
                 }
             }
 
@@ -495,21 +499,18 @@ public class Save {
         }
     }
 
-    public void saveFollowing(String myUsername, String followingUsername){
+    public void saveFollowing(String myUsername, String myProfileName, String followingUsername, String followingProfileName){
         reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
                 .child(myUsername).child(FireConstants.STR_FOLLOWING).child(followingUsername);
-
-        reference.setValue(followingUsername);
-
-
-        saveFollower(myUsername, followingUsername);
+        reference.setValue(followingProfileName);
+        saveFollower(myUsername, myProfileName, followingUsername);
     }
 
-    private void saveFollower(String myUsername, String followingUsername){
+    private void saveFollower(String myUsername, String myProfileName, String followingUsername){
         reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
                 .child(followingUsername).child(FireConstants.STR_FOLLOWER).child(myUsername);
 
-        reference.setValue(myUsername);
+        reference.setValue(myProfileName);
     }
 
     public void removeFollowing(String myUsername, String followingUsername){

@@ -9,5 +9,13 @@
         <item>only me</item>
 
     </string-array>
+    
+    <string-array name="sorting_people">
+
+        <item>Sort by</item>
+        <item>Username</item>
+        <item>Article Count</item>
+
+    </string-array>
 
 </resources>

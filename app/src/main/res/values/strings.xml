@@ -76,7 +76,7 @@
     <string name="select_privacy">Select Privacy</string>
     <string name="reply">Reply</string>
     <string name="report">Report</string>
-    <string name="choose_portion_of_rules_violation">Use \'~\' at the beginning and at the end of your desired
+    <string name="choose_portion_of_rules_violation">Use \'@\' at the beginning and at the end of your desired
         portion that violates the rules.\n For example: ~your chosen portion of article~\n
         (Optional)
     </string>
@@ -117,4 +117,6 @@
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="change">Change</string>
+    <string name="sort_by">Sort By</string>
+    <string name="article_doesn_t_complies_with_tags">Article doesn\'t complies with tags</string>
 </resources>

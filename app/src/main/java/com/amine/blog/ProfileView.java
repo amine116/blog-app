@@ -51,7 +51,6 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
         Intent intent = getIntent();
         username = intent.getStringExtra("USER_NAME");
         myUsername = MainActivity.userBasicInfo.getUserName();
-
         String myName = MainActivity.userBasicInfo.getProfileName(),
                 myUniversity = MainActivity.userBasicInfo.getUniversity(),
                 myProfession = MainActivity.userBasicInfo.getProfession();
@@ -60,6 +59,7 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
 
         if(myUsername.equals(username)){
             makeItMyProfile();
+            profileName = MainActivity.userBasicInfo.getProfileName();
             setBasicInfo(myName, myUsername, myUniversity, myProfession);
             setExpertise(myUsername);
             setHobbies(myUsername);
@@ -276,6 +276,17 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
 
     private void showArticles(ArrayList<Article> articles){
         LinearLayout ll = findViewById(R.id.layout_articles);
+
+        TextView txtArticle = findViewById(R.id.txtArticles);
+        String s;
+        if(articles.size() < 2){
+            s = "Total Article: " + articles.size();
+        }
+        else {
+            s = "Total Articles: " + articles.size();
+        }
+        txtArticle.setText(s);
+
         for(int i = 0; i < articles.size(); i++){
             ll.addView(getView(articles.get(i)), 0);
         }
@@ -339,7 +350,7 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
                 txtFollow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add, 0, 0, 0);
             }
             else{
-                new Save().saveFollowing(myUsername, username);
+                new Save().saveFollowing(myUsername, MainActivity.userBasicInfo.getProfileName(), username, profileName);
                 amIFollowing = true;
 
                 String s = "Following";

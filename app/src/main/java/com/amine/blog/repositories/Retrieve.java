@@ -20,12 +20,14 @@ import com.amine.blog.interfaces.OnReadPeople;
 import com.amine.blog.interfaces.OnReadSingleArticle;
 import com.amine.blog.interfaces.OnReadSingleMessage;
 import com.amine.blog.interfaces.OnReadSingleOpinion;
+import com.amine.blog.interfaces.OnReadSinglePeople;
 import com.amine.blog.interfaces.OnReadSuggestedTagsListener;
 import com.amine.blog.interfaces.OnReadTagsListener;
 import com.amine.blog.interfaces.OnReadUserBasicInfoListener;
 import com.amine.blog.interfaces.OnReadStringArrayListener;
 import com.amine.blog.interfaces.OnReadUserArticleListener;
 import com.amine.blog.interfaces.OnWaitListener;
+import com.amine.blog.interfaces.OnWaitListenerWithStringArrayInfo;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.Article;
 import com.amine.blog.model.ArticleTag;
@@ -916,8 +918,8 @@ public class Retrieve {
         });
     }
 
-    public static void readUserOverView(String startAtOrAfter, boolean isFirst, Context context,
-                                        OnReadPeople onReadPeople){
+    public static void readUserOverViewByUsername(String startAtOrAfter, boolean isFirst, Context context,
+                                                  OnReadPeople onReadPeople){
 
         ArrayList<People> people = new ArrayList<>();
         Query query;
@@ -959,6 +961,77 @@ public class Retrieve {
 
     }
 
+    public static void readUserOverViewByArticleCount(long startAtOrAfter, boolean isFirst, Context context,
+                                                  OnReadPeople onReadPeople){
+
+        // TODO
+        //  Doesn't work perfectly
+        //  Need to work on more
+        //  Currently this function is not called, because the view is hidden
+
+        ArrayList<People> people = new ArrayList<>();
+        Query query = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_ARTICLE_COUNT)
+                .startAt(startAtOrAfter).endAt(startAtOrAfter + 1);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    //Toast.makeText(context, snapshot.toString(), Toast.LENGTH_SHORT).show();
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        if(item.getKey() != null && !item.getKey().equals("0a")){
+                            People p = item.getValue(People.class);
+                            people.add(p);
+                        }
+                    }
+                    onReadPeople.onReadPeople(UserAccount.SUCCESS, people);
+                }
+                else{
+                    //Toast.makeText(context, "snapshot empty", Toast.LENGTH_SHORT).show();
+                    onReadPeople.onReadPeople(UserAccount.FAIL, people);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                onReadPeople.onReadPeople(UserAccount.FAIL, people);
+            }
+        });
+
+    }
+
+    public static void readUserOverViewBySearchWord(String username, OnReadPeople onReadPeople){
+
+        ArrayList<People> people = new ArrayList<>();
+        Query ref = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_USERNAME)
+                        .startAt(username).endAt(username + "\uf8ff");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        if(item.getKey() != null && !item.getKey().equals("0a")){
+                            people.add(item.getValue(People.class));
+                        }
+                    }
+                    onReadPeople.onReadPeople(UserAccount.SUCCESS, people);
+                }
+                else{
+                    onReadPeople.onReadPeople(UserAccount.FAIL, people);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                //Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                onReadPeople.onReadPeople(UserAccount.FAIL, people);
+            }
+        });
+
+    }
+
     public static void hasMyNewMessages(String username, ExistListener existListener){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_CHAT_STATUSES)
                 .child(FireConstants.STR_NEW_MESSAGE_STATUS).child(username);
@@ -981,29 +1054,84 @@ public class Retrieve {
         });
     }
 
-    public static void getFollowingSnapshot(String username, OnReadListener readListener){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_ADMIN)
-                .child(FireConstants.STR_USER_PERSONAL_INFO)
-                .child(username).child(FireConstants.STR_FOLLOWING);
+    public static void getMyFollowing(String username, String startAfter, boolean isFirst,
+                                      OnReadArticleUnderATag onWait){
+        Query query;
+        ArrayList<ArticlesUnderTag> following = new ArrayList<>();
+        // using 'ArticleUnderTag' because it has two string value.
+        // article id = Username, headLine = Profile Name.
+        if (isFirst){
+            query = getRootReference().child(FireConstants.STR_ADMIN)
+                    .child(FireConstants.STR_USER_PERSONAL_INFO)
+                    .child(username).child(FireConstants.STR_FOLLOWING)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
+        else {
+            query = getRootReference().child(FireConstants.STR_ADMIN)
+                    .child(FireConstants.STR_USER_PERSONAL_INFO)
+                    .child(username).child(FireConstants.STR_FOLLOWING).orderByKey().startAfter(startAfter)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-
-                    readListener.onRead(snapshot);
+                    for (DataSnapshot item : snapshot.getChildren()){
+                        String username = item.getKey();
+                        if(username != null && !username.isEmpty()){
+                            String profileName = item.getValue(String.class);
+                            following.add(new ArticlesUnderTag(username, profileName));
+                        }
+                    }
+                    onWait.onReadArticleUnderATag(following);
                 }
                 else{
-
-                    readListener.onRead(null);
+                    onWait.onReadArticleUnderATag(following);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                onWait.onReadArticleUnderATag(following);
             }
         });
+
+    }
+
+    public static void readMyFollowingBySearchWord(String username, String searchWord, OnReadArticleUnderATag onWait){
+
+        ArrayList<ArticlesUnderTag> following = new ArrayList<>();
+        Query ref = getRootReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_USER_PERSONAL_INFO)
+                .child(username).child(FireConstants.STR_FOLLOWING).orderByKey()
+                        .startAt(searchWord).endAt(searchWord + "\uf8ff");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for (DataSnapshot item : snapshot.getChildren()){
+                        String username = item.getKey();
+                        if(username != null && !username.isEmpty()){
+                            String profileName = item.getValue(String.class);
+                            following.add(new ArticlesUnderTag(username, profileName));
+                        }
+                    }
+                    onWait.onReadArticleUnderATag(following);
+                }
+                else{
+                    //DataModel.deb(snapshot.toString());
+                    onWait.onReadArticleUnderATag(following);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                onWait.onReadArticleUnderATag(following);
+            }
+        });
+
     }
 
     public static void getActivityStatus(String username, OnWaitListener waitListener){
