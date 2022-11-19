@@ -119,4 +119,16 @@
     <string name="change">Change</string>
     <string name="sort_by">Sort By</string>
     <string name="article_doesn_t_complies_with_tags">Article doesn\'t complies with tags</string>
+    <string name="follower">Follower</string>
+    <string name="rules">Rules and Standards</string>
+    <string name="about">About</string>
+    <string name="_1_topics_of_writings">1. Topics of writings</string>
+    <string name="_2_criticism">2. Criticism- whom to criticise</string>
+    <string name="_3_criticism">3. Criticism- How to criticise</string>
+    <string name="name">Developed by- </string>
+    <string name="email_">Email- </string>
+    <string name="aminul_islam">Aminul Islam</string>
+    <string name="my_email"><u>iaminul237@gmail.com</u></string>
+    <string name="facebook">Facebook</string>
+    <string name="my_facebook_id"><a href="https://facebook.com/Aminul.islam116">Aminul Islam</a></string>
 </resources>

@@ -25,20 +25,18 @@ import com.amine.blog.viewmodel.DataModel;
 
 import java.util.ArrayList;
 
-public class FollowingFrag extends Fragment implements View.OnClickListener {
-
+public class FollowerFrag extends Fragment implements View.OnClickListener {
     private TextView txtShowMore;
     private ProgressBar pBar, prShowMore;
     private LinearLayout layoutPeople;
     private Context context;
     private ImageView imgSearch;
     private EditText edtSearch;
-
     private String lastReadingUsername;
 
     private OnWaitListenerWithStringInfo waitWithInfoListener;
 
-    public FollowingFrag(){}
+    public FollowerFrag(){}
 
     public void setContext(Context context) {
         this.context = context;
@@ -67,21 +65,21 @@ public class FollowingFrag extends Fragment implements View.OnClickListener {
         txtShowMore.setOnClickListener(this);
         imgSearch.setOnClickListener(this);
 
-        getFollowing();
+        getFollowers();
     }
 
-    private void getFollowing(){
+    private void getFollowers(){
         pBar.setVisibility(View.VISIBLE);
-        Retrieve.getMyFollowing(MainActivity.userBasicInfo.getUserName(), "No need here", true,
-                following -> {
+        Retrieve.getMyFollower(MainActivity.userBasicInfo.getUserName(), "No need here", true,
+                followers -> {
                     pBar.setVisibility(View.GONE);
-                    if(following.size() > 0){
-                        lastReadingUsername = following.get(following.size() - 1).getArticleId();
+                    if(followers.size() > 0){
+                        lastReadingUsername = followers.get(followers.size() - 1).getArticleId();
                     }
-                    if(following.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
+                    if(followers.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
                         lastReadingUsername = "";
                     }
-                    setPeoples(following);
+                    setPeoples(followers);
                 });
     }
 
@@ -119,14 +117,14 @@ public class FollowingFrag extends Fragment implements View.OnClickListener {
             txtShowMore.setVisibility(View.GONE);
             prShowMore.setVisibility(View.VISIBLE);
             if(lastReadingUsername != null && !lastReadingUsername.isEmpty()){
-                Retrieve.getMyFollowing(MainActivity.userBasicInfo.getUserName(), lastReadingUsername, false,
-                        following -> {
+                Retrieve.getMyFollower(MainActivity.userBasicInfo.getUserName(), lastReadingUsername, false,
+                        followers -> {
                             prShowMore.setVisibility(View.GONE);
                             txtShowMore.setVisibility(View.VISIBLE);
-                            if(following.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
+                            if(followers.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
                                 lastReadingUsername = "";
                             }
-                            setPeoples(following);
+                            setPeoples(followers);
                         });
             }
             else{
@@ -144,9 +142,9 @@ public class FollowingFrag extends Fragment implements View.OnClickListener {
                 layoutPeople.removeAllViews();
                 pBar.setVisibility(View.VISIBLE);
                 lastReadingUsername = "";
-                Retrieve.readMyFollowingBySearchWord(MainActivity.userBasicInfo.getUserName(), username, following -> {
+                Retrieve.readMyFollowerBySearchWord(MainActivity.userBasicInfo.getUserName(), username, followers -> {
                     pBar.setVisibility(View.GONE);
-                    setPeoples(following);
+                    setPeoples(followers);
                 });
             }
 

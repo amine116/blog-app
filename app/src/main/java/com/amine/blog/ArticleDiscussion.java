@@ -7,6 +7,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -587,6 +589,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
             super.onCreate(savedInstanceState);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         private void initialize(){
             edtSelect = new CustomEditText(ArticleDiscussion.this);
             edtSelect.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -602,6 +605,18 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
             txtOk.setOnClickListener(this);
             findViewById(R.id.txtClose).setOnClickListener(this);
             edtSelect.setText(article.getText());
+
+//            edtSelect.setOnTouchListener((view1, motionEvent) -> {
+//
+//                if (view1.getId() == edtSelect.getId()) {
+//                    view1.getParent().requestDisallowInterceptTouchEvent(true);
+//                    if ((motionEvent.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+//                        view1.getParent().requestDisallowInterceptTouchEvent(false);
+//                    }
+//                }
+//
+//                return false;
+//            });
         }
 
         @Override

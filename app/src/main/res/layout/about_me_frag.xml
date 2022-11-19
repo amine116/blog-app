@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:gravity="center"
+    android:padding="15sp">
+
+    <RelativeLayout
+        android:id="@+id/layout_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="50sp"
+        android:gravity="center"
+        android:background="@drawable/background_about_me">
+
+        <ImageView
+            android:id="@+id/imgMyImage"
+            android:layout_width="match_parent"
+            android:layout_height="200sp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/my_picture1"/>
+
+        <RelativeLayout
+            android:id="@+id/layout_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgMyImage"
+            android:paddingStart="15sp"
+            android:gravity="center_horizontal"
+            tools:ignore="RtlSymmetry">
+
+            <RelativeLayout
+                android:id="@+id/layout_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/txtName1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name"
+                    android:textColor="@color/text_color"/>
+                <TextView
+                    android:id="@+id/txtName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:text="@string/aminul_islam"
+                    android:layout_toEndOf="@+id/txtName1"
+                    android:paddingStart="10sp"
+                    tools:ignore="RtlSymmetry" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_below="@id/layout_name">
+
+                <TextView
+                    android:id="@+id/txtEmail1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/email_"
+                    android:textColor="@color/text_color"/>
+                <TextView
+                    android:id="@+id/txtEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:text="@string/my_email"
+                    android:layout_toEndOf="@+id/txtEmail1"
+                    android:paddingStart="10sp"
+                    tools:ignore="RtlSymmetry" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_facebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_below="@id/layout_email">
+
+                <TextView
+                    android:id="@+id/txtFacebook1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/facebook"
+                    android:textColor="@color/text_color"/>
+                <TextView
+                    android:id="@+id/txtFacebook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:text="@string/my_facebook_id"
+                    android:layout_toEndOf="@+id/txtFacebook1"
+                    android:paddingStart="10sp"
+                    tools:ignore="RtlSymmetry" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

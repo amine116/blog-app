@@ -1134,6 +1134,86 @@ public class Retrieve {
 
     }
 
+    public static void getMyFollower(String username, String startAfter, boolean isFirst,
+                                      OnReadArticleUnderATag onWait){
+        Query query;
+        ArrayList<ArticlesUnderTag> following = new ArrayList<>();
+        // using 'ArticleUnderTag' because it has two string value.
+        // article id = Username, headLine = Profile Name.
+        if (isFirst){
+            query = getRootReference().child(FireConstants.STR_ADMIN)
+                    .child(FireConstants.STR_USER_PERSONAL_INFO)
+                    .child(username).child(FireConstants.STR_FOLLOWER)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
+        else {
+            query = getRootReference().child(FireConstants.STR_ADMIN)
+                    .child(FireConstants.STR_USER_PERSONAL_INFO)
+                    .child(username).child(FireConstants.STR_FOLLOWER).orderByKey().startAfter(startAfter)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+        }
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for (DataSnapshot item : snapshot.getChildren()){
+                        String username = item.getKey();
+                        if(username != null && !username.isEmpty()){
+                            String profileName = item.getValue(String.class);
+                            following.add(new ArticlesUnderTag(username, profileName));
+                        }
+                    }
+                    onWait.onReadArticleUnderATag(following);
+                }
+                else{
+                    onWait.onReadArticleUnderATag(following);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                onWait.onReadArticleUnderATag(following);
+            }
+        });
+
+    }
+
+    public static void readMyFollowerBySearchWord(String username, String searchWord, OnReadArticleUnderATag onWait){
+
+        ArrayList<ArticlesUnderTag> following = new ArrayList<>();
+        Query ref = getRootReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_USER_PERSONAL_INFO)
+                .child(username).child(FireConstants.STR_FOLLOWER).orderByKey()
+                .startAt(searchWord).endAt(searchWord + "\uf8ff");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for (DataSnapshot item : snapshot.getChildren()){
+                        String username = item.getKey();
+                        if(username != null && !username.isEmpty()){
+                            String profileName = item.getValue(String.class);
+                            following.add(new ArticlesUnderTag(username, profileName));
+                        }
+                    }
+                    onWait.onReadArticleUnderATag(following);
+                }
+                else{
+                    //DataModel.deb(snapshot.toString());
+                    onWait.onReadArticleUnderATag(following);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                onWait.onReadArticleUnderATag(following);
+            }
+        });
+
+    }
+
     public static void getActivityStatus(String username, OnWaitListener waitListener){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_CHAT_STATUSES)
                 .child(FireConstants.STR_ACTIVE_STATUS).child(username);
@@ -1298,5 +1378,7 @@ public class Retrieve {
             }
         });
     }
+
+
 
 }

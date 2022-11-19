@@ -29,12 +29,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amine.blog.fragments.AboutMe;
 import com.amine.blog.fragments.CreateAccFrag1;
 import com.amine.blog.fragments.CreateAccFrag2;
 import com.amine.blog.fragments.EditProfileFrag;
+import com.amine.blog.fragments.FollowerFrag;
 import com.amine.blog.fragments.FollowingFrag;
 import com.amine.blog.fragments.PeopleFrag;
 import com.amine.blog.fragments.RecoverAccountFrag;
+import com.amine.blog.fragments.RulesAndStandard;
 import com.amine.blog.fragments.SignInFrag;
 import com.amine.blog.fragments.SignInFrag2;
 import com.amine.blog.fragments.UpdatePasswordFrag;
@@ -126,6 +129,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.layout_editProfile).setOnClickListener(this);
         findViewById(R.id.layout_suggestedTags).setOnClickListener(this);
         findViewById(R.id.layout_privacyAndSecurity).setOnClickListener(this);
+        findViewById(R.id.layout_go_follower).setOnClickListener(this);
+        findViewById(R.id.layout_rulingsOfArticleWriting).setOnClickListener(this);
+        findViewById(R.id.layout_aboutMe).setOnClickListener(this);
 
     }
 
@@ -246,6 +252,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Guest can't use this option", Toast.LENGTH_LONG).show();
             }
         }
+        else if(view.getId() == R.id.layout_go_follower){
+            if(!isGuest){
+                DrawerLayout dl = findViewById(R.id.drawerLayout);
+                dl.close();
+
+                prepareForFragment();
+                FollowerFrag followerFrag = new FollowerFrag();
+                followerFrag.setContext(this);
+                followerFrag.setOnWaitWithInfoListener(this);
+                addFragmentToTheFrameLayout(followerFrag);
+            }
+            else{
+                Toast.makeText(this, "Guest can't use this option", Toast.LENGTH_LONG).show();
+            }
+        }
         else if(view.getId() == R.id.layout_editProfile){
             if(!isGuest){
                 DrawerLayout dr = findViewById(R.id.drawerLayout);
@@ -281,6 +302,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 upf.setOnWaitListener(this);
                 addFragmentToTheFrameLayout(upf);
             }
+        }
+        else if(view.getId() == R.id.layout_rulingsOfArticleWriting){
+
+            DrawerLayout dr = findViewById(R.id.drawerLayout);
+            dr.close();
+
+            prepareForFragment();
+            RulesAndStandard ras = new RulesAndStandard();
+            addFragmentToTheFrameLayout(ras);
+        }
+        else if(view.getId() == R.id.layout_aboutMe){
+            DrawerLayout dr = findViewById(R.id.drawerLayout);
+            dr.close();
+
+            prepareForFragment();
+            AboutMe abm = new AboutMe();
+            abm.setContext(this);
+            addFragmentToTheFrameLayout(abm);
         }
     }
 

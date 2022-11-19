@@ -24,28 +24,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@color/partition_color"
             android:padding="2sp">
 
-            <EditText
-                android:id="@+id/edtEmail"
+            <RelativeLayout
+                android:id="@+id/layout_phoneNumberEdit"
                 android:layout_width="match_parent"
-                android:layout_height="50sp"
-                android:inputType="textEmailAddress"
-                android:hint="@string/provide_your_email"
-                android:gravity="center"
-                android:autofillHints=""
-                android:textSize="15sp"
-                android:textColor="@color/text_color"
-                android:textColorHint="@color/text_color"/>
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangular_shape_my_message_color"
+                android:padding="5sp">
 
+                <EditText
+                    android:id="@+id/edtEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:inputType="textEmailAddress"
+                    android:hint="@string/provide_your_email"
+                    android:gravity="center"
+                    android:autofillHints=""
+                    android:textSize="15sp"
+                    android:textColor="@color/text_color"
+                    android:textColorHint="@color/text_color"/>
+                <TextView
+                    android:id="@+id/txtPhoneSug"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/head_line_color"
+                    android:gravity="end"
+                    android:textSize="11sp"
+                    android:layout_below="@id/edtEmail"/>
+
+
+            </RelativeLayout>
             <View
                 android:id="@+id/gap3"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:padding="10sp"
                 android:background="@color/background_color"
-                android:layout_below="@id/edtEmail"/>
+                android:layout_below="@id/layout_phoneNumberEdit"/>
 
             <TextView
                 android:id="@+id/txtBasicInfo"
@@ -73,7 +89,7 @@
                     android:autofillHints=""
                     android:inputType="text"
                     android:textSize="15sp"
-                    android:background="@color/partition_color"
+                    android:background="@drawable/rectangular_shape_my_message_color"
                     android:textColorHint="@color/text_color"
                     android:textColor="@color/text_color"/>
 
@@ -93,7 +109,7 @@
                     android:inputType="text"
                     android:textSize="15sp"
                     android:textColorHint="@color/text_color"
-                    android:background="@color/partition_color"
+                    android:background="@drawable/rectangular_shape_my_message_color"
                     android:textColor="@color/text_color"
                     android:layout_below="@id/gap6"/>
 
@@ -113,7 +129,7 @@
                     android:inputType="text"
                     android:textSize="15sp"
                     android:textColorHint="@color/text_color"
-                    android:background="@color/partition_color"
+                    android:background="@drawable/rectangular_shape_my_message_color"
                     android:textColor="@color/text_color"
                     android:layout_below="@id/gap7"/>
 

@@ -255,10 +255,36 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/layout_editProfile"
+                    android:id="@+id/layout_go_follower"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
                     android:layout_below="@id/layout_go_following">
+
+                    <ImageView
+                        android:id="@+id/imgBulletPoint8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/bullet_point_round_shape"
+                        android:contentDescription="@string/app_name"/>
+
+                    <TextView
+                        android:id="@+id/txt_go_follower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:paddingStart="5sp"
+                        android:text="@string/follower"
+                        android:layout_toEndOf="@id/imgBulletPoint8"
+                        android:textColor="@color/text_color"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layout_editProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:layout_below="@id/layout_go_follower">
 
                     <ImageView
                         android:id="@+id/imgBulletPoint5"
@@ -288,41 +314,102 @@
                 android:layout_below="@id/layout_utility"
                 android:layout_height="10dp"/>
 
-            <TextView
-                android:id="@+id/txtOtherHeadButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/others"
-                android:textColor="@color/text_color"
-                android:textSize="20sp"
-                app:drawableEndCompat="@drawable/ic_arrow_drop_down"
-                android:layout_below="@id/gap1"/>
-
             <RelativeLayout
-                android:id="@+id/layout_signOut"
+                android:id="@+id/layout_others"
                 android:layout_width="match_parent"
-                android:layout_height="50sp"
-                android:paddingStart="10sp"
-                android:layout_below="@id/txtOtherHeadButton">
-
-                <ImageView
-                    android:id="@+id/imgBulletPoint2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/bullet_point_round_shape"
-                    android:contentDescription="@string/app_name"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gap1">
 
                 <TextView
-                    android:id="@+id/txtSignOut"
+                    android:id="@+id/txtOtherHeadButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/sign_out"
-                    android:textColor="@color/red"
-                    android:gravity="center"
-                    android:paddingStart="5sp"
-                    android:layout_toEndOf="@id/imgBulletPoint2"
-                    app:drawableEndCompat="@drawable/ic_login"/>
+                    android:layout_height="wrap_content"
+                    android:text="@string/others"
+                    android:textColor="@color/text_color"
+                    android:textSize="20sp"
+                    app:drawableEndCompat="@drawable/ic_arrow_drop_down"/>
+
+                <RelativeLayout
+                    android:id="@+id/layout_signOut"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:paddingStart="10sp"
+                    android:layout_below="@id/txtOtherHeadButton">
+
+                    <ImageView
+                        android:id="@+id/imgBulletPoint2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/bullet_point_round_shape"
+                        android:contentDescription="@string/app_name"/>
+
+                    <TextView
+                        android:id="@+id/txtSignOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/sign_out"
+                        android:textColor="@color/red"
+                        android:gravity="center"
+                        android:paddingStart="5sp"
+                        android:layout_toEndOf="@id/imgBulletPoint2"
+                        app:drawableEndCompat="@drawable/ic_login"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layout_rulingsOfArticleWriting"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:paddingStart="10sp"
+                    android:layout_below="@id/layout_signOut">
+
+                    <ImageView
+                        android:id="@+id/imgBulletPoint9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/bullet_point_round_shape"
+                        android:contentDescription="@string/app_name"/>
+
+                    <TextView
+                        android:id="@+id/txtRulingsOfArticleWriting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/rules"
+                        android:textColor="@color/green"
+                        android:gravity="center"
+                        android:paddingStart="5sp"
+                        android:layout_toEndOf="@id/imgBulletPoint9"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layout_aboutMe"
+                    android:layout_width="match_parent"
+                    android:layout_height="50sp"
+                    android:paddingStart="10sp"
+                    android:layout_below="@id/layout_rulingsOfArticleWriting">
+
+                    <ImageView
+                        android:id="@+id/imgBulletPoint10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/bullet_point_round_shape"
+                        android:contentDescription="@string/app_name"/>
+
+                    <TextView
+                        android:id="@+id/txtAboutMe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/about"
+                        android:textColor="@color/text_color"
+                        android:gravity="center"
+                        android:paddingStart="5sp"
+                        android:layout_toEndOf="@id/imgBulletPoint10"/>
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -330,7 +417,7 @@
                 android:id="@+id/layout_privacy_and_security"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout_signOut">
+                android:layout_below="@id/layout_others">
 
                 <TextView
                     android:id="@+id/txtPrivacyAndSecurity"

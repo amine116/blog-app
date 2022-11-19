@@ -83,13 +83,13 @@ public class EditArticleFrag extends Fragment implements View.OnClickListener, A
         btnSave.setText(R.string.save);
         btnSave.setOnClickListener(this);
         view.findViewById(R.id.txtPreview).setOnClickListener(this);
+
         edtArticleText.setOnTouchListener((view1, motionEvent) -> {
 
             if (view1.getId() == R.id.edtArticle) {
                 view1.getParent().requestDisallowInterceptTouchEvent(true);
                 if ((motionEvent.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-                    view1.getParent().requestDisallowInterceptTouchEvent(
-                            false);
+                    view1.getParent().requestDisallowInterceptTouchEvent(false);
                 }
             }
 

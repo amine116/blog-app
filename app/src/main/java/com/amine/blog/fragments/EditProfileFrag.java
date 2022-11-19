@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,8 +29,8 @@ import java.util.ArrayList;
 public class EditProfileFrag extends Fragment implements View.OnClickListener {
 
     private EditText edtProfileName, edtPhone, edtUniversity, edtProfession,
-            edtHobby1, edtHobby2, edtHobby3, edtExpert1,
-    edtExpert2, edtExpert3;
+            edtHobby1, edtHobby2, edtHobby3, edtExpert1, edtExpert2, edtExpert3;
+    private TextView txtPhoneSug;
     private ProgressBar pBar;
     private ScrollView sView;
 
@@ -61,6 +62,8 @@ public class EditProfileFrag extends Fragment implements View.OnClickListener {
         edtExpert3 = view.findViewById(R.id.edtExpert3);
         pBar = view.findViewById(R.id.progress_editProfile);
         sView = view.findViewById(R.id.scroll_editProfile);
+        txtPhoneSug = view.findViewById(R.id.txtPhoneSug);
+
         view.findViewById(R.id.btnSaveEdit).setOnClickListener(this);
 
         myUsername = MainActivity.userBasicInfo.getUserName();
@@ -90,6 +93,7 @@ public class EditProfileFrag extends Fragment implements View.OnClickListener {
     }
 
     private void readUserInfo(){
+        setPhoneNumberEditionSuggestion();
         Retrieve retrieve = new Retrieve(myUsername);
         retrieve.setOnStringArrayListener(stringArrayList -> {
             Retrieve retrieve1 = new Retrieve(myUsername);
@@ -101,6 +105,12 @@ public class EditProfileFrag extends Fragment implements View.OnClickListener {
             retrieve1.getExpertiseList();
         });
         retrieve.getHobbyList();
+    }
+
+    private void setPhoneNumberEditionSuggestion() {
+        String s = "1. If you want to change your phone number, just type new phone number.\n2. If you don't want to change, " +
+                "don't change it";
+        txtPhoneSug.setText(s);
     }
 
     private void setOldData(ArrayList<String> hobbyList, ArrayList<String> expertList, String phone) {
