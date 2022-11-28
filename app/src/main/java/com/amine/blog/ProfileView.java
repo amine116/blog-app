@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.amine.blog.interfaces.OnReadSingleArticle;
 import com.amine.blog.model.Article;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.repositories.Save;
@@ -25,7 +24,7 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
 
     private String username, profileName, myUsername;
     private boolean amIFollowing = false, basicInfoClicked = true,
-            hobbiesClicked = true, expertiseClicked = true;
+            hobbiesClicked = true, expertiseClicked = true, inOtherActivity = false;
 
     // Views
     private TextView txtFollow;
@@ -294,6 +293,16 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
 
     private void showPrivateArticles(ArrayList<Article> articles){
         LinearLayout ll = findViewById(R.id.layout_article_only_me);
+        TextView txtArticle = findViewById(R.id.txtArticleOnlyMe);
+        String s;
+        if(articles.size() < 2){
+            s = "Private Article: " + articles.size();
+        }
+        else {
+            s = "Private Articles: " + articles.size();
+        }
+        txtArticle.setText(s);
+
         for(int i = 0; i < articles.size(); i++){
             ll.addView(getView(articles.get(i)), 0);
         }
@@ -321,8 +330,8 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
 
     private View.OnClickListener getOnClickListenerForArticleHeadLine(Article article){
         return view -> {
+            inOtherActivity = true;
             Intent intent = new Intent(ProfileView.this, ArticleDiscussion.class);
-
             intent.putExtra("USER_NAME", article.getUsername());
             intent.putExtra("ARTICLE_ID", article.getID());
             intent.putExtra("PRIVACY", article.getPrivacy());
@@ -333,6 +342,7 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.layout_message){
+            inOtherActivity = true;
             Intent intent = new Intent(ProfileView.this, ChatActivity.class);
             intent.putExtra("INTENT_TYPE", ChatActivity.CHAT_BOX);
             intent.putExtra("RECEIVE_USER_NAME", username);
@@ -402,5 +412,18 @@ public class ProfileView extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    @Override
+    protected void onPause() {
+        if (!inOtherActivity){
+            Save.activeStatus(MainActivity.userBasicInfo.getUserName(), false);
+        }
+        super.onPause();
+    }
 
+    @Override
+    protected void onResume() {
+        inOtherActivity = false;
+        Save.activeStatus(MainActivity.userBasicInfo.getUserName(), true);
+        super.onResume();
+    }
 }

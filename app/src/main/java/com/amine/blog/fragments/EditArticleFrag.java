@@ -170,12 +170,13 @@ public class EditArticleFrag extends Fragment implements View.OnClickListener, A
 
                     article.setHeadLine(headLine);
                     article.setText(articleText);
-
                     new Save().saveEditedArticleText(article, newPrivacy);
                     Toast.makeText(context, "Information Saved", Toast.LENGTH_SHORT).show();
 
-                    Save.saveEditHistory(article.getID(), article.getUsername(), prevArticleText,
-                            FireConstants.STR_ARTICLE, article.getPrivacy());
+                    if(!newPrivacy.equals(DataModel.STR_ONLY_ME)){
+                        Save.saveEditHistory(article.getID(), article.getUsername(), prevArticleText,
+                                FireConstants.STR_ARTICLE, article.getPrivacy());
+                    }
 
                     waitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
 

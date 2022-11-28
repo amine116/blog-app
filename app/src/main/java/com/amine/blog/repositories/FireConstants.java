@@ -28,5 +28,6 @@ public class FireConstants {
             STR_LAST_ARTICLE_TIME_IN_MILL = "last-article-timeInMill", STR_NUMBER_OF_ARTICLE = "number-of-articles",
             STR_TIME_IN_MILL = "timeInMill", STR_LAST_MESSAGE_TIME_IN_MILL = "--last--mess-age--ti--me--in--mill",
             STR_LAST_MESSAGE = "last-message", STR_OLD_PASSWORD = "oldPassword", STR_USER_OVERVIEW = "user-overview",
-            STR_ARTICLE_COUNT = "articleCount", STR_LOVES_TO = "lovesTo";
+            STR_ARTICLE_COUNT = "articleCount", STR_LOVES_TO = "lovesTo", STR_TAG_LIST = "tag-list",
+            STR_TOTAL_USERS = "total-users";
 }

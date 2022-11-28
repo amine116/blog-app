@@ -2,13 +2,14 @@ package com.amine.blog.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
-import android.text.method.MovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +21,8 @@ import com.amine.blog.R;
 
 public class AboutMe extends Fragment implements View.OnClickListener {
 
-    private TextView txtEmail, txtFacebook;
+    private RelativeLayout layout_picture;
+    private TextView txtEmail;
     private Context context;
 
     private String appName;
@@ -34,7 +36,8 @@ public class AboutMe extends Fragment implements View.OnClickListener {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.about_me_frag, container, false);
     }
 
@@ -43,12 +46,15 @@ public class AboutMe extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         txtEmail = view.findViewById(R.id.txtEmail);
-        txtFacebook = view.findViewById(R.id.txtFacebook);
+        layout_picture = view.findViewById(R.id.layout_picture);
+        TextView txtFacebook = view.findViewById(R.id.txtFacebook);
         //txtFacebook.setOnClickListener(this);
         txtEmail.setOnClickListener(this);
 
         txtFacebook.setMovementMethod(LinkMovementMethod.getInstance());
         //txtEmail.setMovementMethod(LinkMovementMethod.getInstance());
+
+        layout_picture.startAnimation(AnimationUtils.loadAnimation(context, R.anim.animation_slide_up));
 
     }
 

@@ -14,8 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amine.blog.repositories.FireConstants;
 import com.amine.blog.repositories.Retrieve;
+import com.amine.blog.repositories.Save;
 import com.amine.blog.viewmodel.DataModel;
 import com.google.firebase.database.DataSnapshot;
 
@@ -26,7 +26,7 @@ public class TagWiseArticleActivity extends AppCompatActivity {
     private DataSnapshot rootTagSnapshot;
     private ArrayList<String> tags = new ArrayList<>();
     private int fromTag = 1, fromArticle = 1;
-    private boolean isReadingTagDone = false, isReadingArticleDone = false;
+    private boolean isReadingTagDone = false, isReadingArticleDone = false, inOtherActivity = false;
 
     private String intentTag, intentType;
 
@@ -183,6 +183,7 @@ public class TagWiseArticleActivity extends AppCompatActivity {
                         Toast.makeText(this, "Article not found", Toast.LENGTH_LONG).show();
                     }
                     else{
+                        inOtherActivity = true;
                         Intent intent = new Intent(TagWiseArticleActivity.this, ArticleDiscussion.class);
                         intent.putExtra("USER_NAME", article.getUsername());
                         intent.putExtra("ARTICLE_ID", article.getID());
@@ -195,4 +196,18 @@ public class TagWiseArticleActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        if (!inOtherActivity){
+            Save.activeStatus(MainActivity.userBasicInfo.getUserName(), false);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        inOtherActivity = false;
+        Save.activeStatus(MainActivity.userBasicInfo.getUserName(), true);
+        super.onResume();
+    }
 }

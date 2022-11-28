@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10sp"
     android:gravity="center"
     android:background="@color/background_color">
 
@@ -17,15 +16,14 @@
     <ScrollView
         android:id="@+id/scroll_crAcc1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background_color">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:id="@+id/layout_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@color/partition_color"
-            android:padding="2sp">
+            android:padding="10sp">
 
             <RelativeLayout
                 android:id="@+id/layout_countryCode"
@@ -65,6 +63,7 @@
                 android:textSize="15sp"
                 android:textColor="@color/text_color"
                 android:textColorHint="@color/text_color"
+                android:background="@drawable/rectangular_shape_my_message_color"
                 android:layout_below="@+id/layout_countryCode"/>
 
             <TextView
@@ -98,6 +97,7 @@
                 android:autofillHints=""
                 android:textSize="15sp"
                 android:textColor="@color/text_color"
+                android:background="@drawable/rectangular_shape_my_message_color"
                 android:textColorHint="@color/text_color"/>
             <TextView
                 android:id="@+id/txtUserName"
@@ -124,7 +124,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="50sp"
                 android:orientation="horizontal"
-                android:layout_below="@id/gap4">
+                android:layout_below="@id/gap4"
+
+                android:background="@drawable/rectangular_shape_my_message_color">
 
                 <EditText
                     android:id="@+id/edtPassword"
@@ -156,7 +158,6 @@
 
             </LinearLayout>
 
-
             <TextView
                 android:id="@+id/txtPassword"
                 android:layout_width="match_parent"
@@ -187,6 +188,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="15sp"
                 android:textColorHint="@color/text_color"
+                android:background="@drawable/rectangular_shape_my_message_color"
                 android:layout_below="@id/gap2"/>
 
             <TextView
@@ -215,7 +217,7 @@
                     android:autofillHints=""
                     android:inputType="text"
                     android:textSize="15sp"
-                    android:background="@color/partition_color"
+                    android:background="@drawable/rectangular_shape_my_message_color"
                     android:textColorHint="@color/text_color"
                     android:textColor="@color/text_color"/>
 
@@ -234,7 +236,7 @@
                     android:inputType="text"
                     android:textSize="15sp"
                     android:textColorHint="@color/text_color"
-                    android:background="@color/partition_color"
+                    android:background="@drawable/rectangular_shape_my_message_color"
                     android:textColor="@color/text_color"
                     android:layout_below="@id/gap6"/>
 
@@ -254,7 +256,7 @@
                     android:inputType="text"
                     android:textSize="15sp"
                     android:textColorHint="@color/text_color"
-                    android:background="@color/partition_color"
+                    android:background="@drawable/rectangular_shape_my_message_color"
                     android:textColor="@color/text_color"
                     android:layout_below="@id/gap7"/>
 
@@ -271,7 +273,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="50sp"
                 android:layout_below="@id/gap5"
-                android:background="@color/background_color"
                 android:gravity="center">
 
                 <Button
@@ -280,6 +281,7 @@
                     android:text="@string/next"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:background="@drawable/rectangular_shape_my_message_color"
                     android:layout_centerInParent="true"/>
 
             </RelativeLayout>

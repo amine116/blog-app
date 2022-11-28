@@ -14,8 +14,8 @@
 
     <RelativeLayout
         android:id="@+id/layout__profilePic"
-        android:layout_width="36sp"
-        android:layout_height="36sp"
+        android:layout_width="46sp"
+        android:layout_height="46sp"
         android:background="@drawable/round_shape_white"
         android:padding="1sp"
         android:layout_below="@id/gap3">
@@ -54,6 +54,14 @@
         android:textSize="20sp"
         android:layout_toEndOf="@id/gap1"
         android:layout_below="@id/gap3"/>
+
+    <TextView
+        android:id="@+id/txtLastMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtProfileName"
+        android:layout_toEndOf="@id/layout__profilePic"
+        android:textColor="@color/text_color"/>
 
     <View
         android:id="@+id/gap2"

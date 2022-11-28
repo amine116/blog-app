@@ -44,7 +44,7 @@
     <string name="message">Message</string>
     <string name="articles">Articles</string>
     <string name="browse_articles">Browse Tags/Topics</string>
-    <string name="write_a_comment">Write a comment</string>
+    <string name="write_a_comment">Write your opinion</string>
     <string name="aa">Aa</string>
     <string name="chats">Chats</string>
     <string name="provide_your_email">Provide your Phone</string>
@@ -129,6 +129,7 @@
     <string name="email_">Email- </string>
     <string name="aminul_islam">Aminul Islam</string>
     <string name="my_email"><u>iaminul237@gmail.com</u></string>
-    <string name="facebook">Facebook</string>
+    <string name="facebook">Facebook- </string>
     <string name="my_facebook_id"><a href="https://facebook.com/Aminul.islam116">Aminul Islam</a></string>
+    <string name="author">Author-</string>
 </resources>

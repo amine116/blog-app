@@ -20,14 +20,12 @@ import androidx.fragment.app.Fragment;
 
 import com.amine.blog.R;
 import com.amine.blog.adapters.StringArrayAdapter;
-import com.amine.blog.interfaces.OnReadSinglePeople;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.People;
 import com.amine.blog.repositories.FireConstants;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.repositories.UserAccount;
 import com.amine.blog.viewmodel.DataModel;
-import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
@@ -41,10 +39,8 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
     private ImageView imgSearchPeople;
     private EditText edtSearchPeople;
 
-    private ArrayList<People> peoples = new ArrayList<>();
-    private ArrayList<String> sortByItems = new ArrayList<>();
-    private int from = 1;
-    private String lastReadingUsername = "0a", sortBy = "";
+    private final ArrayList<String> sortByItems = new ArrayList<>();
+    private String lastReadingUsername, sortBy = "";
     private long lastReadingArticleCount = 0;
 
     private Context context;
@@ -89,7 +85,7 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
         txtShowMore.setOnClickListener(this);
 
         populateSpinner();
-        getThePeopleByUsername();
+        //getThePeopleByUsername();
 
     }
 
@@ -99,22 +95,6 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
             txtShowMore.setVisibility(View.GONE);
             progressShowMore.setVisibility(View.VISIBLE);
 
-            // since spinner is deactivated, we do direct call to
-            Retrieve.readUserOverViewByUsername(lastReadingUsername,
-                    false, context, (task, people) -> {
-
-                        progressShowMore.setVisibility(View.GONE);
-                        txtShowMore.setVisibility(View.VISIBLE);
-
-                        if(task == UserAccount.SUCCESS){
-                            if(people.size() > 0){
-                                lastReadingUsername = people.get(people.size() - 1).getUsername();
-                            }
-                            setPeoples(people);
-                        }
-                    });
-
-            // when spinner will be activated, two method bellow will be in work.
             if(sortBy.equals(FireConstants.STR_USERNAME)){
                 // by username
                 Retrieve.readUserOverViewByUsername(lastReadingUsername,
@@ -127,27 +107,34 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
                                 if(people.size() > 0){
                                     lastReadingUsername = people.get(people.size() - 1).getUsername();
                                 }
-                                setPeoples(people);
-                            }
-                        });
-            }
-
-            else if(sortBy.equals(FireConstants.STR_ARTICLE_COUNT)){
-                // by article count
-                Retrieve.readUserOverViewByArticleCount(lastReadingArticleCount,
-                        false, context, (task, people) -> {
-
-                            progressShowMore.setVisibility(View.GONE);
-                            txtShowMore.setVisibility(View.VISIBLE);
-
-                            if(task == UserAccount.SUCCESS){
-                                if(people.size() > 0){
-                                    lastReadingArticleCount = people.get(people.size() - 1).getArticleCount();
+                                if(people.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
+                                    lastReadingUsername = "";
+                                    txtShowMore.setVisibility(View.GONE);
+                                }
+                                else{
+                                    txtShowMore.setVisibility(View.VISIBLE);
                                 }
                                 setPeoples(people);
                             }
                         });
             }
+
+//            else if(sortBy.equals(FireConstants.STR_ARTICLE_COUNT)){
+//                // by article count
+//                Retrieve.readUserOverViewByArticleCount(lastReadingArticleCount,
+//                        false, context, (task, people) -> {
+//
+//                            progressShowMore.setVisibility(View.GONE);
+//                            txtShowMore.setVisibility(View.VISIBLE);
+//
+//                            if(task == UserAccount.SUCCESS){
+//                                if(people.size() > 0){
+//                                    lastReadingArticleCount = people.get(people.size() - 1).getArticleCount();
+//                                }
+//                                setPeoples(people);
+//                            }
+//                        });
+//            }
 
         }
         else if(view.getId() == imgSearchPeople.getId()){
@@ -165,12 +152,19 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
 
     private void getThePeopleByUsername(){
         inProgress();
-        Retrieve.readUserOverViewByUsername(lastReadingUsername, true, context, (task, people) -> {
+        Retrieve.readUserOverViewByUsername("NO NEED", true, context, (task, people) -> {
             completeProgress();
 
             if(task == UserAccount.SUCCESS){
                 if(people.size() > 0){
                     lastReadingUsername = people.get(people.size() - 1).getUsername();
+                }
+                if(people.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
+                    lastReadingUsername = "";
+                    txtShowMore.setVisibility(View.GONE);
+                }
+                else{
+                    txtShowMore.setVisibility(View.VISIBLE);
                 }
                 setPeoples(people);
             }
@@ -179,7 +173,7 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
 
     private void getThePeopleByArticleCount(){
         inProgress();
-        Retrieve.readUserOverViewByArticleCount(lastReadingArticleCount, true, context, (task, people) -> {
+        Retrieve.readUserOverViewByArticleCount(0, true, context, (task, people) -> {
             completeProgress();
 
             if(task == UserAccount.SUCCESS){
@@ -235,7 +229,7 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
 
         sortByItems.add("Sort By");
         sortByItems.add("Username");
-        sortByItems.add("Article Count");
+        sortByItems.add("Top 15 writer");
         StringArrayAdapter adapter = new StringArrayAdapter(sortByItems, context);
         spinnerSortBy.setAdapter(adapter);
     }
@@ -252,17 +246,31 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
         layout_showMore.setVisibility(View.VISIBLE);
     }
 
+    private void removeSearchOption(){
+        edtSearchPeople.setVisibility(View.INVISIBLE);
+        imgSearchPeople.setVisibility(View.INVISIBLE);
+    }
+
+    private void addSearchOption(){
+        edtSearchPeople.setVisibility(View.VISIBLE);
+        imgSearchPeople.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String s = (String) adapterView.getItemAtPosition(i);
-        if(s.equals(sortByItems.get(0))){
-            sortBy = sortByItems.get(0);
-        }
-        else if(s.equals(sortByItems.get(1))){
+        /*
+        sortByItems(0) = "Sort By";
+        sortByItems(1) = "Username";
+        sortByItems(2) = "Top 15 writer";
+         */
+        if(s.equals(sortByItems.get(0)) || s.equals(sortByItems.get(1))){
             sortBy = FireConstants.STR_USERNAME;
+            addSearchOption();
         }
         else if(s.equals(sortByItems.get(2))){
             sortBy = FireConstants.STR_ARTICLE_COUNT;
+            removeSearchOption();
         }
 
         ImageView imgDropDownIcon = view.findViewById(R.id.imgDropDownIcon);
@@ -281,11 +289,8 @@ public class PeopleFrag extends Fragment implements View.OnClickListener, Adapte
 
     private void getPeopleOverView(){
 
-        DataModel.deb(sortBy);
-
         if(sortBy.equals(FireConstants.STR_USERNAME)){
             // by username
-            lastReadingUsername = "0a";
             getThePeopleByUsername();
         }
         else if(sortBy.equals(FireConstants.STR_ARTICLE_COUNT)){

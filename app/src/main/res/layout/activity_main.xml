@@ -96,9 +96,128 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/layout_gap1"
+        <View
+            android:id="@+id/layout_gap2"
             android:layout_below="@+id/layout_menu"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/text_color"/>
+
+        <RelativeLayout
+            android:id="@+id/layout_blog_summery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_gap2"
+            android:padding="10sp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/layout_totalOnline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imgBulletPoint11"
+                    android:layout_width="10sp"
+                    android:layout_height="20dp"
+                    android:paddingTop="10sp"
+                    android:src="@drawable/bullet_point_round_shape"
+                    android:contentDescription="@string/app_name"/>
+
+                <TextView
+                    android:id="@+id/txtTotalOnline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:gravity="start"
+                    android:paddingTop="5sp"
+                    android:paddingStart="5sp"
+                    android:layout_toEndOf="@id/imgBulletPoint11"
+                    tools:ignore="RtlSymmetry" />
+
+                <ProgressBar
+                    android:id="@+id/progress_totalOnline"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_toEndOf="@id/txtTotalOnline"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_totalVisitor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_totalOnline">
+
+                <ImageView
+                    android:id="@+id/imgBulletPoint12"
+                    android:layout_width="10sp"
+                    android:layout_height="20dp"
+                    android:paddingTop="10sp"
+                    android:src="@drawable/bullet_point_round_shape"
+                    android:contentDescription="@string/app_name"/>
+
+                <TextView
+                    android:id="@+id/txtTotalVisitor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:gravity="start"
+                    android:paddingTop="5sp"
+                    android:paddingStart="5sp"
+                    android:layout_toEndOf="@id/imgBulletPoint12"
+                    tools:ignore="RtlSymmetry" />
+
+                <ProgressBar
+                    android:id="@+id/progress_totalVisitor"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_toEndOf="@id/txtTotalVisitor"
+                    android:visibility="gone"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_totalArticle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_totalVisitor">
+
+                <ImageView
+                    android:id="@+id/imgBulletPoint13"
+                    android:layout_width="10sp"
+                    android:layout_height="20dp"
+                    android:paddingTop="10sp"
+                    android:src="@drawable/bullet_point_round_shape"
+                    android:contentDescription="@string/app_name"/>
+
+                <TextView
+                    android:id="@+id/txtTotalArticle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:paddingTop="5sp"
+                    android:paddingStart="5sp"
+                    android:gravity="start"
+                    android:layout_toEndOf="@id/imgBulletPoint13"
+                    tools:ignore="RtlSymmetry" />
+
+                <ProgressBar
+                    android:id="@+id/progress_totalArticle"
+                    android:layout_width="match_parent"
+                    android:layout_height="25sp"
+                    android:layout_toEndOf="@id/txtTotalArticle"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/layout_gap1"
+            android:layout_below="@+id/layout_blog_summery"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/text_color"/>
@@ -158,153 +277,202 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/txtUtilityButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/utilities"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:textColor="@color/text_color"
-                app:drawableEndCompat="@drawable/ic_arrow_drop_down"/>
+            <RelativeLayout
+                android:id="@+id/layout_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imgMyProfilePicture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_person"/>
+
+                <TextView
+                    android:id="@+id/txtMyProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
+                    android:gravity="start"
+                    android:layout_toEndOf="@id/imgMyProfilePicture"
+                    android:textSize="20sp"
+                    tools:ignore="RelativeOverlap" />
+
+                <TextView
+                    android:id="@+id/txtMyBasicInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:textColor="@color/text_color"
+                    android:layout_below="@id/txtMyProfileName"
+                    android:layout_toEndOf="@id/imgMyProfilePicture"/>
+
+                <View
+                    android:id="@+id/gap10"
+                    android:layout_width="match_parent"
+                    android:layout_height=".5dp"
+                    android:layout_below="@id/txtMyBasicInfo"
+                    android:background="@color/text_color"/>
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/layout_utility"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="10sp"
-                android:layout_below="@id/txtUtilityButton">
+                android:layout_below="@id/layout_profile">
+
+                <TextView
+                    android:id="@+id/txtUtilityButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/utilities"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:textColor="@color/text_color"
+                    app:drawableEndCompat="@drawable/ic_arrow_drop_down" />
 
                 <RelativeLayout
-                    android:id="@+id/layout_write_article"
+                    android:id="@+id/layout_utilityChild"
                     android:layout_width="match_parent"
-                    android:layout_height="50sp">
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10sp"
+                    android:layout_below="@id/txtUtilityButton">
 
-                    <ImageView
-                        android:id="@+id/imgBulletPoint1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/bullet_point_round_shape"
-                        android:contentDescription="@string/app_name"/>
+                    <RelativeLayout
+                        android:id="@+id/layout_write_article"
+                        android:layout_width="match_parent"
+                        android:layout_height="50sp">
 
-                    <TextView
-                        android:id="@+id/txt_writeArticleButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:paddingStart="5sp"
-                        android:text="@string/write_a_article"
-                        app:drawableEndCompat="@drawable/ic_edit"
-                        android:layout_toEndOf="@id/imgBulletPoint1"
-                        android:textColor="@color/text_color"/>
+                        <ImageView
+                            android:id="@+id/imgBulletPoint1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/bullet_point_round_shape"
+                            android:contentDescription="@string/app_name"/>
+
+                        <TextView
+                            android:id="@+id/txt_writeArticleButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:paddingStart="5sp"
+                            android:text="@string/write_a_article"
+                            app:drawableEndCompat="@drawable/ic_edit"
+                            android:layout_toEndOf="@id/imgBulletPoint1"
+                            android:textColor="@color/text_color"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layout_browse_article"
+                        android:layout_width="match_parent"
+                        android:layout_height="50sp"
+                        android:layout_below="@id/layout_write_article">
+
+                        <ImageView
+                            android:id="@+id/imgBulletPoint3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/bullet_point_round_shape"
+                            android:contentDescription="@string/app_name"/>
+
+                        <TextView
+                            android:id="@+id/txt_browse_articleButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:paddingStart="5sp"
+                            android:text="@string/browse_articles"
+                            app:drawableEndCompat="@drawable/ic_browse"
+                            android:layout_toEndOf="@id/imgBulletPoint3"
+                            android:textColor="@color/text_color"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layout_go_following"
+                        android:layout_width="match_parent"
+                        android:layout_height="50sp"
+                        android:layout_below="@id/layout_browse_article">
+
+                        <ImageView
+                            android:id="@+id/imgBulletPoint4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/bullet_point_round_shape"
+                            android:contentDescription="@string/app_name"/>
+
+                        <TextView
+                            android:id="@+id/txt_go_following"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:paddingStart="5sp"
+                            android:text="@string/following"
+                            android:layout_toEndOf="@id/imgBulletPoint4"
+                            android:textColor="@color/text_color"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layout_go_follower"
+                        android:layout_width="match_parent"
+                        android:layout_height="50sp"
+                        android:layout_below="@id/layout_go_following">
+
+                        <ImageView
+                            android:id="@+id/imgBulletPoint8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/bullet_point_round_shape"
+                            android:contentDescription="@string/app_name"/>
+
+                        <TextView
+                            android:id="@+id/txt_go_follower"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:paddingStart="5sp"
+                            android:text="@string/follower"
+                            android:layout_toEndOf="@id/imgBulletPoint8"
+                            android:textColor="@color/text_color"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layout_editProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="50sp"
+                        android:layout_below="@id/layout_go_follower">
+
+                        <ImageView
+                            android:id="@+id/imgBulletPoint5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/bullet_point_round_shape"
+                            android:contentDescription="@string/app_name"/>
+
+                        <TextView
+                            android:id="@+id/txtEditProfile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:paddingStart="5sp"
+                            android:text="@string/edit_profile"
+                            android:layout_toEndOf="@id/imgBulletPoint5"
+                            android:textColor="@color/text_color"/>
+
+                    </RelativeLayout>
 
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/layout_browse_article"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:layout_below="@id/layout_write_article">
-
-                    <ImageView
-                        android:id="@+id/imgBulletPoint3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/bullet_point_round_shape"
-                        android:contentDescription="@string/app_name"/>
-
-                    <TextView
-                        android:id="@+id/txt_browse_articleButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:paddingStart="5sp"
-                        android:text="@string/browse_articles"
-                        app:drawableEndCompat="@drawable/ic_browse"
-                        android:layout_toEndOf="@id/imgBulletPoint3"
-                        android:textColor="@color/text_color"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layout_go_following"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:layout_below="@id/layout_browse_article">
-
-                    <ImageView
-                        android:id="@+id/imgBulletPoint4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/bullet_point_round_shape"
-                        android:contentDescription="@string/app_name"/>
-
-                    <TextView
-                        android:id="@+id/txt_go_following"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:paddingStart="5sp"
-                        android:text="@string/following"
-                        android:layout_toEndOf="@id/imgBulletPoint4"
-                        android:textColor="@color/text_color"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layout_go_follower"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:layout_below="@id/layout_go_following">
-
-                    <ImageView
-                        android:id="@+id/imgBulletPoint8"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/bullet_point_round_shape"
-                        android:contentDescription="@string/app_name"/>
-
-                    <TextView
-                        android:id="@+id/txt_go_follower"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:paddingStart="5sp"
-                        android:text="@string/follower"
-                        android:layout_toEndOf="@id/imgBulletPoint8"
-                        android:textColor="@color/text_color"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layout_editProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:layout_below="@id/layout_go_follower">
-
-                    <ImageView
-                        android:id="@+id/imgBulletPoint5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/bullet_point_round_shape"
-                        android:contentDescription="@string/app_name"/>
-
-                    <TextView
-                        android:id="@+id/txtEditProfile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:paddingStart="5sp"
-                        android:text="@string/edit_profile"
-                        android:layout_toEndOf="@id/imgBulletPoint5"
-                        android:textColor="@color/text_color"/>
-
-                </RelativeLayout>
 
             </RelativeLayout>
 

@@ -159,6 +159,9 @@ public class UserAccount {
                             if(user != null) user.delete();
                             fAuth.signOut();
                         }
+                        else {
+                            Save.increaseTotalUsers();
+                        }
                         cbfsi.callback(SUCCESS);
                     }
                     else if(task.getException() instanceof FirebaseAuthUserCollisionException){

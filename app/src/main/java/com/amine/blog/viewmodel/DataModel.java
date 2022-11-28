@@ -11,6 +11,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.DrawableMarginSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +52,7 @@ public class DataModel {
 
     // Values that doesn't related to above condition
     public static final int SUB_HEADING_TEXT_SIZE = 60, QUOTATION_TEXT_SIZE = 50,
-            HIGHLIGHT_SIZE = 30, MAXIMUM_DATA_QUERY_FIREBASE = 3, ARTICLE_SIZE_ON_HOME = 200;
+            HIGHLIGHT_SIZE = 30, MAXIMUM_DATA_QUERY_FIREBASE = 16, ARTICLE_SIZE_ON_HOME = 200;
 
     public static final String STR_CLICKED = "clicked", STR_AUTHOR = "Author", STR_PUBLIC = "public",
             STR_ONLY_ME = "only me", STR_DISMISS = "dismiss", STR_CREATE_TAG = "create tag",

@@ -17,15 +17,13 @@ import android.widget.TextView;
 
 import com.amine.blog.fragments.ChatBoxFrag;
 import com.amine.blog.interfaces.OnReadChatList;
-import com.amine.blog.interfaces.OnReadListener;
 import com.amine.blog.model.ArticlesUnderTag;
 import com.amine.blog.repositories.Retrieve;
+import com.amine.blog.repositories.Save;
 import com.amine.blog.viewmodel.DataModel;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity{
 
@@ -35,7 +33,8 @@ public class ChatActivity extends AppCompatActivity{
 
     private int intentType;
     private String receiverUsername, receiverProfileName, senderUsername, senderProfileName;
-    private Map<String, String> listedUsernames = new HashMap<>();
+    private boolean inOtherActivity = false;
+    //private Map<String, String> listedUsernames = new HashMap<>();
 
     private TextView txtChatHead;
     private ProgressBar pBar;
@@ -121,9 +120,10 @@ public class ChatActivity extends AppCompatActivity{
                 }
                 if(snapshot != null){
                     if(snapshot.exists()){
-                        String username = snapshot.getKey();
+                        String username = snapshot.getKey(),
+                                lastMessage = snapshot.getValue(String.class);
                         if(username != null){
-                            setChatList(username, true, isAdded);
+                            setChatList(new ArticlesUnderTag(username, lastMessage), true, isAdded);
                         }
                     }
                 }
@@ -143,7 +143,7 @@ public class ChatActivity extends AppCompatActivity{
                 for(int i = 0; i < chatList.size(); i++){
                     // articleId = username
                     // headLine = last message
-                    setChatList(chatList.get(i).getArticleId(), false, isAdded);
+                    setChatList(chatList.get(i), false, isAdded);
                 }
             }
 
@@ -154,37 +154,49 @@ public class ChatActivity extends AppCompatActivity{
         });
     }
 
-    private void setChatList(String username, boolean isNew, boolean isAdded){
-        listedUsernames.put(username, username);
+    private void setChatList(ArticlesUnderTag friend, boolean isNew, boolean isAdded){
+        //listedUsernames.put(friend.getArticleId(), friend.getArticleId());
         LinearLayout layoutChatList = findViewById(R.id.layout_chatList);
 
         if(isAdded){
             if(isNew){
-                layoutChatList.removeView(layoutChatList.findViewWithTag(username));
-                layoutChatList.addView(getChatListView(username, true), 0);
+                layoutChatList.removeView(layoutChatList.findViewWithTag(friend.getArticleId()));
+                layoutChatList.addView(getChatListView(friend, true), 0);
             }
             else{
-                layoutChatList.addView(getChatListView(username, false));
+                layoutChatList.addView(getChatListView(friend, false));
             }
         }
 
     }
 
-    private View getChatListView(String friendsUsername, boolean isNew){
+    private View getChatListView(ArticlesUnderTag friend, boolean isNew){
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.model_chat_list, null);
         TextView txtName = view.findViewById(R.id.txtProfileName),
+                txtLastMessage = view.findViewById(R.id.txtLastMessage),
                 txtIsOnline = view.findViewById(R.id.imgIsOnline),
                 txtNew = view.findViewById(R.id.txtNewMessageHint);
-        txtName.setText(friendsUsername);
+        txtName.setText(friend.getArticleId());
+        String s;
+        int lastMessageSize = 30;
+        if(friend.getHeadLine().length() > lastMessageSize){
+            s = friend.getHeadLine().substring(0, lastMessageSize) + "...";
+        }
+        else{
+            s = friend.getHeadLine();
+        }
+        txtLastMessage.setText(s);
         if(isNew){
             txtNew.setVisibility(View.VISIBLE);
+            txtLastMessage.setTextColor(getResources().getColor(R.color.head_line_color));
         }
         else{
             txtNew.setVisibility(View.GONE);
+            txtLastMessage.setTextColor(getResources().getColor(R.color.text_color));
         }
-        Retrieve.getActivityStatus(friendsUsername, task -> {
+        Retrieve.getActivityStatus(friend.getArticleId(), task -> {
             if(task == DataModel.YES){
                 if(txtIsOnline.getParent() != null){
                     txtIsOnline.setCompoundDrawablesWithIntrinsicBounds(
@@ -200,7 +212,7 @@ public class ChatActivity extends AppCompatActivity{
         });
 
         view.setOnClickListener(getListenerForChatListView(txtName, txtNew));
-        view.setTag(friendsUsername);
+        view.setTag(friend.getArticleId());
 
         return view;
     }
@@ -242,5 +254,20 @@ public class ChatActivity extends AppCompatActivity{
         else{
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        if (!inOtherActivity){
+            Save.activeStatus(MainActivity.userBasicInfo.getUserName(), false);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        inOtherActivity = false;
+        Save.activeStatus(MainActivity.userBasicInfo.getUserName(), true);
+        super.onResume();
     }
 }

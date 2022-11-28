@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,6 @@ import com.amine.blog.MainActivity;
 import com.amine.blog.R;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.ArticlesUnderTag;
-import com.amine.blog.model.People;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.viewmodel.DataModel;
 
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class FollowingFrag extends Fragment implements View.OnClickListener {
 
-    private TextView txtShowMore;
+    private TextView txtShowMore, txtFollowingHead;
     private ProgressBar pBar, prShowMore;
     private LinearLayout layoutPeople;
     private Context context;
@@ -63,6 +63,8 @@ public class FollowingFrag extends Fragment implements View.OnClickListener {
         prShowMore = view.findViewById(R.id.progressShowMore);
         imgSearch = view.findViewById(R.id.imgSearchPeople);
         edtSearch = view.findViewById(R.id.edtSearchPeople);
+        txtFollowingHead = view.findViewById(R.id.txtFollowerHead);
+        view.findViewById(R.id.spinnerSortBy).setVisibility(View.GONE);
 
         txtShowMore.setOnClickListener(this);
         imgSearch.setOnClickListener(this);
@@ -80,7 +82,14 @@ public class FollowingFrag extends Fragment implements View.OnClickListener {
                     }
                     if(following.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
                         lastReadingUsername = "";
+                        txtShowMore.setVisibility(View.GONE);
                     }
+                    else{
+                        txtShowMore.setVisibility(View.VISIBLE);
+                    }
+                    String followerHead = "Following";
+                    txtFollowingHead.setText(followerHead);
+
                     setPeoples(following);
                 });
     }
@@ -125,6 +134,10 @@ public class FollowingFrag extends Fragment implements View.OnClickListener {
                             txtShowMore.setVisibility(View.VISIBLE);
                             if(following.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
                                 lastReadingUsername = "";
+                                txtShowMore.setVisibility(View.GONE);
+                            }
+                            else{
+                                txtShowMore.setVisibility(View.VISIBLE);
                             }
                             setPeoples(following);
                         });

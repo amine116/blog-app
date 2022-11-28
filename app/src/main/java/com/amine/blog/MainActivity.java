@@ -1,6 +1,5 @@
 package com.amine.blog;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -13,7 +12,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -46,7 +44,6 @@ import com.amine.blog.fragments.WriteArticleFrag;
 import com.amine.blog.interfaces.CallbackForFr2;
 import com.amine.blog.interfaces.ExistListener;
 import com.amine.blog.interfaces.OnReadArticleListener;
-import com.amine.blog.interfaces.OnReadListener;
 import com.amine.blog.interfaces.OnReadUserBasicInfoListener;
 import com.amine.blog.interfaces.OnWaitListener;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
@@ -59,7 +56,6 @@ import com.amine.blog.repositories.Save;
 import com.amine.blog.repositories.SignInFile;
 import com.amine.blog.repositories.UserAccount;
 import com.amine.blog.viewmodel.DataModel;
-import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 
@@ -72,13 +68,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static UserBasicInfo userBasicInfo;
     public static boolean isGuest;
     private final int runThreadFor = 30, MAXIMUM_NUMBER_OF_FRAGMENT = 15;
-    private boolean isMessageAnimationRunning = false, isActive = true;
+    private boolean isMessageAnimationRunning = false, isSignedIn = false, inOtherActivity = false;
     private long lastReadArticleTimeInMill = 1;
 
     private int currentFragment = -1;
     private final Fragment[] fragments = new Fragment[MAXIMUM_NUMBER_OF_FRAGMENT];
-
     private ProgressBar moreArticleReadInProgress;
+    private TextView txtMoreArticle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +84,86 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.hide();
 
-        //testingDrawableMargin();
+        getMoreArticleView();
         getReadingMoreArticleProgress();
         readMyBasicInfo();
+    }
 
+    private void setMyProfile(){
+        TextView txtMyUsername = findViewById(R.id.txtMyProfileName),
+                txtMyBasicInfo = findViewById(R.id.txtMyBasicInfo);
+        String s = userBasicInfo.getProfileName() + "~" + userBasicInfo.getUserName(),
+        s1 = "-Education- " + userBasicInfo.getUniversity() + ".\n" +
+                "-Profession- " + userBasicInfo.getProfession() + ".";
+        txtMyUsername.setText(s);
+        txtMyBasicInfo.setText(s1);
+    }
+
+    private void setBlogSummery(){
+        findViewById(R.id.layout_blog_summery).setVisibility(View.VISIBLE);
+        inProgressReadingTotalOnline();
+        inProgressReadingTotalVisitor();
+        inProgressReadingTotalArticle();
+
+        Retrieve.getBlogSummery(task -> {
+            completeProgressReadingTotalOnline();
+            TextView tOn = findViewById(R.id.txtTotalOnline);
+            String s = "Currently online- " + task;
+            tOn.setText(s);
+        }, task -> {
+            completeProgressReadingTotalVisitor();
+            TextView tUser = findViewById(R.id.txtTotalVisitor);
+            String s = "Total visitor- " + task;
+            tUser.setText(s);
+        }, task -> {
+            completeProgressReadingTotalArticle();
+            TextView tUser = findViewById(R.id.txtTotalArticle);
+            String s = "Total article written- " + task;
+            tUser.setText(s);
+        });
+    }
+
+    private void inProgressReadingTotalOnline(){
+        ProgressBar pOn = findViewById(R.id.progress_totalOnline);
+        TextView tOn = findViewById(R.id.txtTotalOnline);
+
+        tOn.setVisibility(View.GONE);
+        pOn.setVisibility(View.VISIBLE);
+    }
+    private void inProgressReadingTotalVisitor(){
+        ProgressBar pUser = findViewById(R.id.progress_totalVisitor);
+        TextView tUser = findViewById(R.id.txtTotalVisitor);
+
+        tUser.setVisibility(View.GONE);
+        pUser.setVisibility(View.VISIBLE);
+    }
+    private void inProgressReadingTotalArticle(){
+        ProgressBar pArt = findViewById(R.id.progress_totalArticle);
+        TextView tUser = findViewById(R.id.txtTotalArticle);
+
+        tUser.setVisibility(View.GONE);
+        pArt.setVisibility(View.VISIBLE);
+    }
+    private void completeProgressReadingTotalOnline(){
+        ProgressBar pOn = findViewById(R.id.progress_totalOnline);
+        TextView tOn = findViewById(R.id.txtTotalOnline);
+
+        tOn.setVisibility(View.VISIBLE);
+        pOn.setVisibility(View.GONE);
+    }
+    private void completeProgressReadingTotalVisitor(){
+        ProgressBar pUser = findViewById(R.id.progress_totalVisitor);
+        TextView tUser = findViewById(R.id.txtTotalVisitor);
+
+        tUser.setVisibility(View.VISIBLE);
+        pUser.setVisibility(View.GONE);
+    }
+    private void completeProgressReadingTotalArticle(){
+        ProgressBar pArt = findViewById(R.id.progress_totalArticle);
+        TextView tUser = findViewById(R.id.txtTotalArticle);
+
+        pArt.setVisibility(View.GONE);
+        tUser.setVisibility(View.VISIBLE);
     }
 
     private void readMyBasicInfo(){
@@ -100,6 +172,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         retrieve.setContext(this);
         retrieve.setOnListenerForReadingUserBasicInfo(this);
         retrieve.getSignedInUserBasicInfo();
+    }
+
+    @Override
+    public void onReadBasicInfo(UserBasicInfo userBasicInfo, boolean isSignedIn) {
+        MainActivity.userBasicInfo = userBasicInfo;
+        //printUserBasicInfo(userBasicInfo);
+        this.isSignedIn = isSignedIn;
+        if(!isGuest){
+            setMyProfile();
+        }
+        setHomePage(isSignedIn);
+    }
+
+    private void setHomePage(boolean isSignedIn){
+        if(isSignedIn){
+            if(!userBasicInfo.getUserName().equals(FireConstants.STR_GUEST_USER_USERNAME)){
+                getMyNewMessageStatus();
+                Save.activeStatus(userBasicInfo.getUserName(), true);
+                makeAdminView();
+            }
+            setBlogSummery();
+            initializeListeners();
+            readArticles();
+        }
+        else{
+            goToSignInPage();
+        }
+    }
+
+    private void makeAdminView(){
+
+        Retrieve.readAdminEmail((task, data) -> {
+            if(task == UserAccount.SUCCESS && data != null && data.equals(Retrieve.getSignedInUserEmail())){
+                findViewById(R.id.layout_admin).setVisibility(View.VISIBLE);
+            }
+            else{
+                findViewById(R.id.layout_admin).setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void getMyNewMessageStatus(){
+        Retrieve.hasMyNewMessages(userBasicInfo.getUserName(), this);
     }
 
     private void makeViewsInvisible(){
@@ -135,14 +250,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void removeAllFragment(){
-        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-            if (fragment != null) {
-                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-            }
-        }
-    }
-
     @Override
     public void onClick(View view) {
 
@@ -168,7 +275,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 fr.setContext(this);
                 fr.setOnWaitListenerWithStringArrayInfo((task, info) -> {
                     if(task == DataModel.MOVE_TO_ADD_TAG_FRAGMENT){
-                        readTags(info);
+                        WriteArticleAddTagFrag atfr = new WriteArticleAddTagFrag();
+                        atfr.setHeadLine(info.get(0));
+                        atfr.setArticleText(info.get(1));
+                        atfr.setPrivacy(info.get(2));
+                        atfr.setContext(MainActivity.this);
+                        atfr.setOnWaitListener(MainActivity.this);
+                        addFragmentToTheFrameLayout(atfr);
                     }
                 });
                 addFragmentToTheFrameLayout(fr);
@@ -196,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(view.getId() == R.id.imgMyProfile){
             if(!isGuest){
+                inOtherActivity = true;
                 Intent intent = new Intent(MainActivity.this, ProfileView.class);
                 intent.putExtra("USER_NAME", userBasicInfo.getUserName());
                 startActivity(intent);
@@ -205,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else if(view.getId() == R.id.layout_browse_article){
+            inOtherActivity = true;
             Intent intent = new Intent(MainActivity.this, TagWiseArticleActivity.class);
             startActivity(intent);
         }
@@ -212,6 +327,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if(!isGuest){
 
+                inOtherActivity = true;
                 isMessageAnimationRunning = false;
                 TextView imgChat = findViewById(R.id.imgChat);
                 imgChat.setText("");
@@ -325,54 +441,203 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-//        if(fm == null) fm = getSupportFragmentManager();
-//        ft = fm.beginTransaction();
-//        Fragment fragment = fm.findFragmentById(R.id.activity_main_frameLayout);
-//        if(fragment != null){
-//            ft.remove(fragment);
-//            //fm.popBackStack();
-//            ft.commit();
-//
-//            // Go to home if the last fragment is removed
-//            /*
-//            ft = getSupportFragmentManager().beginTransaction();
-//            Fragment f = getSupportFragmentManager().findFragmentById(R.id.activity_main_frameLayout);
-//            if(f == null){
-//                makeViewsInvisible();
-//                readArticles();
-//            }
-//             */
-//
-//        }
-//        else{
-//            Save.activeStatus(userBasicInfo.getUserName(), false);
-//            isActive = false;
-//            super.onBackPressed();
-//        }
 
-        if(!removeCurrentFragment()){
+        boolean removed = removeCurrentFragment();
+        if(!removed){
             Save.activeStatus(userBasicInfo.getUserName(), false);
-            isActive = false;
+            inOtherActivity = false;
             super.onBackPressed();
+        }
+        else if(currentFragment == -1){
+            if(isSignedIn){
+                RelativeLayout blogSummery = findViewById(R.id.layout_blog_summery);
+                blogSummery.setVisibility(View.VISIBLE);
+
+                if(fragments[0] != null){
+                    showArticles();
+                }
+                else{
+                    readMyBasicInfo();
+                }
+            }
+            else {
+                Save.activeStatus(userBasicInfo.getUserName(), false);
+                inOtherActivity = false;
+                super.onBackPressed();
+            }
         }
     }
 
     private boolean removeCurrentFragment(){
-
-        if(currentFragment < 0){
-            return false;
-        }
-        else{
+        if(currentFragment > -1){
             if(fm == null) fm = getSupportFragmentManager();
             ft = fm.beginTransaction();
-
             ft.remove(fragments[currentFragment--]);
             ft.commit();
-            if(currentFragment < 0){
-                readMyBasicInfo();
-            }
             return true;
         }
+        else{
+            return false;
+        }
+    }
+
+    private void removeAllFragment(){
+
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            }
+        }
+        currentFragment = -1;
+    }
+
+    private View.OnClickListener getListenerForTags(TextView txtTag){
+        //  TODO
+        //   Doesn't work :(
+        return view -> {
+            String tag = txtTag.getText().toString().trim();
+            Intent intent = new Intent(MainActivity.this, TagWiseArticleActivity.class);
+            intent.putExtra("INTENT_TYPE", DataModel.STR_CLICKED);
+            intent.putExtra("TAG", tag);
+            startActivity(intent);
+        };
+    }
+
+    private View.OnClickListener getListenerForArticleDiscussion(
+            String articleId, String username, String privacy ){
+        return view -> {
+            inOtherActivity = true;
+            Intent intent = new Intent(MainActivity.this, ArticleDiscussion.class);
+            intent.putExtra("USER_NAME", username);
+            intent.putExtra("ARTICLE_ID", articleId);
+            intent.putExtra("PRIVACY", privacy);
+            startActivity(intent);
+        };
+    }
+
+    private View.OnClickListener getListenerForLikeButton(Article article){
+        return view -> {
+
+            TextView txtNumberOfLikes = findViewById(view.getId());
+
+            Save save = new Save();
+
+            Retrieve retrieve = new Retrieve(userBasicInfo.getUserName());
+            retrieve.setOnWaitListener(task -> {
+
+                if(task == DataModel.YES){
+                    txtNumberOfLikes.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.ic_favorite, 0, 0, 0);
+
+                    save.removeMyFavArticle(userBasicInfo.getUserName(), article.getID());
+
+                    String s = txtNumberOfLikes.getText().toString();
+                    if(!s.equals("")) {
+                        int min = Math.max(Integer.parseInt(s) - 1, 0);
+                        if(min == 0) s = "";
+                        else s = min + "";
+                        txtNumberOfLikes.setText(s);
+                    }
+                }
+                else{
+                    txtNumberOfLikes.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.ic_favorite_red, 0, 0, 0);
+
+                    save.saveMyFavArticle(userBasicInfo.getUserName(), article.getID(), article.getHeadLine());
+                    String s = txtNumberOfLikes.getText().toString();
+                    if(s.equals("")) {
+                        s = "1";
+                    }
+                    else{
+                        s = (Integer.parseInt(s) + 1) + "";
+                    }
+                    txtNumberOfLikes.setText(s);
+                }
+            });
+            retrieve.isFavouriteArticle(article.getID());
+        };
+    }
+
+    private View.OnClickListener getListenerForProfile(){
+        return view -> {
+            String username = view.getTag().toString();
+            Intent intent = new Intent(MainActivity.this, ProfileView.class);
+            intent.putExtra("USER_NAME", username);
+            startActivity(intent);
+        };
+    }
+
+    private void prepareForFragment(){
+
+        ProgressBar pBar = findViewById(R.id.progress_main);
+        ScrollView sv = findViewById(R.id.scroll_info);
+        FrameLayout fl = findViewById(R.id.activity_main_frameLayout);
+
+        pBar.setVisibility(View.GONE);
+        sv.setVisibility(View.GONE);
+        fl.setVisibility(View.VISIBLE);
+
+    }
+
+    private void addFragmentToTheFrameLayout(Fragment fragment){
+
+        RelativeLayout blogSummery = findViewById(R.id.layout_blog_summery);
+        blogSummery.setVisibility(View.GONE);
+
+        if(fm == null) fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
+        ft.add(R.id.activity_main_frameLayout, fragment);
+        ft.commit();
+        fragments[++currentFragment] = fragment;
+    }
+
+    @Override
+    public void callback(String email, String userName, String password, String name,
+                         String university, String profession, String countryDialCode) {
+        CreateAccFrag2 cf = new CreateAccFrag2(email, userName, password, name, university,
+                profession, countryDialCode);
+        cf.setContext(this);
+        cf.addWaitListener(this);
+        addFragmentToTheFrameLayout(cf);
+    }
+
+    private void goToSignInPage(){
+        this.isSignedIn = false;
+        removeAllFragment();
+        prepareForFragment();
+        SignInFrag signInFrag = new SignInFrag();
+        signInFrag.addWaitListener(this);
+        signInFrag.setContext(this);
+        addFragmentToTheFrameLayout(signInFrag);
+    }
+
+    private void readArticles(){
+
+        inProgressArticleReading();
+
+        LinearLayout ll = findViewById(R.id.layout_info);
+        ll.removeAllViews();
+        Retrieve.getRecentArticleList(MainActivity.this, 0L, true);
+    }
+
+    @Override
+    public void onReadArticle(ArrayList<RecentArticle> articles, int task) {
+
+        completeProgressArticleReading();
+        if (articles.size() > 0){
+            lastReadArticleTimeInMill = articles.get(articles.size() - 1).getTimeInMill();
+        }
+        if (articles.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
+            txtMoreArticle.setVisibility(View.GONE);
+        }
+        else {
+            txtMoreArticle.setVisibility(View.VISIBLE);
+        }
+
+        makeViewsVisible();
+        showArticles(articles);
+
+        //Save.reSaveRecentArticle(articles, this);
     }
 
     private void showArticles(ArrayList<RecentArticle> articles){
@@ -399,10 +664,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ll.addView(v);
         }
 
-        View v = getMoreArticleView();
-        ll.addView(v);
-        v.setOnClickListener(view -> {
-            ll.removeView(v);
+        ll.addView(txtMoreArticle);
+        txtMoreArticle.setOnClickListener(view -> {
+            ll.removeView(txtMoreArticle);
             ll.addView(moreArticleReadInProgress);
             if (lastReadArticleTimeInMill != 1){
                 Retrieve.getRecentArticleList(MainActivity.this, lastReadArticleTimeInMill, false);
@@ -414,6 +678,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    private void showArticles(){
+        ProgressBar pBar = findViewById(R.id.progress_main);
+        ScrollView sv = findViewById(R.id.scroll_info);
+        FrameLayout fl = findViewById(R.id.activity_main_frameLayout);
+
+        pBar.setVisibility(View.GONE);
+        sv.setVisibility(View.VISIBLE);
+        fl.setVisibility(View.GONE);
+    }
+
     private void getReadingMoreArticleProgress(){
         moreArticleReadInProgress = new ProgressBar(this);
         moreArticleReadInProgress.setLayoutParams(new LinearLayout.LayoutParams(
@@ -421,16 +695,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         moreArticleReadInProgress.setPadding(0, 0, 0, 50);
     }
 
-    private View getMoreArticleView(){
-        TextView v = new TextView(this);
-        v.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150));
-        v.setTextColor(getResources().getColor(R.color.head_line_color));
-        v.setGravity(Gravity.CENTER);
-        v.setPadding(0, 0, 0, 20);
+    private void getMoreArticleView(){
+        txtMoreArticle = new TextView(this);
+        txtMoreArticle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150));
+        txtMoreArticle.setTextColor(getResources().getColor(R.color.head_line_color));
+        txtMoreArticle.setGravity(Gravity.CENTER);
+        txtMoreArticle.setPadding(0, 0, 0, 20);
         String s = "More articles...";
-        v.setText(s);
-
-        return v;
+        txtMoreArticle.setText(s);
     }
 
     private View getView(Article article, int i, int size){
@@ -451,6 +723,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 txtShowMore = view.findViewById(R.id.txtShowMore),
                 txtSpread = view.findViewById(R.id.txt_model_article_shareButton);
 
+        txtSpread.setVisibility(View.INVISIBLE);
+
         RelativeLayout articleLayout = view.findViewById(R.id.layout_model_article_text);
 
         txtOpinion.setOnClickListener(getListenerForArticleDiscussion(
@@ -470,7 +744,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(article.getText().length() > DataModel.ARTICLE_SIZE_ON_HOME){
 
             DataModel.getSpannableArticle(article.getText().substring(
-                    0, DataModel.ARTICLE_SIZE_ON_HOME), this,true,
+                            0, DataModel.ARTICLE_SIZE_ON_HOME) + " ...", this,true,
                     getResources().getColor(R.color.partition_color),
                     getResources().getColor(R.color.gray),
                     getResources().getColor(R.color.bullet_point),
@@ -541,7 +815,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 txtNumberOfLikes.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_favorite, 0, 0, 0);
             }
-            txtNumberOfLikes.setOnClickListener(getListenerForLikeButton());
+            txtNumberOfLikes.setOnClickListener(getListenerForLikeButton(article));
         });
         retrieve.isFavouriteArticle(article.getID());
 
@@ -556,203 +830,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          */
     }
 
-    private View.OnClickListener getListenerForTags(TextView txtTag){
-        //  TODO
-        //   Doesn't work :(
-        return view -> {
-            String tag = txtTag.getText().toString().trim();
-            Intent intent = new Intent(MainActivity.this, TagWiseArticleActivity.class);
-            intent.putExtra("INTENT_TYPE", DataModel.STR_CLICKED);
-            intent.putExtra("TAG", tag);
-            startActivity(intent);
-        };
-    }
-
-    private View.OnClickListener getListenerForArticleDiscussion(
-            String articleId, String username, String privacy ){
-        return view -> {
-            Intent intent = new Intent(MainActivity.this, ArticleDiscussion.class);
-            intent.putExtra("USER_NAME", username);
-            intent.putExtra("ARTICLE_ID", articleId);
-            intent.putExtra("PRIVACY", privacy);
-            startActivity(intent);
-        };
-    }
-
-    private View.OnClickListener getListenerForLikeButton(){
-        return view -> {
-            String articleId = view.getTag().toString();
-            TextView txtNumberOfLikes = findViewById(view.getId());
-
-            Save save = new Save();
-
-            Retrieve retrieve = new Retrieve(userBasicInfo.getUserName());
-            retrieve.setOnWaitListener(task -> {
-
-                if(task == DataModel.YES){
-                    txtNumberOfLikes.setCompoundDrawablesWithIntrinsicBounds(
-                            R.drawable.ic_favorite, 0, 0, 0);
-
-                    save.removeMyFavArticle(userBasicInfo.getUserName(), articleId);
-
-                    String s = txtNumberOfLikes.getText().toString();
-                    if(!s.equals("")) {
-                        int min = Math.max(Integer.parseInt(s) - 1, 0);
-                        if(min == 0) s = "";
-                        else s = min + "";
-                        txtNumberOfLikes.setText(s);
-                    }
-                }
-                else{
-                    txtNumberOfLikes.setCompoundDrawablesWithIntrinsicBounds(
-                            R.drawable.ic_favorite_red, 0, 0, 0);
-
-                    save.saveMyFavArticle(userBasicInfo.getUserName(), articleId);
-                    String s = txtNumberOfLikes.getText().toString();
-                    if(s.equals("")) {
-                        s = "1";
-                    }
-                    else{
-                        s = (Integer.parseInt(s) + 1) + "";
-                    }
-                    txtNumberOfLikes.setText(s);
-                }
-            });
-            retrieve.isFavouriteArticle(articleId);
-        };
-    }
-
-    private View.OnClickListener getListenerForProfile(){
-        return view -> {
-            String username = view.getTag().toString();
-            Intent intent = new Intent(MainActivity.this, ProfileView.class);
-            intent.putExtra("USER_NAME", username);
-            startActivity(intent);
-        };
-    }
-
-    private void prepareForFragment(){
-
-        ProgressBar pBar = findViewById(R.id.progress_main);
-        ScrollView sv = findViewById(R.id.scroll_info);
-        FrameLayout fl = findViewById(R.id.activity_main_frameLayout);
-
-        pBar.setVisibility(View.GONE);
-        sv.setVisibility(View.GONE);
-        fl.setVisibility(View.VISIBLE);
-
-    }
-
-    private void addFragmentToTheFrameLayout(Fragment fragment){
-        if(fm == null) fm = getSupportFragmentManager();
-        ft = fm.beginTransaction();
-        ft.add(R.id.activity_main_frameLayout, fragment);
-        ft.commit();
-        fragments[++currentFragment] = fragment;
-    }
-
-    @Override
-    public void callback(String email, String userName, String password, String name,
-                         String university, String profession, String countryDialCode) {
-        CreateAccFrag2 cf = new CreateAccFrag2(email, userName, password, name, university,
-                profession, countryDialCode);
-        cf.setContext(this);
-        cf.addWaitListener(this);
-        addFragmentToTheFrameLayout(cf);
-    }
-
-    @Override
-    public void onReadBasicInfo(UserBasicInfo userBasicInfo, boolean isSignedIn) {
-        MainActivity.userBasicInfo = userBasicInfo;
-        //printUserBasicInfo(userBasicInfo);
-
-        if(isSignedIn){
-            if(!userBasicInfo.getUserName().equals(FireConstants.STR_GUEST_USER_USERNAME)){
-                getMyNewMessageStatus();
-                Save.activeStatus(userBasicInfo.getUserName(), true);
-                makeAdminView();
-            }
-            initializeListeners();
-            readArticles();
-        }
-        else{
-            goToSignInPage();
-        }
-    }
-
-    private void makeAdminView(){
-
-        Retrieve.readAdminEmail((task, data) -> {
-            if(task == UserAccount.SUCCESS && data != null && data.equals(Retrieve.getSignedInUserEmail())){
-                findViewById(R.id.layout_admin).setVisibility(View.VISIBLE);
-            }
-            else{
-                findViewById(R.id.layout_admin).setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private void getMyNewMessageStatus(){
-        Retrieve.hasMyNewMessages(userBasicInfo.getUserName(), this);
-    }
-
-    private void goToSignInPage(){
-        prepareForFragment();
-        SignInFrag signInFrag = new SignInFrag();
-        signInFrag.addWaitListener(this);
-        addFragmentToTheFrameLayout(signInFrag);
-    }
-
-    private void readArticles(){
-
-        Retrieve.getLastArticleTimeInMill((task, data) -> {
-            //Toast.makeText(this, data + "", Toast.LENGTH_SHORT).show();
-            if(task == UserAccount.SUCCESS){
-                long timeInMill = Long.parseLong(data);
-                Retrieve.getRecentArticleList(MainActivity.this, timeInMill, true);
-            }
-
-        });
-
-        //Retrieve.getFirstRecentArticles(this);
-    }
-
-    @Override
-    public void onReadArticle(ArrayList<RecentArticle> articles, int task) {
-        if (articles.size() > 0){
-            lastReadArticleTimeInMill = articles.get(articles.size() - 1).getTimeInMill();
-        }
-        makeViewsVisible();
-        showArticles(articles);
-
-        //Save.reSaveRecentArticle(articles, this);
-    }
-
-    private void readTags(ArrayList<String> info){
-        Retrieve retrieve = new Retrieve(FireConstants.STR_TAGS);
-        retrieve.setOnListerForReadingTags(tagList -> {
-            WriteArticleAddTagFrag fr = new WriteArticleAddTagFrag();
-            fr.setHeadLine(info.get(0));
-            fr.setArticleText(info.get(1));
-            fr.setPrivacy(info.get(2));
-            fr.setContext(MainActivity.this);
-            fr.setOnWaitListener(MainActivity.this);
-            fr.setTagList(tagList);
-            addFragmentToTheFrameLayout(fr);
-        });
-
-        ProgressBar pBar = findViewById(R.id.progress_main);
-        ScrollView sv = findViewById(R.id.scroll_info);
-        sv.setVisibility(View.GONE);
-        pBar.setVisibility(View.VISIBLE);
-
-        retrieve.getTagList(); // getTagList() method will trigger the 'WriteArticleFrag.java' to be open.
+    private void signOut(){
+        UserAccount.signOut(userBasicInfo.getUserName());
+        userBasicInfo = null;
+        new SignInFile(this).deleteFile();
+        goToSignInPage();
     }
 
     @Override
     public void onWaitCallback(int task) {
         if(task == DataModel.MOVE_TO_MAIN_ACTIVITY_HOME){
-
             removeAllFragment();
             makeViewsInvisible();
             readMyBasicInfo();
@@ -762,15 +849,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             CreateAccFrag1 caf = new CreateAccFrag1(this);
             caf.setContext(this);
             addFragmentToTheFrameLayout(caf);
-            /*
-        Or above line could be written like this:
-        FrCreateAcc1 frCreateAcc1 = new FrCreateAcc1(new CallbackForFr2() {
-            @Override
-            public void callback(String email, String userName, String password, String name, String university) {
-
-            }
-        });
-         */
         }
         else if(task == DataModel.STR_MOVE_TO_SIGN_IN_PAGE){
             goToSignInPage();
@@ -790,14 +868,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             raf.setWaitListener(this);
             addFragmentToTheFrameLayout(raf);
         }
-    }
-
-    private void signOut(){
-        Toast.makeText(this, "clicked", Toast.LENGTH_LONG).show();
-        UserAccount.signOut(userBasicInfo.getUserName());
-        userBasicInfo = null;
-        new SignInFile(this).deleteFile();
-        goToSignInPage();
     }
 
     @Override
@@ -855,7 +925,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onPause() {
-        if(!isActive){
+        //DataModel.deb("onPause");
+        if(!inOtherActivity){
             Save.activeStatus(userBasicInfo.getUserName(), false);
         }
         super.onPause();
@@ -863,6 +934,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
+        inOtherActivity = false;
         if(userBasicInfo != null){
             Save.activeStatus(userBasicInfo.getUserName(), true);
         }
@@ -873,6 +945,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         Save.activeStatus(userBasicInfo.getUserName(), false);
         super.onDestroy();
+    }
+
+    private void inProgressArticleReading(){
+        ProgressBar pBar = findViewById(R.id.progress_main);
+        ScrollView sView = findViewById(R.id.scroll_info);
+        FrameLayout fLayout = findViewById(R.id.activity_main_frameLayout);
+        //RelativeLayout rLayout = findViewById(R.id.layout_blog_summery);
+
+        sView.setVisibility(View.GONE);
+        fLayout.setVisibility(View.GONE);
+        pBar.setVisibility(View.VISIBLE);
+    }
+
+    private void completeProgressArticleReading(){
+        ProgressBar pBar = findViewById(R.id.progress_main);
+        ScrollView sView = findViewById(R.id.scroll_info);
+
+        sView.setVisibility(View.VISIBLE);
+        pBar.setVisibility(View.GONE);
     }
 
 }

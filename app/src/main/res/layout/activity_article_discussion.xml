@@ -21,7 +21,6 @@
             android:layout_centerInParent="true"
             android:visibility="gone"/>
 
-
         <FrameLayout
             android:id="@+id/frame_for_fragments"
             android:layout_width="match_parent"
@@ -32,7 +31,6 @@
 
 
         </FrameLayout>
-
 
         <RelativeLayout
             android:id="@+id/layout_article_discussion"
@@ -49,53 +47,39 @@
                 android:background="@color/background_color"
                 tools:ignore="RtlSymmetry" />
 
-            <TextView
-                android:id="@+id/txtProfileName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_color"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_below="@id/imgArticleMenu"/>
-
             <RelativeLayout
                 android:id="@+id/layout_article"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtProfileName">
+                android:layout_below="@id/imgArticleMenu"
+                android:background="@drawable/article_background"
+                android:padding="10sp">
 
-                <TextView
-                    android:id="@+id/txtHeadline"
+                <RelativeLayout
+                    android:id="@+id/layout_article_head_line"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/head_line_color"
-                    android:textStyle="bold"
-                    android:gravity="center"/>
+                    android:paddingBottom="1sp"
+                    android:background="@drawable/background_color_drawable">
 
-                <View
-                    android:id="@+id/gap1"
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:layout_below="@id/txtHeadline"/>
+                    <TextView
+                        android:id="@+id/txtHeadline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/article_background"
+                        android:textColor="@color/head_line_color"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:gravity="center"/>
 
 
-                <TextView
-                    android:id="@+id/txtUserName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="20sp"
-                    android:textColor="@color/head_line_color"
-                    android:layout_below="@id/gap1"
-                    tools:ignore="RtlSymmetry" />
+                </RelativeLayout>
 
                 <View
                     android:id="@+id/gap4"
                     android:layout_width="match_parent"
                     android:layout_height="10dp"
-                    android:layout_below="@id/txtUserName"/>
-
+                    android:layout_below="@id/layout_article_head_line"/>
 
                 <TextView
                     android:id="@+id/txtArticle"
@@ -106,6 +90,59 @@
                     android:textSize="17sp"
                     android:longClickable="true"
                     android:layout_below="@id/gap4"/>
+
+                <View
+                    android:id="@+id/gap1"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_below="@id/txtArticle"/>
+
+                <RelativeLayout
+                    android:id="@+id/layout_author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_color_drawable"
+                    android:layout_below="@id/gap1"
+                    android:paddingTop="1sp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/article_background"
+                        android:padding="5sp">
+
+                        <TextView
+                            android:id="@+id/txtAuthorHead"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:text="@string/author"
+                            android:textColor="@color/head_line_color"
+                            tools:ignore="RtlSymmetry"/>
+
+                        <TextView
+                            android:id="@+id/txtProfileName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_color"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_below="@id/txtAuthorHead"/>
+
+                        <TextView
+                            android:id="@+id/txtUserName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/head_line_color"
+                            tools:ignore="RtlSymmetry"
+                            android:layout_below="@id/txtProfileName"/>
+
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
 
 
             </RelativeLayout>

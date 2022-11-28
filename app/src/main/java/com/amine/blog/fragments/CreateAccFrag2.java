@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -43,6 +45,8 @@ public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
     private ScrollView sv;
     private ProgressBar pBar;
 
+    private Animation slide_up, slide_down;
+
     public CreateAccFrag2(String email, String userName, String password, String name, String university,
                           String profession, String countryDialCode) {
         this.email = email;
@@ -66,7 +70,7 @@ public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.create_account_fragment_2, container, false);
+        return inflater.inflate(R.layout.create_account_fragment_second, container, false);
     }
 
     @Override
@@ -83,6 +87,28 @@ public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
 
         sv = view.findViewById(R.id.scroll_crAcc2);
         pBar = view.findViewById(R.id.progress_crAcc2);
+
+        slide_up = AnimationUtils.loadAnimation(context, R.anim.animation_slide_up);
+        slide_down = AnimationUtils.loadAnimation(context, R.anim.animation_slide_down);
+
+        slide_down.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                onWaitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        sv.startAnimation(slide_up);
     }
 
 
@@ -103,7 +129,7 @@ public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
                 return;
             }
             if(expert1.equals("") && expert2.equals("") && expert3.equals("")){
-                edtExpert1.setError("Provide at lease one hobby");
+                edtExpert1.setError("Provide at lease one expertise");
                 edtExpert1.requestFocus();
                 return;
             }
@@ -131,7 +157,7 @@ public class CreateAccFrag2 extends Fragment implements View.OnClickListener{
                     People people = new People(userName, s, 0);
                     Save.saveMyOverview(people, false);
 
-                    onWaitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
+                    sv.startAnimation(slide_down);
                 }
                 else if(res == UserAccount.USER_COLLIDE){
                     SimpleDialog sd =

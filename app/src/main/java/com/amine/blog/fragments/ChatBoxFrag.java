@@ -20,10 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.amine.blog.MainActivity;
 import com.amine.blog.R;
-import com.amine.blog.interfaces.OnReadChatMessages;
-import com.amine.blog.interfaces.OnReadLongValue;
 import com.amine.blog.interfaces.OnReadSingleMessage;
-import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.ChatMessage;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.repositories.Save;
@@ -225,25 +222,34 @@ public class ChatBoxFrag extends Fragment implements View.OnClickListener, OnRea
 
         Retrieve.readInstantMessageSent(myUsername, receiverUsername, this);
 
-        Retrieve.readLastMessageTimeInMill(myUsername, receiverUsername, value -> {
-            if(value != 1){
-                Retrieve.readMessages(myUsername, receiverUsername, value, true, (chatMessages, task) -> {
-                    if(chatMessages.size() > 0){
-                        lastMessageTimeInMill = chatMessages.get(chatMessages.size() - 1).getTimeInMill();
-                    }
-                    makeChatViewVisible();
-                    setMessagesToChatBox(chatMessages, false);
-                });
+//        Retrieve.readLastMessageTimeInMill(myUsername, receiverUsername, value -> {
+//            if(value != 1){
+//                Retrieve.readMessages(myUsername, receiverUsername, value, true, (chatMessages, task) -> {
+//                    if(chatMessages.size() > 0){
+//                        lastMessageTimeInMill = chatMessages.get(chatMessages.size() - 1).getTimeInMill();
+//                    }
+//                    makeChatViewVisible();
+//                    setMessagesToChatBox(chatMessages, false);
+//                });
+//            }
+//            else{
+//                makeChatViewVisible();
+//            }
+//        });
+
+        Retrieve.readMessages(myUsername, receiverUsername, 0, true, (chatMessages, task) -> {
+            if(chatMessages.size() > 0){
+                lastMessageTimeInMill = chatMessages.get(chatMessages.size() - 1).getTimeInMill();
+            }
+            if(chatMessages.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
+                txtShowMoreMessage.setVisibility(View.GONE);
             }
             else{
-                makeChatViewVisible();
+                txtShowMoreMessage.setVisibility(View.VISIBLE);
             }
+            makeChatViewVisible();
+            setMessagesToChatBox(chatMessages, false);
         });
-
-
-//        Retrieve retrieve = new Retrieve("false");
-//        retrieve.setOnSingleMessageListener(this);
-//        retrieve.readSingleMessage(myUsername, receiverUsername);
 
         Retrieve.getActivityStatus(receiverUsername, task -> {
             if(task == DataModel.YES){

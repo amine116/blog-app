@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.amine.blog.model.ArticlesUnderTag;
 import com.amine.blog.model.SuggestedTag;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.repositories.Save;

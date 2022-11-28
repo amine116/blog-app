@@ -20,7 +20,7 @@
         android:id="@+id/txt_model_profile_article_headLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="start"
         android:textSize="20sp"
         android:paddingStart="10sp"
         android:text="@string/write_an_article"

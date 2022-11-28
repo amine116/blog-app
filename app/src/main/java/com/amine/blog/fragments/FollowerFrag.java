@@ -19,19 +19,19 @@ import com.amine.blog.MainActivity;
 import com.amine.blog.R;
 import com.amine.blog.interfaces.OnWaitListenerWithStringInfo;
 import com.amine.blog.model.ArticlesUnderTag;
-import com.amine.blog.model.People;
 import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.viewmodel.DataModel;
 
 import java.util.ArrayList;
 
 public class FollowerFrag extends Fragment implements View.OnClickListener {
-    private TextView txtShowMore;
+    private TextView txtShowMore, txtFollowerHead;
     private ProgressBar pBar, prShowMore;
     private LinearLayout layoutPeople;
     private Context context;
     private ImageView imgSearch;
     private EditText edtSearch;
+
     private String lastReadingUsername;
 
     private OnWaitListenerWithStringInfo waitWithInfoListener;
@@ -61,6 +61,8 @@ public class FollowerFrag extends Fragment implements View.OnClickListener {
         prShowMore = view.findViewById(R.id.progressShowMore);
         imgSearch = view.findViewById(R.id.imgSearchPeople);
         edtSearch = view.findViewById(R.id.edtSearchPeople);
+        txtFollowerHead = view.findViewById(R.id.txtFollowerHead);
+        view.findViewById(R.id.spinnerSortBy).setVisibility(View.GONE);
 
         txtShowMore.setOnClickListener(this);
         imgSearch.setOnClickListener(this);
@@ -78,7 +80,15 @@ public class FollowerFrag extends Fragment implements View.OnClickListener {
                     }
                     if(followers.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
                         lastReadingUsername = "";
+                        txtShowMore.setVisibility(View.GONE);
                     }
+                    else{
+                        txtShowMore.setVisibility(View.VISIBLE);
+                    }
+
+                    String followerHead = "Follower";
+                    txtFollowerHead.setText(followerHead);
+
                     setPeoples(followers);
                 });
     }
@@ -123,6 +133,10 @@ public class FollowerFrag extends Fragment implements View.OnClickListener {
                             txtShowMore.setVisibility(View.VISIBLE);
                             if(followers.size() < DataModel.MAXIMUM_DATA_QUERY_FIREBASE){
                                 lastReadingUsername = "";
+                                txtShowMore.setVisibility(View.GONE);
+                            }
+                            else{
+                                txtShowMore.setVisibility(View.VISIBLE);
                             }
                             setPeoples(followers);
                         });

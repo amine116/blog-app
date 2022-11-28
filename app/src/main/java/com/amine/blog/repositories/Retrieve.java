@@ -77,7 +77,7 @@ public class Retrieve {
     // Firebase
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final FirebaseAuth fAuth = FirebaseAuth.getInstance();
-    private DatabaseReference reference;
+    //private DatabaseReference reference;
 
 
     public Retrieve(String node){
@@ -238,7 +238,7 @@ public class Retrieve {
 
     public String createOpinionId(){
         // nod = article id
-        reference = database.getReference().child(FireConstants.STR_ARTICLE).child(node)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_ARTICLE).child(node)
                 .child(FireConstants.STR_OPINIONS).push();
 
         return reference.getKey();
@@ -247,14 +247,14 @@ public class Retrieve {
 
     public void getTagList(){
         ArrayList<ArticleTag> tags = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(node);
+        DatabaseReference reference = getRootReference().child(FireConstants.STR_TAG_LIST);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 if(snapshot.exists()){
                     for(DataSnapshot item : snapshot.getChildren()){
-                        tags.add(new ArticleTag(item.getKey(), item.getChildrenCount() - 1));
+                        tags.add(new ArticleTag(item.getKey(), -item.getValue(Long.class)));
                     }
                 }
                 tagListener.onReadTag(tags);
@@ -275,39 +275,14 @@ public class Retrieve {
         Query query;
         if (isFirstRead){
             query = getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
-                    .orderByChild(FireConstants.STR_TIME_IN_MILL).startAt(startingArticleTimeInMill)
-                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
+                    .orderByChild(FireConstants.STR_TIME_IN_MILL)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE + 1);
         }
         else{
             query = getRootReference().child(FireConstants.STR_RECENT_ARTICLES)
                     .orderByChild(FireConstants.STR_TIME_IN_MILL).startAfter(startingArticleTimeInMill)
                     .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
         }
-
-//        DatabaseReference ref = getRootReference().child(FireConstants.STR_RECENT_ARTICLES);
-//
-//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists()){
-//                    for(DataSnapshot item : snapshot.getChildren()){
-//                        if(item.getKey() != null){
-//                            Article article = new DataModel().formArticle(snapshot.child(item.getKey()));
-//                            articles.add(article);
-//                        }
-//                    }
-//                    onReadArticle.onReadArticle(articles, UserAccount.SUCCESS);
-//                }
-//                else{
-//                    onReadArticle.onReadArticle(articles, UserAccount.FAIL);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                onReadArticle.onReadArticle(null, UserAccount.FAIL);
-//            }
-//        });
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -388,7 +363,8 @@ public class Retrieve {
     }
 
     public void getSinglePrivateArticleList(String myUsername){
-        reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_USER_PERSONAL_INFO)
                 .child(myUsername).child(FireConstants.STR_ARTICLE);
 
         ArrayList<Article> articles = new ArrayList<>();
@@ -459,7 +435,7 @@ public class Retrieve {
     public void getSingleArticle(){
         // node = article id;
         //DataModel.deb(node);
-        reference = database.getReference().child(FireConstants.STR_ARTICLE).child(node);
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_ARTICLE).child(node);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -481,7 +457,8 @@ public class Retrieve {
 
     public void getSinglePrivateArticle(String myUsername){
         // node = article id;
-        reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_USER_PERSONAL_INFO)
                 .child(myUsername).child(FireConstants.STR_ARTICLE).child(node);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -504,7 +481,8 @@ public class Retrieve {
 
     public void getHobbyList(){
         // node = username
-        reference = database.getReference().child(FireConstants.STR_USER).child(node).child(FireConstants.STR_PUBLIC_INFO)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_USER).child(node)
+                .child(FireConstants.STR_PUBLIC_INFO)
                 .child(FireConstants.STR_HOBBIES);
         ArrayList<String> expertise = new ArrayList<>();
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -527,7 +505,8 @@ public class Retrieve {
 
     public void getExpertiseList(){
         //node = username
-        reference = database.getReference().child(FireConstants.STR_USER).child(node).child(FireConstants.STR_PUBLIC_INFO)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_USER)
+                .child(node).child(FireConstants.STR_PUBLIC_INFO)
                 .child(FireConstants.STR_EXPERTISE);
         ArrayList<String> hobbies = new ArrayList<>();
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -549,7 +528,8 @@ public class Retrieve {
     }
 
     public void isFollowing(String myUsername, String personUsername){
-        reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_USER_PERSONAL_INFO)
                 .child(myUsername).child(FireConstants.STR_FOLLOWING).child(personUsername);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -571,7 +551,8 @@ public class Retrieve {
 
     public void isFavouriteArticle(String articleId){
         // node = username
-        reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_USER_PERSONAL_INFO)
                 .child(node).child(FireConstants.STR_FAV_POST).child(articleId);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -593,7 +574,7 @@ public class Retrieve {
 
     public void readSingleOpinionOfTheArticle(){
         // node = article id;
-        reference = database.getReference().child(FireConstants.STR_ARTICLE).child(node)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_ARTICLE).child(node)
                 .child(FireConstants.STR_OPINIONS);
 
         reference.addChildEventListener(new ChildEventListener() {
@@ -625,7 +606,8 @@ public class Retrieve {
     }
 
     public void readSinglePrivateOpinionOfTheArticle(String myUsername, String articleId){
-        reference = database.getReference().child(FireConstants.STR_ADMIN).child(FireConstants.STR_USER_PERSONAL_INFO)
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_ADMIN)
+                .child(FireConstants.STR_USER_PERSONAL_INFO)
                 .child(myUsername).child(FireConstants.STR_ARTICLE).child(articleId)
                 .child(FireConstants.STR_OPINIONS);
 
@@ -662,7 +644,7 @@ public class Retrieve {
         Query query;
         if(isFirstRead){
             query = getRootReference().child(FireConstants.STR_PERSONAL_CHAT).child(myUsername)
-                    .child(friendsUsername).orderByChild(FireConstants.STR_TIME_IN_MILL).startAt((double)startAfter)
+                    .child(friendsUsername).orderByChild(FireConstants.STR_TIME_IN_MILL)
                     .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
         }
         else{
@@ -678,11 +660,9 @@ public class Retrieve {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
                     for(DataSnapshot item : snapshot.getChildren()){
-                        if(item.getKey() != null){
-                            if(!item.getKey().equals("last-message")){
-                                ChatMessage chatMessage = item.getValue(ChatMessage.class);
-                                chatMessages.add(chatMessage);
-                            }
+                        if(item.getKey() != null && !item.getKey().equals(FireConstants.STR_LAST_MESSAGE)){
+                            ChatMessage chatMessage = item.getValue(ChatMessage.class);
+                            chatMessages.add(chatMessage);
                         }
                     }
                     onReadMessage.onReadChatMessage(chatMessages, DataModel.YES);
@@ -747,6 +727,51 @@ public class Retrieve {
                 onReadSingleMessage.onReadMessage(null);
             }
         });
+    }
+
+    public static void hasMyNewMessages(String username, ExistListener existListener){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_CHAT_STATUSES)
+                .child(FireConstants.STR_NEW_MESSAGE_STATUS).child(username);
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    existListener.exist(true, snapshot.getChildrenCount());
+                }
+                else{
+                    existListener.exist(false, 0);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public static void getActivityStatus(String username, OnWaitListener waitListener){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_CHAT_STATUSES)
+                .child(FireConstants.STR_ACTIVE_STATUS).child(username);
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    waitListener.onWaitCallback(DataModel.YES);
+                }
+                else{
+                    waitListener.onWaitCallback(DataModel.NO);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     public static void readOldChatList(String myUsername, OnReadChatList onReadChatList){
@@ -839,7 +864,7 @@ public class Retrieve {
     }
 
     public void getTagsSnapshot(){
-        reference = database.getReference().child(FireConstants.STR_TAGS);
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_TAGS);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -892,7 +917,7 @@ public class Retrieve {
     }
 
     public void readArticlesUnderATag(String tagName){
-        reference = database.getReference().child(FireConstants.STR_TAGS).child(tagName);
+        DatabaseReference reference = database.getReference().child(FireConstants.STR_TAGS).child(tagName);
         ArrayList<ArticlesUnderTag> articlesUnderTags = new ArrayList<>();
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -926,7 +951,7 @@ public class Retrieve {
 
         if (isFirst){
             query = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_USERNAME)
-                    .startAt(startAtOrAfter).limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE + 1);
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE);
         }
         else {
             query = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_USERNAME)
@@ -964,25 +989,24 @@ public class Retrieve {
     public static void readUserOverViewByArticleCount(long startAtOrAfter, boolean isFirst, Context context,
                                                   OnReadPeople onReadPeople){
 
-        // TODO
-        //  Doesn't work perfectly
-        //  Need to work on more
-        //  Currently this function is not called, because the view is hidden
-
         ArrayList<People> people = new ArrayList<>();
-        Query query = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_ARTICLE_COUNT)
-                .startAt(startAtOrAfter).endAt(startAtOrAfter + 1);
-
+        Query query;
+        if (isFirst){
+            query = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_ARTICLE_COUNT)
+                    .limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE - 1);
+        }
+        else{
+            query = getRootReference().child(FireConstants.STR_USER_OVERVIEW).orderByChild(FireConstants.STR_ARTICLE_COUNT)
+                    .startAfter(startAtOrAfter).limitToFirst(DataModel.MAXIMUM_DATA_QUERY_FIREBASE - 1);
+        }
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
                     //Toast.makeText(context, snapshot.toString(), Toast.LENGTH_SHORT).show();
                     for(DataSnapshot item : snapshot.getChildren()){
-                        if(item.getKey() != null && !item.getKey().equals("0a")){
-                            People p = item.getValue(People.class);
-                            people.add(p);
-                        }
+                        People p = item.getValue(People.class);
+                        people.add(p);
                     }
                     onReadPeople.onReadPeople(UserAccount.SUCCESS, people);
                 }
@@ -999,6 +1023,62 @@ public class Retrieve {
             }
         });
 
+    }
+
+    public static void getBlogSummery(OnWaitListener onWaitTotalOnline, OnWaitListener onWaitTotalUser,
+                                      OnWaitListener onWaitTotalArticle){
+
+        getRootReference().child(FireConstants.STR_CHAT_STATUSES).child(FireConstants.STR_ACTIVE_STATUS)
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                long totalOnline = 0;
+                                if (snapshot.exists()){
+                                    totalOnline = snapshot.getChildrenCount();
+                                }
+                                onWaitTotalOnline.onWaitCallback((int)totalOnline);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+        getRootReference().child(FireConstants.STR_TOTAL_USERS)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int totalUser = 0;
+                        if(snapshot.exists()){
+                            totalUser = snapshot.getValue(Integer.class);
+                        }
+                        onWaitTotalUser.onWaitCallback(totalUser);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+        getRootReference().child(FireConstants.STR_NUMBER_OF_ARTICLE)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int totalArticle = 0;
+                        if (snapshot.exists()){
+                            totalArticle = snapshot.getValue(Integer.class);
+                        }
+                        onWaitTotalArticle.onWaitCallback(totalArticle);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     public static void readUserOverViewBySearchWord(String username, OnReadPeople onReadPeople){
@@ -1030,28 +1110,6 @@ public class Retrieve {
             }
         });
 
-    }
-
-    public static void hasMyNewMessages(String username, ExistListener existListener){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_CHAT_STATUSES)
-                .child(FireConstants.STR_NEW_MESSAGE_STATUS).child(username);
-
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    existListener.exist(true, snapshot.getChildrenCount());
-                }
-                else{
-                    existListener.exist(false, 0);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     public static void getMyFollowing(String username, String startAfter, boolean isFirst,
@@ -1209,29 +1267,6 @@ public class Retrieve {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 onWait.onReadArticleUnderATag(following);
-            }
-        });
-
-    }
-
-    public static void getActivityStatus(String username, OnWaitListener waitListener){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(FireConstants.STR_CHAT_STATUSES)
-                .child(FireConstants.STR_ACTIVE_STATUS).child(username);
-
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    waitListener.onWaitCallback(DataModel.YES);
-                }
-                else{
-                    waitListener.onWaitCallback(DataModel.NO);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
 

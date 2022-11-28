@@ -6,11 +6,14 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 
@@ -25,6 +28,7 @@ import com.amine.blog.interfaces.CallbackForSignIn;
 import com.amine.blog.model.CountryCode;
 import com.amine.blog.repositories.UserAccount;
 import com.amine.blog.viewmodel.DataModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -36,7 +40,7 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
     private UserAccount userAccount;
     private ProgressBar prBar;
     private ScrollView sv;
-    private ImageView imgEye, imgDropDownIcon;
+    private ImageView imgEye;
     private Button btnCreateAcc1;
     private Spinner countrySpinner;
 
@@ -44,6 +48,8 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
 
     private ArrayList<CountryCode> countryCodes = new ArrayList<>();
     private String countryDialCode;
+
+    private Animation slide_up, slide_down;
 
     private boolean passwordShown = false;
 
@@ -89,6 +95,30 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
 
         populateCountrySpinner();
         //edtUsername.setOnKeyListener(this);
+
+        slide_up = AnimationUtils.loadAnimation(context, R.anim.animation_slide_up);
+        slide_down = AnimationUtils.loadAnimation(context, R.anim.animation_slide_down);
+
+        sv.startAnimation(slide_up);
+        slide_down.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                cbfr2.callback(userAccount.getEmail(), userAccount.getUserName(),
+                        userAccount.getPass(), userAccount.getName(),
+                        userAccount.getUniversity(), userAccount.getProfession(), countryDialCode);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 
     private void populateCountrySpinner(){
@@ -193,6 +223,11 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
                 return;
             }
 
+            if(countryDialCode == null || countryDialCode.isEmpty()){
+                Snackbar.make(countrySpinner, "Select your country", Snackbar.LENGTH_LONG).show();
+                return;
+            }
+
             btnCreateAcc1.setEnabled(false);
             inProgress();
             userAccount = new UserAccount(countryDialCode + email, userName, password, name,
@@ -225,10 +260,7 @@ public class CreateAccFrag1 extends Fragment implements View.OnClickListener, Ca
             edtUsername.requestFocus();
         }
         else if(res == UserAccount.SUCCESS && userAccount.isDummy()){
-            cbfr2.callback(userAccount.getEmail(), userAccount.getUserName(),
-                    userAccount.getPass(), userAccount.getName(),
-                    userAccount.getUniversity(), userAccount.getProfession(), countryDialCode);
-
+            sv.startAnimation(slide_down);
         }
 
     }

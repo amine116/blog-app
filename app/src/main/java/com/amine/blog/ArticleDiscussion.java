@@ -19,7 +19,6 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -63,6 +62,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
     private final String MENU_ITEM_SELECT = "Select to reply";
     private String username, articleId, privacy;
     private final ArrayList<EditHistory> editHistories = new ArrayList<>();
+    private boolean inOtherActivity = false;
 
     private PopupMenu menu;
    // private ScrollView scrollOpinion;
@@ -71,7 +71,6 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_discussion);
-
         ll = findViewById(R.id.layout_opinions);
         hideActionBar();
         getIntentData();
@@ -290,6 +289,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
                 txtArticleText = findViewById(R.id.txtArticle);
 
         String s = "~ " + username;
+
         txtProfileName.setText(article.getNameOfOwner());
         txtUsername.setText(s);
         txtHeadline.setText(article.getHeadLine());
@@ -420,9 +420,16 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
             txtReplyingTo.setTextColor(darker);
 
             s = '"' + opinion.getReplyTo().getContextText() + '"';
-            txtChosenPortion.setText(s);
-            //txtChosenPortion.setBackgroundColor(brighter);
-            txtChosenPortion.setTextColor(darker);
+            DataModel.getSpannableArticle(s, this, false, getResources().getColor(R.color.sub_head_line),
+                    getResources().getColor(R.color.quotation), getResources().getColor(R.color.bullet_point),
+                    content -> {
+                        txtChosenPortion.setText(content);
+                        //txtChosenPortion.setBackgroundColor(brighter);
+                        txtChosenPortion.setTextColor(darker);
+                    });
+
+
+
         }
 
         return view;
@@ -532,6 +539,7 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
                 return;
             }
 
+            inOtherActivity = true;
             String username = view.getTag().toString();
             Intent intent = new Intent(ArticleDiscussion.this, ProfileView.class);
             intent.putExtra("USER_NAME", username);
@@ -848,18 +856,18 @@ public class ArticleDiscussion extends AppCompatActivity implements View.OnClick
         }
     }
 
-    /*
-    private WindowManager.LayoutParams getWindowParams(Dialog dialog, double width, double height){
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        int displayWidth = displayMetrics.widthPixels;
-        int displayHeight = displayMetrics.heightPixels;
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        int dialogWindowWidth = (int) (displayWidth * width);
-        int dialogWindowHeight = (int) (displayHeight * height);
-        layoutParams.width = dialogWindowWidth;
-        layoutParams.height = dialogWindowHeight;
-        return layoutParams;
+    @Override
+    protected void onPause() {
+        if (!inOtherActivity){
+            Save.activeStatus(MainActivity.userBasicInfo.getUserName(), false);
+        }
+        super.onPause();
     }
-     */
+
+    @Override
+    protected void onResume() {
+        inOtherActivity = false;
+        Save.activeStatus(MainActivity.userBasicInfo.getUserName(), true);
+        super.onResume();
+    }
 }

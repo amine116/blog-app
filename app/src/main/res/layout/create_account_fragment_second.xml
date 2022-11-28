@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="@color/background_color"
-    android:padding="20sp">
+    android:gravity="center_horizontal"
+    android:background="@color/background_color">
 
     <ProgressBar
         android:id="@+id/progress_crAcc2"
@@ -18,13 +17,12 @@
         android:id="@+id/scroll_crAcc2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_color">
+        android:background="@drawable/about_me_shape">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="2sp"
-            android:background="@color/partition_color">
+            android:padding="40sp">
 
             <RelativeLayout
                 android:id="@+id/layout_pagePreview_createAcc"
@@ -32,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="15sp"
                 tools:ignore="RtlSymmetry"
-                android:background="@color/partition_color">
+                android:background="@drawable/rectangular_shape_my_message_color">
 
                 <ImageView
                     android:id="@+id/imgBack2"
@@ -278,7 +276,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/layout_expertise"
-                android:background="@color/background_color"
+                android:background="@drawable/rectangular_background_color_shape"
                 android:gravity="center">
 
                 <Button

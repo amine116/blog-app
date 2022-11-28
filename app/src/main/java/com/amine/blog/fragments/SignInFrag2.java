@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -34,6 +36,8 @@ public class SignInFrag2 extends Fragment implements View.OnClickListener, OnWai
     private ProgressBar pBar;
     private RelativeLayout rl;
 
+    private Animation slide_down, slide_up;
+
 
     public SignInFrag2(){}
 
@@ -49,7 +53,7 @@ public class SignInFrag2 extends Fragment implements View.OnClickListener, OnWai
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.sign_in_fragment2, container, false);
+        return inflater.inflate(R.layout.sign_in_fragment_second, container, false);
     }
 
     @Override
@@ -64,6 +68,27 @@ public class SignInFrag2 extends Fragment implements View.OnClickListener, OnWai
 
         txtGuestSignIn.setOnClickListener(this);
         btnSignIn.setOnClickListener(this);
+
+        slide_down = AnimationUtils.loadAnimation(context, R.anim.animation_slide_down);
+        slide_up = AnimationUtils.loadAnimation(context, R.anim.animation_slide_up);
+        slide_down.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                onWaitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        rl.startAnimation(slide_up);
 
     }
 
@@ -101,7 +126,7 @@ public class SignInFrag2 extends Fragment implements View.OnClickListener, OnWai
             MainActivity.userBasicInfo = new UserBasicInfo(FireConstants.STR_GUEST_USER_USERNAME,
                     FireConstants.STR_GUEST_USER_USERNAME, FireConstants.STR_GUEST_USER_USERNAME,
                     FireConstants.STR_GUEST_USER_USERNAME);
-            onWaitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
+            rl.startAnimation(slide_down);
         }
     }
 
@@ -110,7 +135,7 @@ public class SignInFrag2 extends Fragment implements View.OnClickListener, OnWai
 
         completeProgress();
         if(task == UserAccount.SUCCESS){
-            onWaitListener.onWaitCallback(DataModel.MOVE_TO_MAIN_ACTIVITY_HOME);
+            rl.startAnimation(slide_down);
         }
         else if(task == UserAccount.FAIL){
             edtUsername.requestFocus();

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import com.amine.blog.MainActivity;
 import com.amine.blog.R;
 import com.amine.blog.dialogs.SimpleDialog;
+import com.amine.blog.interfaces.OnReadTagsListener;
 import com.amine.blog.interfaces.OnWaitListener;
 import com.amine.blog.model.Article;
 import com.amine.blog.model.ArticleTag;
@@ -38,16 +40,16 @@ public class WriteArticleAddTagFrag extends Fragment implements View.OnClickList
     private LinearLayout ll;
     private Button btnPost;
     private EditText edtSearchTags;
-    private LinearLayout layoutTag1, layoutTag2, layoutTag3;
+    private LinearLayout layoutTag1, layoutTag2, layoutTag3, layout_info;
+    private ProgressBar progress;
 
     private Context context;
     private OnWaitListener onWaitListener;
 
     private String headLine, articleText, privacy;
-    private ArrayList<ArticleTag> tagList;
+    private final ArrayList<ArticleTag> tagList = new ArrayList<>();
 
-    private final boolean[] isTagAdded = new boolean[3];
-    private boolean isTagSuggested[] = new boolean[3];
+    private final boolean[] isTagAdded = new boolean[3], isTagSuggested = new boolean[3];
 
     public WriteArticleAddTagFrag(){}
 
@@ -69,10 +71,6 @@ public class WriteArticleAddTagFrag extends Fragment implements View.OnClickList
 
     public void setOnWaitListener(OnWaitListener onWaitListener) {
         this.onWaitListener = onWaitListener;
-    }
-
-    public void setTagList(ArrayList<ArticleTag> tagList) {
-        this.tagList = tagList;
     }
 
     @Nullable
@@ -101,11 +99,24 @@ public class WriteArticleAddTagFrag extends Fragment implements View.OnClickList
         layoutTag1 = view.findViewById(R.id.layout_tag1);
         layoutTag2 = view.findViewById(R.id.layout_tag2);
         layoutTag3 = view.findViewById(R.id.layout_tag3);
+        layout_info = view.findViewById(R.id.layout_info);
+        progress = view.findViewById(R.id.progress);
 
         addListeners();
 
 
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void readTags(){
+        inProgress();
+        Retrieve retrieve = new Retrieve("false");
+        retrieve.setOnListerForReadingTags(dataList -> {
+            completeProgress();
+            tagList.addAll(dataList);
+            setDropDownMenu(tagList);
+        });
+        retrieve.getTagList();
     }
 
     private void addListeners(){
@@ -115,8 +126,7 @@ public class WriteArticleAddTagFrag extends Fragment implements View.OnClickList
         btnPost.setOnClickListener(this);
         txtSearch.setOnClickListener(this);
 
-
-        setDropDownMenu(tagList);
+        readTags();
     }
 
     private void setDropDownMenu(ArrayList<ArticleTag> tags){
@@ -276,7 +286,7 @@ public class WriteArticleAddTagFrag extends Fragment implements View.OnClickList
                     opinions, tags);
 
             if(privacy.equals(DataModel.STR_PUBLIC)){
-                Save.increaseArticleNumber(article.getUsername());
+                Save.increaseArticleNumber(article.getUsername(), article.getTags());
                 new Save().saveArticle(article, isTagSuggested);
             }
             else if (privacy.equals(DataModel.STR_ONLY_ME)){
@@ -315,5 +325,14 @@ public class WriteArticleAddTagFrag extends Fragment implements View.OnClickList
                 sd.show();
             }
         }
+    }
+
+    private void inProgress(){
+        layout_info.setVisibility(View.GONE);
+        progress.setVisibility(View.VISIBLE);
+    }
+    private void completeProgress(){
+        progress.setVisibility(View.GONE);
+        layout_info.setVisibility(View.VISIBLE);
     }
 }

@@ -8,6 +8,9 @@
     <color name="green">#00FF00</color>
     <color name="orange">#FFA500</color>
     <color name="red">#FF0000</color>
+    <color name="pink">#FFC0CB</color>
+    <color name="violate">#8F00FF</color>
+    <color name="unknown">#ed8545</color>
     <color name="background_color3">#B1B2FF</color>
     <color name="background_color4">#A460ED</color>
     <color name="background_color5">#A084CA</color>
@@ -27,9 +30,10 @@
     <color name="hint_color">#ff9fff</color>
     <color name="head_line_color">#FFA500</color>
     <color name="view_boarder">#FFA500</color>
-    <color name="sub_head_line">#457b9d</color>
+    <color name="sub_head_line">#FFC0CB</color>
     <color name="quotation">#898F9C</color>
     <color name="bullet_point">#00FF00</color>
+    <color name="shadow">#757575</color>
 
 
     <color name="tag_color">#00FF00</color>

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +29,7 @@ import com.amine.blog.repositories.Retrieve;
 import com.amine.blog.repositories.Save;
 import com.amine.blog.repositories.UserAccount;
 import com.amine.blog.viewmodel.DataModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
@@ -40,7 +43,8 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
     private ProgressBar progressBar;
     private EditText edtUsername, edtPhone, edtOtp, edtPass;
     private TextView txtLastDigitsOfPhoneNumber, txtHeadlineOfSendingOtp, txtOtpPassHeadline ,txtFinalMessageToUser;
-    private RelativeLayout layout_provideUsername, layout_providePhone, layout_otp, layout_providePass, layout_finalMessage;
+    private RelativeLayout layout_info, layout_provideUsername, layout_providePhone, layout_otp, layout_providePass,
+            layout_finalMessage;
     private Button btnNext, btnNext2, btnNext3, btnChange, txtOkayButton;
     private Spinner spinnerCountry;
 
@@ -53,17 +57,17 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
 
     private OnWaitListener waitListener;
 
+    private Animation slide_up;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.recover_account_frag, container, false);
     }
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
+        super.onViewCreated(view, savedInstanceState);
 
         progressBar = view.findViewById(R.id.progressBar);
         edtUsername = view.findViewById(R.id.edtUsername);
@@ -85,6 +89,7 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         spinnerCountry = view.findViewById(R.id.spinner_country);
         layout_finalMessage = view.findViewById(R.id.layout_finalMessage);
         txtOkayButton = view.findViewById(R.id.txtOk);
+        layout_info = view.findViewById(R.id.layout_info);
 
 
         makeJsonArrayForCountry();
@@ -96,8 +101,9 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
         txtOkayButton.setOnClickListener(this);
         spinnerCountry.setOnItemSelectedListener(this);
 
+        slide_up = AnimationUtils.loadAnimation(context, R.anim.animation_slide_up);
+        layout_info.startAnimation(slide_up);
 
-        super.onViewCreated(view, savedInstanceState);
     }
 
     public void setContext(Context context) {
@@ -156,11 +162,17 @@ public class RecoverAccountFrag extends Fragment implements View.OnClickListener
 
 
         }
+
         else if(view.getId() == btnNext2.getId()){
             providedPhone = edtPhone.getText().toString().trim();
             if(providedPhone.isEmpty()){
                 edtPhone.requestFocus();
                 edtPhone.setError("Give your phone number, Nobody can access your number.");
+                return;
+            }
+
+            if(selectedCountryCode == null || selectedCountryCode.isEmpty()){
+                Snackbar.make(spinnerCountry, "Select your country", Snackbar.LENGTH_LONG).show();
                 return;
             }
 
